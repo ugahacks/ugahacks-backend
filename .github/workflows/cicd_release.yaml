@@ -58,6 +58,10 @@ jobs:
   deploy:
     needs: [flake8, eslint, pytest, jest]
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v3
