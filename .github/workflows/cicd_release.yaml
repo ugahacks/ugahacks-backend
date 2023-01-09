@@ -23,15 +23,13 @@ jobs:
       - name: Update Yarn
         run: yarn set version berry
 
-      - name: Cache Yarn
+      - name: Checkout and Cache Yarn
+        uses: actions/checkout@v3
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
-
-      - name: Checkout
-        uses: actions/checkout@v3
 
       - name: Install project dependencies
         run: yarn --prefer-offline
