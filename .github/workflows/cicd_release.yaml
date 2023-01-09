@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'yarn'
-          cache-dependency-path: './yarn.lock'
+          cache-dependency-path: '**/yarn.lock'
 
       - name: Checkout
         uses: actions/checkout@v3
