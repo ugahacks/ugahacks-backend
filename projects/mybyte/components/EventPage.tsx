@@ -8,7 +8,7 @@ import { EventStatus } from "../enums/eventStatus";
 
 
 const EventPage = () => {
-    const { user, userInfo, getFirstName, getRegisteredEvents } = useAuth();
+    const { userInfo, getFirstName, getRegisteredEvents } = useAuth();
     const [firstName, setFirstName] = useState('');
     const [registeredEvents, setRegisteredEvents] = useState({})
 
