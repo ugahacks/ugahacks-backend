@@ -64,7 +64,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
               ) : (
                 <>
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
-                    {userInfo.first_name != null ? (
+                    {userInfo.first_name != null && userInfo.first_name != "" ? (
                     <Link href="/dashboard">
                       <span className="text-blue-800 hover:text-blue-900 transition">
                         Dashboard

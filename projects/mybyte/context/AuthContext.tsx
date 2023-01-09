@@ -106,7 +106,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
   const storeUserRegistrationInformation = async (data: RegisterForm) => {
     const storage = getStorage();
     const file = data.resume[0]
-    console.log(file.name)
+
     const storageRef = ref(storage, 'resume/' + user.uid + '/' + file.name)
 
     const uploadTask = uploadBytesResumable(storageRef, file)
@@ -232,9 +232,8 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 
   const storeFirstAndLastName = async (first_name: string, last_name: string) => {
     try {
-        console.log(user.uid)
         const docRef = doc(db, "users-stage", user.uid ? user.uid : "");
-        console.log(docRef)
+
         await updateDoc(docRef, {
             first_name: first_name,
             last_name: last_name,
@@ -286,7 +285,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
     if (!docSnap.exists()) {
       return null;
     }
-    console.log(docSnap.data().first_name)
+
     setUserInfo({
       first_name: docSnap.data().first_name,
       last_name: docSnap.data().last_name,
