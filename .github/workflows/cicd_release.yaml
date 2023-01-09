@@ -72,7 +72,7 @@ jobs:
           echo "Changed Files (~/files.csv):"
           cat $HOME/files.csv
 
-      # UGAHacks 8
+      # mybyte
       - name: Build and Push mybyte Container
         run: |-
           echo "mybyte changed, building ..."
