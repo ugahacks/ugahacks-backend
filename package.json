@@ -9,5 +9,11 @@
   "workspaces": [
     "projects/*"
   ],
-  "packageManager": "yarn@3.3.1"
+  "packageManager": "yarn@3.3.1",
+  "devDependencies": {
+    "husky": "^8.0.0"
+  },
+  "scripts": {
+    "postinstall": "husky install"
+  }
 }
