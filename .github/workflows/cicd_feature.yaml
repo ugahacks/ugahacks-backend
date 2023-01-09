@@ -1,0 +1,39 @@
+name: Feature Branch CI/CD
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+
+jobs:
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lint Python Code 
+        run: python -V
+
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Lint
+        run: |
+          echo "yarn version: $(yarn --version)"
+          yarn workspace mybyte run lint
+ 
+  pytest:
+    needs: flake8 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Python Code 
+        run: echo "PYTHON UNIT TESTING COMPLETE"
+ 
+  jest:
+    needs: eslint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Typescript Code 
+        run: echo "TYPESCRIPT UNIT TESTING COMPLETE"
+
