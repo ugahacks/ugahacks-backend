@@ -31,10 +31,9 @@ jobs:
         with:
           node-version: '18'
           cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
 
       - name: Install project dependencies
-        run: yarn --prefer-offline
+        run: yarn install
 
       - name: Lint
         run: |
