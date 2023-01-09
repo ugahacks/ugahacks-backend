@@ -8,12 +8,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_APP_ID
+  apiKey: "AIzaSyB5AzDY-mtx31NwF8Ckj1DiTG9A07dieYQ",
+  authDomain: "ugahacks-core-infra.firebaseapp.com",
+  projectId: "ugahacks-core-infra",
+  storageBucket: "ugahacks-core-infra.appspot.com",
+  messagingSenderId: "436222925278",
+  appId: "1:436222925278:web:aeb5b0acd7830b8aee654f"
 };
 
 // Initialize Firebase

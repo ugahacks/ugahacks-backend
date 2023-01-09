@@ -92,17 +92,6 @@ jobs:
           cat $HOME/files.csv
 
       # mybyte
-      - name: 'Create .env file'
-        run: |
-          touch projects/mybyte/.env
-          echo NEXT_PUBLIC_API_KEY=${{ secrets.API_KEY }} >> .env
-          echo NEXT_PUBLIC_AUTH_DOMAIN=${{ secrets.AUTH_DOMAIN }} >> .env
-          echo NEXT_PUBLIC_PROJECT_ID=${{ secrets.PROJECT_ID }} >> .env
-          echo NEXT_PUBLIC_STORAGE_BUCKET=${{ secrets.STORAGE_BUCKET }} >> .env
-          echo NEXT_PUBLIC_MESSAGING_SENDER_ID=${{ secrets.MESSAGING_SENDER_ID }} >> .env
-          echo NEXT_PUBLIC_APP_ID=${{ secrets.APP_ID }} >> .env
-          cat .env
-
       - name: Build and Push mybyte Container
         run: |-
           echo "mybyte changed, building ..."
