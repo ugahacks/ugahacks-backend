@@ -23,8 +23,10 @@ jobs:
       - name: Update Yarn
         run: yarn set version berry
 
-      - name: Checkout and Cache Yarn
+      - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Cache Yarn
         uses: actions/setup-node@v3
         with:
           node-version: '18'
