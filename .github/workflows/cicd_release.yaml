@@ -20,6 +20,9 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     steps:
+      - name: Update Yarn
+        run: yarn set version berry
+        
       - name: Cache Yarn
         uses: actions/setup-node@v3
         with:
