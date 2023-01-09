@@ -29,7 +29,7 @@ const RegisterNamePage = () => {
 
       // get_user_information();
       console.log(userInfo)
-      if (userInfo.first_name != null) {
+      if (userInfo.first_name == "") {
 
         router.push("/dashboard")
       }
