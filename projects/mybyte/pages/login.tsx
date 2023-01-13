@@ -7,6 +7,15 @@ import Link from "next/link";
 import Image from "next/image";
 
 import googleLogo from "../public/googleLogo.svg";
+import LoginError from "../components/loginError";
+
+let show = false;
+let text = "";
+
+const setError = (showLocal: boolean, textLocal: string) => {
+  show = showLocal;
+  text = textLocal;
+}
 
 interface LoginType {
   email: string;
@@ -36,10 +45,10 @@ const LoginPage = () => {
       if (logInSuccessful) {
         router.push("/dashboard");
       } else {
-        alert("Log in unsuccessful, make sure your email is verified");
+        setError(true, "Log in unsuccessful, make sure your email is verified");
       }
     } catch (error: any) {
-      alert("Email/Password does not exist");
+      setError(true, "Email/Password does not exist");
       console.log(error.message);
     }
   };
@@ -102,6 +111,10 @@ const LoginPage = () => {
           <span className="flex-shrink mx-4 text-gray-400">OR</span>
           <div className="flex-grow border-t border-gray-400"></div>
         </div>
+        <LoginError
+          show={show}
+          text={text}
+        ></LoginError>
         <FormProvider {...methods}>
           <form
             action=""
