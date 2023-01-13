@@ -11,7 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 import Event, { EventDetail } from "../../components/Event";
 import RegisterCard, { ApplicationPaths } from "../../components/RegisterCard";
 import { Events } from "../../enums/events";
-import { EventStatus } from "../../enums/eventStatus";
+import ColorCode from "../../components/colorCode";
 
 const Hacks8 = () => {
   const { user, userInfo, getFirstName, getRegisteredEvents, setCurrEvent } =
