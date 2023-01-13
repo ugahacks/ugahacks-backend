@@ -58,12 +58,7 @@ const Hacks8 = () => {
                 Hey {userInfo.first_name}, this is UGA Hacks 8 Registration Page
               </h2>
               <div className="mt-6 text-xl text-black-600 font-bold">
-                STATUS:{" "}
-                <span className="bg-yellow-200">
-                  {Events.hacks8 in userInfo.registered
-                    ? EventStatus.Registered
-                    : EventStatus.NotRegistered}
-                </span>
+                STATUS: <ColorCode registered={userInfo.registered}></ColorCode>
               </div>
             </div>
           </Card>
