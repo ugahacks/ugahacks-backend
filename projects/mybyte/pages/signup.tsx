@@ -50,7 +50,7 @@ const SignupPage = () => {
   const onSubmitGoogle = async () => {
     try {
       await logInWithGoogle();
-      router.push("/getName");
+      router.push("/dashboard");
     } catch (error: any) {
       console.log(error.message);
     }
