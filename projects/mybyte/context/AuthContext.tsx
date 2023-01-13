@@ -69,9 +69,15 @@ export const AuthContextProvider = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [currEvent, setCurrEvent] = useState<Events>();
 
-  const userRef = collection(db, "users-stage");
-  const eSportsRef = collection(db, "user-e-sports-details-stage");
-  const registerRef = collection(db, "user-registration-details-stage");
+  // Stage Environment
+  const userRefStage = collection(db, "users-stage");
+  const eSportsRefStage = collection(db, "user-e-sports-details-stage");
+  const registerRefStage = collection(db, "user-registration-details-stage");
+
+  // Prod Environment
+  const userRef = collection(db, "users");
+  const eSportsRef = collection(db, "user-e-sports-details");
+  const registerRef = collection(db, "user-registration-details");
 
   const router = useRouter();
 
