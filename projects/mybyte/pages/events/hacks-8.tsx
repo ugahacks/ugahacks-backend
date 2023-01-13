@@ -33,8 +33,17 @@ const Hacks8 = () => {
             <div className="text-gray-600 px-6 py-12 mt-2 mx-auto text-center">
               <h2 className="text-3xl font-bold text-center">
                 Hey {userInfo.first_name}, this is UGA Hacks 8 Registration Page
+                🚀
               </h2>
-              <div className="mt-6 text-xl text-black-600 font-bold">
+              <h2 className="text-2xl text-center mt-4">
+                We&apos;re excited that you are participating in UGA Hacks 8! We
+                would love to see you at the event! 🤗
+              </h2>
+              <h2 className="text-2xl text-center">
+                If you have any questions, please send us an email at
+                hello@ugahacks.com!
+              </h2>
+              <div className="mt-6 text-2xl text-black-600 font-bold">
                 STATUS: <ColorCode registered={userInfo.registered}></ColorCode>
               </div>
             </div>

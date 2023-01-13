@@ -79,7 +79,6 @@ export default function Register() {
   });
 
   function otherMajorInput(value: string) {
-    console.log(value);
     if (value == "other") {
       setOtherMajor(true);
     } else {
