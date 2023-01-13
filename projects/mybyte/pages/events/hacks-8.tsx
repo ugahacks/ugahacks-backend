@@ -18,22 +18,24 @@ const Hacks8 = () => {
     useAuth();
 
   const application_path: ApplicationPaths = {
-    application_type: "Participant",
+    application_type: "Participant 🐶💻",
     deadline: "December 31st, 2022",
     page: "/register",
     disabled: Events.hacks8 in userInfo.registered,
+    image: "/byte_mini.png",
   };
 
   const e_sports_path: ApplicationPaths = {
-    application_type: "E-Sports",
+    application_type: "E-Sports 🎮",
     deadline: "December 31st, 2022",
-    page: "/register",
-    disabled: Events.hacks8 in userInfo.registered,
+    page: "/events/ESportsRegister",
+    disabled: Events.e_sports_8 in userInfo.registered,
+    image: "/Transparent_esports.png",
   };
 
-  useEffect(() => {
-    setCurrEvent(Events.hacks8);
-  }, [setCurrEvent]);
+  // useEffect(() => {
+  //   setCurrEvent(Events.hacks8);
+  // }, [setCurrEvent]);
 
   // useEffect(() => {
   //   async function get_first_name() {

@@ -7,10 +7,12 @@ import { Events } from "../enums/events";
 
 const Hacks8: EventDetail = {
   key: Events.hacks8,
-  eventName: "UGA Hacks 8",
+  eventName: "UGA Hacks 8 🐾",
   date: "02/03/2023 - 02/05/2023",
-  description: "Create your own adventure!",
+  description: "Create your own adventure! 🛫",
   page: "/events/hacks-8",
+  in_person: true,
+  image: "/byte_mini.png",
   // Add in person attribute
 };
 const events = [{ event: <Event {...Hacks8} /> }];
@@ -34,7 +36,7 @@ const DashboardPage = () => {
   return (
     <ProtectedRoute>
       <div className="flex py-2 container mx-auto">
-        <div className="text-gray-600 px-12 py-24 mt-6 mx-auto">
+        <div className="text-gray-600 px-12 py-24 mt-2 mx-auto">
           <h2 className="text-5xl font-semibold">
             Hey {userInfo.first_name}, welcome to the UGA Hacks Portal!
           </h2>

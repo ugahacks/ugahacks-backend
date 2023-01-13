@@ -25,13 +25,7 @@ import {
 } from "firebase/storage";
 import "react-phone-number-input/style.css";
 import ProtectedRoute from "../components/ProtectedRoute";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Typography,
-} from "@material-tailwind/react";
+import { Card } from "@material-tailwind/react";
 
 export default function Register() {
   const router = useRouter();

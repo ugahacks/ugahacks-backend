@@ -25,6 +25,7 @@ export interface ApplicationPaths {
   deadline: string;
   page: string;
   disabled: boolean;
+  image: string;
 }
 
 export default function Example(props: ApplicationPaths) {
@@ -43,9 +44,10 @@ export default function Example(props: ApplicationPaths) {
           <Card className="w-96 bg-opacity-75 rounded-lg">
             <CardHeader color="blue" className="relative h-56">
               <Image
-                src={hacks8Byte}
+                src={props.image}
                 alt="img-blur-shadow"
-                className="h-full w-full"
+                fill
+                className="h-full w-full object-contain"
               />
             </CardHeader>
             <CardBody className="text-center">
@@ -59,9 +61,10 @@ export default function Example(props: ApplicationPaths) {
           <Card className="w-96 bg-slate-300 bg-opacity-75">
             <CardHeader color="blue" className="relative h-56">
               <Image
-                src={hacks8Byte}
+                src={props.image}
                 alt="img-blur-shadow"
-                className="h-full w-full"
+                fill
+                className="h-full w-full object-contain"
               />
             </CardHeader>
             <CardBody className="text-center">
@@ -69,7 +72,7 @@ export default function Example(props: ApplicationPaths) {
                 {props.application_type}
               </Typography>
               <Typography>
-                You have already registered for this event! Thank you!
+                You have already registered for this event! Thank you! 😁
               </Typography>
             </CardBody>
           </Card>
