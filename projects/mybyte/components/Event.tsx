@@ -18,6 +18,8 @@ export interface EventDetail {
   date: string;
   description: string;
   page: string;
+  in_person: boolean;
+  image: string;
 }
 
 export default function Event(props: EventDetail) {
@@ -32,9 +34,10 @@ export default function Event(props: EventDetail) {
       <Card className="w-96 shadow-[#DC4141]">
         <CardHeader color="blue" className="relative h-56">
           <Image
-            src={hacks8Byte}
+            src={props.image}
             alt="img-blur-shadow"
-            className="h-full w-full"
+            fill
+            className="h-full w-full object-contain"
           />
         </CardHeader>
         <CardBody className="text-center">
@@ -43,7 +46,9 @@ export default function Event(props: EventDetail) {
           </Typography>
           <Typography>{props.date}</Typography>
           <Typography>{props.description}</Typography>
-          <Typography>In-person</Typography>
+          <Typography className="text-[#DC4141]">
+            {props.in_person ? "In-Person" : "Hybrid"}
+          </Typography>
         </CardBody>
       </Card>
     </div>

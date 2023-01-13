@@ -5,7 +5,6 @@ class MyDocument extends Document {
     "/login",
     "/signup",
     "/resetPasswordSuccess",
-    "/getName",
     "/emailVerification",
   ];
 
