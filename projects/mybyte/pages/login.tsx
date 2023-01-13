@@ -68,7 +68,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="sign-up-form container mx-auto w-96 mt-12 border-2 border-gray-400 overflow-auto bg-white">
+    <div className="sign-up-form container mx-auto w-96 mt-6 border-2 border-gray-400 overflow-auto bg-white">
       <h2 className="px-12 mt-8 text-center text-2xl font-semibold text-[#DC4141]">
         Log In
       </h2>
