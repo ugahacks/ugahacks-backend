@@ -6,7 +6,6 @@ import Login from "./login";
 import { useEffect } from "react";
 
 function MyApp({ Component, pageProps }: AppProps) {
-
   return (
     <AuthContextProvider>
       <Navbar>
