@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Typography,
-} from "@material-tailwind/react";
+import React from "react";
+import { Card } from "@material-tailwind/react";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useAuth } from "../../context/AuthContext";
-import Event, { EventDetail } from "../../components/Event";
 import RegisterCard, { ApplicationPaths } from "../../components/RegisterCard";
 import { Events } from "../../enums/events";
 import ColorCode from "../../components/colorCode";
 
 const Hacks8 = () => {
-  const { user, userInfo, getFirstName, getRegisteredEvents, setCurrEvent } =
-    useAuth();
+  const { userInfo } = useAuth();
 
   const application_path: ApplicationPaths = {
     application_type: "Participant 🐶💻",
-    deadline: "December 31st, 2022",
+    deadline: "February 1st, 2023",
     page: "/register",
     disabled: Events.hacks8 in userInfo.registered,
     image: "/byte_mini.png",
@@ -27,28 +19,11 @@ const Hacks8 = () => {
 
   const e_sports_path: ApplicationPaths = {
     application_type: "E-Sports 🎮",
-    deadline: "December 31st, 2022",
+    deadline: "February 1st, 2022",
     page: "/events/ESportsRegister",
     disabled: Events.e_sports_8 in userInfo.registered,
     image: "/Transparent_esports.png",
   };
-
-  // useEffect(() => {
-  //   setCurrEvent(Events.hacks8);
-  // }, [setCurrEvent]);
-
-  // useEffect(() => {
-  //   async function get_first_name() {
-  //     const first_name = await getFirstName();
-  //     setFirstName(first_name)
-  //   }
-  //   async function get_registered_events() {
-  //     const registered_events = await getRegisteredEvents();
-  //     setRegisteredEvents(registered_events)
-  //   }
-  //   get_first_name();
-  //   get_registered_events();
-  // }, []);
 
   return (
     <div className="bg-cover bg-[url('/UGAHacks8TanBG.png')]">
