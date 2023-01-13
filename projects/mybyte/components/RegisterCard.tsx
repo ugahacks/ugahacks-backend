@@ -56,7 +56,7 @@ export default function Example(props: ApplicationPaths) {
             </CardBody>
           </Card>
         ) : (
-          <Card className="w-96 bg-slate-300">
+          <Card className="w-96 bg-slate-300 bg-opacity-75">
             <CardHeader color="blue" className="relative h-56">
               <Image
                 src={hacks8Byte}

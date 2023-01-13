@@ -11,7 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 import Event, { EventDetail } from "../../components/Event";
 import RegisterCard, { ApplicationPaths } from "../../components/RegisterCard";
 import { Events } from "../../enums/events";
-import { EventStatus } from "../../enums/eventStatus";
+import ColorCode from "../../components/colorCode";
 
 const Hacks8 = () => {
   const { user, userInfo, getFirstName, getRegisteredEvents, setCurrEvent } =
@@ -58,11 +58,7 @@ const Hacks8 = () => {
             </h2>
             <div className="mt-6 text-xl text-black-600 font-bold">
               STATUS:{" "}
-              <span className="bg-yellow-200">
-                {Events.hacks8 in userInfo.registered
-                  ? EventStatus.Registered
-                  : EventStatus.NotRegistered}
-              </span>
+              <ColorCode registered={userInfo.registered}></ColorCode>
             </div>
           </div>
         </Card>
@@ -70,7 +66,7 @@ const Hacks8 = () => {
           <b>Application Paths:</b>
         </h1>
         <div className="flex pt-5">
-          <div className="flex-1 space-x-4">
+          <div className="flex-1 space-x-4 space-y-2">
             <button disabled={Events.hacks8 in userInfo.registered}>
               <RegisterCard {...application_path} />
             </button>
