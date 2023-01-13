@@ -782,7 +782,10 @@ export default function Register() {
                           </p>
                         )}
                       </div>
-                      <div className="flex justify-end">
+                      <div className="flex justify-between">
+                        <button className="appearance-none bg-gray-200 text-gray-900 px-2 py-1 shadow-sm border border-gray-400 rounded-md mr-3">
+                          <Link href="/events/hacks-8">Go Back</Link>
+                        </button>
                         <button
                           className="appearance-none bg-gray-200 text-gray-900 px-2 py-1 shadow-sm border border-gray-400 rounded-md mr-3"
                           type="submit"
