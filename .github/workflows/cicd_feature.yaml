@@ -28,7 +28,7 @@ jobs:
           cache: "yarn"
 
       - name: Install project dependencies
-        run: yarn --prefer-offline
+        run: yarn install
 
       - name: Lint
         run: |
