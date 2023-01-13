@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/router";
-import ProtectedRoute from "../components/ProtectedRoute";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -59,9 +58,8 @@ const LoginPage = () => {
 
   const onSubmitGoogle = async () => {
     try {
-      console.log("BEFORE LOG IN WITH GOOGLE");
       await logInWithGoogle();
-      router.push("/getName");
+      router.push("/dashboard");
     } catch (error: any) {
       console.log(error.message);
     }

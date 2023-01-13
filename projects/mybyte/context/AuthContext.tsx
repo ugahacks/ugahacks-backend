@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   GoogleAuthProvider,
-  getAuth,
   signInWithPopup,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -12,29 +11,20 @@ import {
 } from "firebase/auth";
 import {
   doc,
-  getFirestore,
-  query,
-  getDocs,
   setDoc,
   collection,
-  where,
-  addDoc,
   updateDoc,
   serverTimestamp,
-  limit,
   getDoc,
-  FirestoreError,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { Events } from "../enums/events";
-import { Users } from "../enums/userType";
 import {
   getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import { FirebaseError } from "firebase/app";
 
 import { RegisterForm } from "../interfaces/registerForm";
 import { useRouter } from "next/router";
@@ -77,13 +67,11 @@ export const AuthContextProvider = ({
     //user_type: null
   });
   const [loading, setLoading] = useState<boolean>(true);
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [resumeLink, setResumeLink] = useState<string>("");
   const [currEvent, setCurrEvent] = useState<Events>();
 
   const userRef = collection(db, "users-stage");
   const eSportsRef = collection(db, "user-e-sports-details-stage");
+  const registerRef = collection(db, "user-registration-details-stage");
 
   const router = useRouter();
 
@@ -133,7 +121,7 @@ export const AuthContextProvider = ({
       },
       async () => {
         await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setDoc(doc(db, "registration-stage", user.uid ? user.uid : ""), {
+          setDoc(doc(registerRef, user.uid ? user.uid : ""), {
             uid: user.uid,
             firstName: data.firstName,
             lastName: data.lastName,
@@ -190,6 +178,20 @@ export const AuthContextProvider = ({
     setUserInformation(user.uid);
   };
 
+  function getFirstAndLastNameFromGoogleName(
+    full_name: string | null
+  ): [string, string] {
+    // if name does not exist
+    if (!full_name) {
+      return ["", ""];
+    }
+
+    let first_name, last_name, rest;
+    [first_name, last_name, ...rest] = full_name.split(" ");
+
+    return [first_name, last_name];
+  }
+
   const signUp = async (
     first_name: string,
     last_name: string,
@@ -198,10 +200,10 @@ export const AuthContextProvider = ({
   ) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      setFirstName(first_name);
-      setLastName(last_name);
+
       const user = res.user;
       const name = first_name + " " + last_name;
+
       await setDoc(doc(userRef, user.uid), {
         uid: user.uid,
         first_name: first_name,
@@ -244,14 +246,18 @@ export const AuthContextProvider = ({
       // const q = query(collection(db, "users"), where("uid", "==", user.uid));
       // const docs = await getDocs(q);
 
-      const docRef = doc(db, "users-stage", google_user.uid);
+      const docRef = doc(userRef, google_user.uid);
       const docSnap = await getDoc(docRef);
+
+      const [first_name, last_name] = getFirstAndLastNameFromGoogleName(
+        google_user.displayName
+      );
 
       if (!docSnap.exists()) {
         await setDoc(doc(userRef, google_user.uid), {
           uid: google_user.uid,
-          first_name: "",
-          last_name: "",
+          first_name: first_name,
+          last_name: last_name,
           name: google_user.displayName,
           authProvider: "google",
           email: google_user.email,
@@ -260,6 +266,7 @@ export const AuthContextProvider = ({
           added_time: serverTimestamp(),
         });
       }
+      setUserInformation(google_user.uid);
     } catch (err: any) {
       console.error(err);
     }
@@ -270,7 +277,7 @@ export const AuthContextProvider = ({
     last_name: string
   ) => {
     try {
-      const docRef = doc(db, "users-stage", user.uid ? user.uid : "");
+      const docRef = doc(userRef, user.uid ? user.uid : "");
 
       await updateDoc(docRef, {
         first_name: first_name,
@@ -283,7 +290,7 @@ export const AuthContextProvider = ({
   };
 
   const hasFirstAndLastName = async () => {
-    const docRef = doc(db, "users-stage", user.uid ? user.uid : "1");
+    const docRef = doc(userRef, user.uid ? user.uid : "1");
     const docSnap = await getDoc(docRef);
 
     if (
@@ -297,7 +304,7 @@ export const AuthContextProvider = ({
   };
 
   const getFirstName = async () => {
-    const docRef = doc(db, "users-stage", user.uid ? user.uid : "0");
+    const docRef = doc(userRef, user.uid ? user.uid : "0");
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
@@ -308,7 +315,7 @@ export const AuthContextProvider = ({
   };
 
   const getRegisteredEvents = async () => {
-    const docRef = doc(db, "users-stage", user.uid ? user.uid : "0");
+    const docRef = doc(userRef, user.uid ? user.uid : "0");
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
@@ -319,8 +326,7 @@ export const AuthContextProvider = ({
   };
 
   const setUserInformation = async (uid: string | null) => {
-    console.log("Setting up usre info");
-    const docRef = doc(db, "users-stage", uid ? uid : "");
+    const docRef = doc(userRef, uid ? uid : "");
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {

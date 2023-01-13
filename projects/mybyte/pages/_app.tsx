@@ -16,10 +16,12 @@ function MyApp({ Component, pageProps }: AppProps) {
     "/signup",
     "/resetPassword",
     "/resetPasswordSuccess",
-    "/getName",
     "/emailVerification",
   ];
-  const hacks_8_bg_routes = ["/registrationSuccess"];
+  const hacks_8_bg_routes = [
+    "/registrationSuccess",
+    "/eSportsRegistrationSuccess",
+  ];
 
   useEffect(() => {
     if (!hasHacks8Class() && hacks_8_bg_routes.includes(page)) {
