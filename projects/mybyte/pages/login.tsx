@@ -91,7 +91,7 @@ const LoginPage = () => {
               </span>
             </div>
           </button>
-          <button
+          {/* <button
             className="group h-12 px-6 border-2 border-gray-300 rounded-full transition duration-300 
  hover:border-blue-400 focus:bg-blue-50 active:bg-blue-100"
           >
@@ -108,7 +108,7 @@ const LoginPage = () => {
                 Continue with Github
               </span>
             </div>
-          </button>
+          </button> */}
         </div>
         <div className="relative flex py-5 items-center px-4">
           <div className="flex-grow border-t border-gray-400"></div>
