@@ -27,6 +27,9 @@ const DashboardPage = () => {
 
   //   get_user_information();
   // }, []);
+  // useEffect(() => {
+  //   document.querySelector("body")?.classList.remove("bg-[#e3e3e3]");
+  // });
 
   return (
     <ProtectedRoute>

@@ -57,7 +57,7 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="sign-up-form container mx-auto w-96 mt-12 mb-12 border-2 border-gray-400">
+    <div className="sign-up-form container mx-auto w-96 mt-12 mb-12 border-2 border-gray-400 bg-white">
       <h2 className="px-12 mt-8 text-center text-2xl font-semibold text-[#DC4141]">
         Sign Up
       </h2>
