@@ -14,6 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const gray_bg_routes = [
     "/login",
     "/signup",
+    "/resetPassword",
     "/resetPasswordSuccess",
     "/getName",
     "/emailVerification",

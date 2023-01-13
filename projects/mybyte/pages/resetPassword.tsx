@@ -17,9 +17,9 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="sign-up-form container mx-auto w-96 mt-12 border-2 border-gray-400">
+    <div className="sign-up-form container mx-auto w-96 mt-12 border-2 border-gray-400 bg-white">
       <h2 className="px-12 mt-8 text-center text-2xl font-semibold text-blue-900">Password Reset</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className="mx-5" onSubmit={handleSubmit(onSubmit)}>
           <div className="mt-8">
             <div className="flex items-center justify-between">
               <label htmlFor="" className="block mb-3 font-sans text-blue-900">
@@ -35,7 +35,7 @@ export default function ResetPassword() {
             {errors.email && <p className="text-red-400">{errors.email.message}</p>}
           </div>
 
-          <div className="flex justify-center pt-8">
+          <div className="flex justify-center pt-8 mb-4">
             <button
               type="submit"
               className={`h-12 text-center w-2/3 bg-blue-900 border-2 rounded-md hover:shadow-lg hover:bg-blue-800 text-lg transition`}
