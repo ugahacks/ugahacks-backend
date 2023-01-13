@@ -1,12 +1,19 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/router";
+import LoginError from "../components/loginError";
+
+
 
 export default function ResetPassword() {
   interface resetPasswordForm {
     email: string;
   }
+
+  let [show, setShow] = useState(false);
+  let [text, setText] = useState("");
 
   const router = useRouter();
   const { resetPassword } = useAuth();
@@ -16,8 +23,14 @@ export default function ResetPassword() {
     formState: { errors },
   } = useForm<resetPasswordForm>();
   const onSubmit: SubmitHandler<resetPasswordForm> = (data) => {
-    resetPassword(data.email);
-    router.push("/resetPasswordSuccess"); // TODO: Add whether the password reset was sent successfully (OPTIONAL)
+    resetPassword(data.email, (message: string) => {
+      if (message.includes("auth/user-not-found")) {
+        setShow(true);
+        setText("Sorry, we don't recognize this email. Please sign up.");
+      }
+    }, () => {
+      router.push("/resetPasswordSuccess"); // TODO: Add whether the password reset was sent successfully (OPTIONAL)
+    });
   };
 
   return (
@@ -25,6 +38,7 @@ export default function ResetPassword() {
       <h2 className="px-12 mt-8 text-center text-2xl font-semibold text-[#DC4141]">
         Password Reset
       </h2>
+      <LoginError show={show} text={text}></LoginError>
       <form className="mx-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="mt-8">
           <div className="flex items-center justify-between">

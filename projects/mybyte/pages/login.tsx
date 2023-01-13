@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/router";
@@ -9,13 +9,8 @@ import Image from "next/image";
 import googleLogo from "../public/googleLogo.svg";
 import LoginError from "../components/loginError";
 
-let show = false;
-let text = "";
 
-const setError = (showLocal: boolean, textLocal: string) => {
-  show = showLocal;
-  text = textLocal;
-};
+
 
 interface LoginType {
   email: string;
@@ -27,6 +22,13 @@ const LoginPage = () => {
 
   const methods = useForm<LoginType>({ mode: "onBlur" });
 
+  let [show, setShow] = useState(false);
+  let [text, setText] = useState("");
+
+  const setError = (showLocal: boolean, textLocal: string) => {
+    setShow(showLocal);
+    setText(textLocal);
+  };
   // useEffect(() => {
   //   document.querySelector("body")?.classList.add("bg-[#e3e3e3]");
   // });
