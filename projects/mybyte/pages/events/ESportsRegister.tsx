@@ -9,8 +9,7 @@ import { ESportsRegisterForm } from "../../interfaces/eSportsRegisterForm";
 export default function ESportsRegister() {
   const router = useRouter();
   const [textCount, setTextCount] = useState(0);
-  const { storeESportsRegistrationInformation, getRegisteredEvents, userInfo } =
-    useAuth();
+  const { storeESportsRegistrationInformation } = useAuth();
   const {
     control,
     register,
