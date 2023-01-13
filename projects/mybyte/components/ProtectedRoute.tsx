@@ -9,9 +9,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (user.uid == null) {
       router.push("/login");
-    } 
+    }
   }, [router, user]);
-  return <div className="h-screen min-h-full overflow-auto">{user ? children : null}</div>;
+  return (
+    <div className="h-screen min-h-full overflow-auto bg-cover bg-[url('/UGAHacks8TanBG.png')]">
+      {user ? children : null}
+    </div>
+  );
 };
 
 export default ProtectedRoute;
