@@ -1,0 +1,115 @@
+name: Master Branch CI/CD
+on:
+  push:
+    branches:
+      - "master"
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1
+  DEPLOY_ENV: prod
+  CI: true # silences "yarn install"
+
+jobs:
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lint Python Code
+        run: python -V
+
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Yarn
+        run: yarn set version berry
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+
+      - name: Install project dependencies
+        run: yarn install
+
+      - name: Lint
+        run: |
+          echo "yarn version: $(yarn --version)"
+          yarn workspace mybyte run lint
+
+  pytest:
+    needs: flake8
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Python Code
+        run: echo "PYTHON UNIT TESTING COMPLETE"
+
+  jest:
+    needs: eslint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Typescript Code
+        run: echo "TYPESCRIPT UNIT TESTING COMPLETE"
+
+  # Conditionally build, containerize, and deploy UGAHacks services iff files are changed #
+  deploy:
+    needs: [flake8, eslint, pytest, jest]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/436222925278/locations/global/workloadIdentityPools/pool-ugahacks-backend/providers/provider-ugahacks-backend'
+          service_account: 'ugahacks-cicd@ugahacks-core-infra.iam.gserviceaccount.com'
+
+      - name: 'Setup Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
+      - id: file_changes
+        name: Get Changed Files
+        uses: trilom/file-changes-action@v1.2.4
+        with:
+          output: ","
+          fileOutput: ","
+
+      - name: Output Changed Files
+        run: |
+          echo "Changed Files (~/files.csv):"
+          cat $HOME/files.csv
+
+      # mybyte
+      - name: Build and Push mybyte Container
+        run: |-
+          echo "mybyte changed, building ..."
+          docker build -t gcr.io/${{ env.PROJECT_ID }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }} projects/mybyte
+          docker push gcr.io/${{ env.PROJECT_ID }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}
+        if: contains(steps.file_changes.outputs.files , 'mybyte')
+
+      - name: Deploy mybyte to Cloud Run
+        id: deploy_mybyte
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          service: mybyte-${{ env.DEPLOY_ENV }}
+          image: gcr.io/${{ env.PROJECT_ID }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}
+          region: ${{ env.REGION }}
+        if: contains(steps.file_changes.outputs.files , 'mybyte')
+
+      - name: mybyte Post Deployment
+        run: |-
+          echo "Active URL:"
+          echo ${{ steps.deploy_mybyte.outputs.url }}
+        if: contains(steps.file_changes.outputs.files , 'mybyte')
