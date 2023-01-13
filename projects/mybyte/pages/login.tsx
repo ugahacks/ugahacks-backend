@@ -15,7 +15,7 @@ let text = "";
 const setError = (showLocal: boolean, textLocal: string) => {
   show = showLocal;
   text = textLocal;
-}
+};
 
 interface LoginType {
   email: string;
@@ -26,6 +26,10 @@ const LoginPage = () => {
   const router = useRouter();
 
   const methods = useForm<LoginType>({ mode: "onBlur" });
+
+  // useEffect(() => {
+  //   document.querySelector("body")?.classList.add("bg-[#e3e3e3]");
+  // });
 
   const {
     register,
@@ -111,10 +115,7 @@ const LoginPage = () => {
           <span className="flex-shrink mx-4 text-gray-400">OR</span>
           <div className="flex-grow border-t border-gray-400"></div>
         </div>
-        <LoginError
-          show={show}
-          text={text}
-        ></LoginError>
+        <LoginError show={show} text={text}></LoginError>
         <FormProvider {...methods}>
           <form
             action=""

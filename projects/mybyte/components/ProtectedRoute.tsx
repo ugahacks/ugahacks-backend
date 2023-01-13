@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
   }, [router, user]);
   return (
-    <div className="h-screen min-h-full overflow-auto bg-cover bg-[url('/UGAHacks8TanBG.png')]">
+    <div className="h-screen min-h-full overflow-auto">
       {user ? children : null}
     </div>
   );

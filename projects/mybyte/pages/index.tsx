@@ -16,7 +16,7 @@ const Home: NextPage = () => {
         <Image
           src={hacks8Byte}
           alt="img-blur-shadow"
-          className="aspect-[694/620] h-[347] w-[310]"
+          className="aspect-[694/620]"
         />
         <h1 className="text-6xl font-bold">Welcome to MyByte!</h1>
         <p className="text-xl pt-4 font-bold">

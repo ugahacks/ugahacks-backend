@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import styles from "../styles/registrationSuccess.module.css";
 
 export default function RegistrationSuccess() {
   return (
@@ -12,7 +11,7 @@ export default function RegistrationSuccess() {
       <div className="mt-8 mb-8">
         <div className="flex justify-center text-xl">
           <p className="text-cyan-500">
-            <Link href="/login">Go to login</Link>
+            <Link href="/events/hacks-8">Return to Hacks 8</Link>
           </p>
         </div>
       </div>
