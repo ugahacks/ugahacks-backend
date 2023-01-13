@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-. "chmod ug+x .husky/*"
 . "$(dirname -- "$0")/_/husky.sh"
 
 yarn workspace mybyte run lint
