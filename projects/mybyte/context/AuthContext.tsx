@@ -69,15 +69,12 @@ export const AuthContextProvider = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [currEvent, setCurrEvent] = useState<Events>();
 
-  // Stage Environment
-  const userRefStage = collection(db, "users-stage");
-  const eSportsRefStage = collection(db, "user-e-sports-details-stage");
-  const registerRefStage = collection(db, "user-registration-details-stage");
-
-  // Prod Environment
-  const userRef = collection(db, "users");
-  const eSportsRef = collection(db, "user-e-sports-details");
-  const registerRef = collection(db, "user-registration-details");
+  const devOrProd = process.env.NODE_ENV == "development"; // if being run with yarn dev
+  const extra = (devOrProd) ? "-stage" : ""; // go to staged for development
+  // did this so testing can be done without messing with anything in production database
+  const userRef = collection(db, "users" + extra);
+  const eSportsRef = collection(db, "user-e-sports-details" + extra);
+  const registerRef = collection(db, "user-registration-details" + extra);
 
   const router = useRouter();
 
