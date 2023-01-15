@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/router";
 import LoginError from "../components/loginError";
+import { FirebaseError } from "firebase/app";
 
 
 
@@ -23,8 +24,8 @@ export default function ResetPassword() {
     formState: { errors },
   } = useForm<resetPasswordForm>();
   const onSubmit: SubmitHandler<resetPasswordForm> = (data) => {
-    resetPassword(data.email, (message: string) => {
-      if (message.includes("auth/user-not-found")) {
+    resetPassword(data.email, (error: FirebaseError) => {
+      if (error.code === "auth/user-not-found") {
         setShow(true);
         setText("Sorry, we don't recognize this email. Please sign up.");
       }

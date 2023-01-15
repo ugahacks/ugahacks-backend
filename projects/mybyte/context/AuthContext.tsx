@@ -29,6 +29,7 @@ import {
 import { RegisterForm } from "../interfaces/registerForm";
 import { useRouter } from "next/router";
 import { ESportsRegisterForm } from "../interfaces/eSportsRegisterForm";
+import { FirebaseError } from "firebase/app";
 
 export interface UserType {
   email: string | null;
@@ -242,16 +243,13 @@ export const AuthContextProvider = ({
         success();
       }
     } catch(e: unknown){
-      let message: string = "";
       if (typeof e === "string") {
-          message = e;
+          return; // to fill any string based errors if needed
+      } else if (e instanceof FirebaseError) {
+          if (handle) handle(e); // checks id handle is undefined
+          return;
       } else if (e instanceof Error) {
-          message = e.message;
-      } else {
-        return; // Should not happen
-      }
-      if (handle) { // checks to see if it is undefined
-        handle(message);
+        return; // to fill any general errors if needed
       }
     }
   }
