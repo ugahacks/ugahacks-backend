@@ -1,16 +1,36 @@
 import React from "react";
 import ProtectedRoute from "../components/ProtectedRoute";
-import { useAuth } from "../context/AuthContext";
+import { RegistrationType, useAuth } from "../context/AuthContext";
+import { Card, CardBody } from "@material-tailwind/react";
 
 const ProfilePage = () => {
-    const {user, userInfo} = useAuth();
+    const {user, userInfo, getRegisteredInfo} = useAuth();
+    const registrationInfo: RegistrationType = getRegisteredInfo();
 
     return (
         <ProtectedRoute className="h-[82vh] min-h-full overflow-auto">
             <div className="text-gray-600 px-12 pt-12 mx-auto h-4/5" id="parent-div">
                 <div className="mb-5 text-center" id="intro-div">
-                    <h2 className="text-5xl font-semibold my-2">Hey {userInfo.first_name},</h2>
+                    <h2 className="text-5xl font-semibold my-2">Hey {`${userInfo.first_name} ${userInfo.last_name}`},</h2>
                     <span className="text-xl italic my-2">Ready to Hack?</span>
+                    <Card>
+                        <CardBody>
+                            <h3>Info:</h3>
+                            <p>
+                                Email: {user.email},<br/>
+                                { 
+                                (registrationInfo.uid != null) ?
+                                    `School: ${(registrationInfo.school === "Other") 
+                                    ? registrationInfo.inputSchool : registrationInfo.school},<br/>
+                                    Interests: ${""},<br/>
+                                    Teammates: ${""},`
+                                :
+                                    ''
+                                }
+                            </p>
+                            <p>Quick Links: {}</p>
+                        </CardBody>
+                    </Card>
                 </div>
                 <div className="text-2xl text-center" id="points-div">
                     <span>
