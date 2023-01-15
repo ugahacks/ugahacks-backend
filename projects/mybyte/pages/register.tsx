@@ -25,13 +25,7 @@ import {
 } from "firebase/storage";
 import "react-phone-number-input/style.css";
 import ProtectedRoute from "../components/ProtectedRoute";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Typography,
-} from "@material-tailwind/react";
+import { Card } from "@material-tailwind/react";
 
 export default function Register() {
   const router = useRouter();
@@ -85,7 +79,6 @@ export default function Register() {
   });
 
   function otherMajorInput(value: string) {
-    console.log(value);
     if (value == "other") {
       setOtherMajor(true);
     } else {
@@ -788,7 +781,10 @@ export default function Register() {
                           </p>
                         )}
                       </div>
-                      <div className="flex justify-end">
+                      <div className="flex justify-between">
+                        <button className="appearance-none bg-gray-200 text-gray-900 px-2 py-1 shadow-sm border border-gray-400 rounded-md mr-3">
+                          <Link href="/events/hacks-8">Go Back</Link>
+                        </button>
                         <button
                           className="appearance-none bg-gray-200 text-gray-900 px-2 py-1 shadow-sm border border-gray-400 rounded-md mr-3"
                           type="submit"

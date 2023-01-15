@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/router";
-import ProtectedRoute from "../components/ProtectedRoute";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -59,16 +58,15 @@ const LoginPage = () => {
 
   const onSubmitGoogle = async () => {
     try {
-      console.log("BEFORE LOG IN WITH GOOGLE");
       await logInWithGoogle();
-      router.push("/getName");
+      router.push("/dashboard");
     } catch (error: any) {
       console.log(error.message);
     }
   };
 
   return (
-    <div className="sign-up-form container mx-auto w-96 mt-12 border-2 border-gray-400 overflow-auto bg-white">
+    <div className="sign-up-form container mx-auto w-96 mt-6 border-2 border-gray-400 overflow-auto bg-white">
       <h2 className="px-12 mt-8 text-center text-2xl font-semibold text-[#DC4141]">
         Log In
       </h2>
@@ -91,7 +89,7 @@ const LoginPage = () => {
               </span>
             </div>
           </button>
-          <button
+          {/* <button
             className="group h-12 px-6 border-2 border-gray-300 rounded-full transition duration-300 
  hover:border-blue-400 focus:bg-blue-50 active:bg-blue-100"
           >
@@ -108,7 +106,7 @@ const LoginPage = () => {
                 Continue with Github
               </span>
             </div>
-          </button>
+          </button> */}
         </div>
         <div className="relative flex py-5 items-center px-4">
           <div className="flex-grow border-t border-gray-400"></div>

@@ -6,48 +6,53 @@ import RegisterCard, { ApplicationPaths } from "../components/RegisterCard";
 import { Events } from "../enums/events";
 import { EventStatus } from "../enums/eventStatus";
 
-
 const EventPage = () => {
-    const { userInfo, getFirstName, getRegisteredEvents } = useAuth();
-    const [firstName, setFirstName] = useState('');
-    const [registeredEvents, setRegisteredEvents] = useState({})
+  const { userInfo, getFirstName, getRegisteredEvents } = useAuth();
+  const [firstName, setFirstName] = useState("");
+  const [registeredEvents, setRegisteredEvents] = useState({});
 
-    const application_path: ApplicationPaths = {
-      application_type: "Participant",
-      deadline: "December 31st, 2022",
-      page: "/register",
-      disabled: Events.hacks8 in userInfo.registered,
+  const application_path: ApplicationPaths = {
+    application_type: "Participant",
+    deadline: "December 31st, 2022",
+    page: "/register",
+    disabled: Events.hacks8 in userInfo.registered,
+    image: "/byte_mini.png",
+  };
+
+  useEffect(() => {
+    async function get_first_name() {
+      const first_name = await getFirstName();
+      setFirstName(first_name);
     }
-
-    useEffect(() => {
-      async function get_first_name() {
-        const first_name = await getFirstName();
-        setFirstName(first_name)
-      }
-      async function get_registered_events() {
-        const registered_events = await getRegisteredEvents();
-        setRegisteredEvents(registered_events)
-      }
-      get_first_name();
-      get_registered_events();
-    }, [getFirstName, getRegisteredEvents]);
+    async function get_registered_events() {
+      const registered_events = await getRegisteredEvents();
+      setRegisteredEvents(registered_events);
+    }
+    get_first_name();
+    get_registered_events();
+  }, [getFirstName, getRegisteredEvents]);
 
   return (
     <ProtectedRoute>
       <div className="py-2 container mx-auto">
         <div className="text-gray-600 px-12 py-24 mt-24 mx-auto">
           <h2 className="text-2xl font-semibold">Hey {firstName}, this is </h2>
-          STATUS: {Events.hacks8 in registeredEvents ? EventStatus.Registered : EventStatus.NotRegistered}
-          </div>
-          <h1 className="text-2xl"><b>Application Paths:</b></h1>
-          <div className="flex">
+          STATUS:{" "}
+          {Events.hacks8 in registeredEvents
+            ? EventStatus.Registered
+            : EventStatus.NotRegistered}
+        </div>
+        <h1 className="text-2xl">
+          <b>Application Paths:</b>
+        </h1>
+        <div className="flex">
           <div className="flex-1">
-            <RegisterCard {...application_path}/>
+            <RegisterCard {...application_path} />
           </div>
           <div className="flex-1">
-            <RegisterCard {...application_path}/>
+            <RegisterCard {...application_path} />
           </div>
-          </div>
+        </div>
       </div>
     </ProtectedRoute>
   );
