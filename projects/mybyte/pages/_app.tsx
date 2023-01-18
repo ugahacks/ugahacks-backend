@@ -21,6 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const hacks_8_bg_routes = [
     "/registrationSuccess",
     "/eSportsRegistrationSuccess",
+    "/presenterRegistrationSuccess",
   ];
 
   useEffect(() => {
