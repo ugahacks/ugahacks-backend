@@ -27,8 +27,8 @@ import {
 } from "firebase/storage";
 
 import { RegisterForm } from "../interfaces/registerForm";
-import { useRouter } from "next/router";
 import { ESportsRegisterForm } from "../interfaces/eSportsRegisterForm";
+import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 
 export interface UserType {
   email: string | null;
@@ -73,13 +73,13 @@ export const AuthContextProvider = ({
   const userRefStage = collection(db, "users-stage");
   const eSportsRefStage = collection(db, "user-e-sports-details-stage");
   const registerRefStage = collection(db, "user-registration-details-stage");
+  const workshopRefStage = collection(db, "user-workshop-details-stage");
 
   // Prod Environment
   const userRef = collection(db, "users");
   const eSportsRef = collection(db, "user-e-sports-details");
   const registerRef = collection(db, "user-registration-details");
-
-  const router = useRouter();
+  const workshopRef = collection(db, "user-workshop-details");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (curr_user) => {
@@ -181,6 +181,67 @@ export const AuthContextProvider = ({
     });
 
     // Update userInfo
+    setUserInformation(user.uid);
+  };
+
+  const storeWorkshopRegistrationInformation = async (
+    data: PresenterRegisterForm
+  ) => {
+    if (data.slides.length == 0) {
+      await setDoc(doc(workshopRef, user.uid ? user.uid : ""), {
+        uid: user.uid,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        preferredTimes: data.preferredTimes,
+        workshopName: data.workshopName,
+        workshopDetails: data.workshopDetails,
+        topic: data.topic,
+        isOnline: data.isOnline,
+      });
+    } else {
+      const storage = getStorage();
+      const file = data.slides[0];
+
+      const storageRef = ref(
+        storage,
+        "presentation_slides/" + user.uid + "/" + file.name
+      );
+
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          console.log("upload in progress");
+        },
+        (error) => {
+          console.log("Error uploading resume");
+          alert(error);
+        },
+        async () => {
+          await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setDoc(doc(workshopRef, user.uid ? user.uid : ""), {
+              uid: user.uid,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              preferredTimes: data.preferredTimes,
+              workshopName: data.workshopName,
+              workshopDetails: data.workshopDetails,
+              topic: data.topic,
+              isOnline: data.isOnline,
+              slides: downloadURL,
+            });
+          });
+        }
+      );
+    }
+
+    // Set user status to registered for workshop hosting
+    await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
+      "registered.PRESENT8": true,
+    });
+
+    // Update user info
     setUserInformation(user.uid);
   };
 
@@ -373,6 +434,7 @@ export const AuthContextProvider = ({
         currEvent,
         setCurrEvent,
         storeESportsRegistrationInformation,
+        storeWorkshopRegistrationInformation,
       }}
     >
       {loading ? null : children}
