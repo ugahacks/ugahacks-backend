@@ -302,9 +302,26 @@ export const AuthContextProvider = ({
     return true;
   };
 
-  const resetPassword = async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
-  };
+  const resetPassword = async (email: string, handle?: Function, success?: Function) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      if (success) {
+        success();
+      }
+    } catch(e: unknown){
+      let message: string = "";
+      if (typeof e === "string") {
+          message = e;
+      } else if (e instanceof Error) {
+          message = e.message;
+      } else {
+        return; // Should not happen
+      }
+      if (handle) { // checks to see if it is undefined
+        handle(message);
+      }
+    }
+  }
 
   const logInWithGoogle = async () => {
     try {
