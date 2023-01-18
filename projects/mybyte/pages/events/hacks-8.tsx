@@ -25,6 +25,14 @@ const Hacks8 = () => {
     image: "/Transparent_esports.png",
   };
 
+  const presenter_path: ApplicationPaths = {
+    application_type: "Host a Presentation/Workshop 🧑‍🏫",
+    deadline: "Febrary 1st, 2022",
+    page: "/events/PresenterRegister",
+    disabled: Events.present_8 in userInfo.registered,
+    image: "/byte_mini.png",
+  };
+
   return (
     <div className="bg-cover bg-[url('/UGAHacks8TanBG.png')]">
       <ProtectedRoute>
@@ -58,6 +66,9 @@ const Hacks8 = () => {
               </button>
               <button disabled={Events.hacks8 in userInfo.registered}>
                 <RegisterCard {...e_sports_path} />
+              </button>
+              <button disabled={Events.present_8 in userInfo.registered}>
+                <RegisterCard {...presenter_path} />
               </button>
             </div>
           </div>
