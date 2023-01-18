@@ -21,7 +21,9 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <link rel="icon" href="/UGAHacks_General_Byte.png" />
+        </Head>
         <body className={this.getColor()}>
           <Main />
           <NextScript />
