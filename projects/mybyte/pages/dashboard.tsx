@@ -11,7 +11,7 @@ const Hacks8: EventDetail = {
   date: "02/03/2023 - 02/05/2023",
   description: "Create your own adventure! 🛫",
   page: "/events/hacks-8",
-  in_person: true,
+  in_person: false,
   image: "/byte_mini.png",
   // Add in person attribute
 };

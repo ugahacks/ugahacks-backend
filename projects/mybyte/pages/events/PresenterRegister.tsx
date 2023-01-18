@@ -10,7 +10,7 @@ import Link from "next/link";
 export default function PresenterRegister() {
   const router = useRouter();
   const [textCount, setTextCount] = useState(0);
-  const { storeESportsRegistrationInformation } = useAuth();
+  const { storeWorkshopRegistrationInformation } = useAuth();
   const {
     control,
     register,
@@ -20,11 +20,9 @@ export default function PresenterRegister() {
     defaultValues: {},
   });
   const onSubmit: SubmitHandler<PresenterRegisterForm> = (data) => {
-    // TODO
-    // storeESportsRegistrationInformation(data);
+    storeWorkshopRegistrationInformation(data);
     // router.push("/eSportsRegistrationSuccess");
-    console.log(data);
-    router.push("/events/hacks-8");
+    router.push("/presenterRegistrationSuccess");
   };
 
   function validateFileInput(value: FileList) {
