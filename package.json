@@ -15,5 +15,8 @@
   },
   "scripts": {
     "postinstall": "husky install"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.0"
   }
 }
