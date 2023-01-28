@@ -18,6 +18,13 @@ import {
   getDoc,
   addDoc,
   FirestoreError,
+  Query,
+  DocumentData,
+  QuerySnapshot,
+  query,
+  where,
+  getDocs,
+  FieldPath,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { Events } from "../enums/events";
@@ -33,6 +40,7 @@ import { ESportsRegisterForm } from "../interfaces/eSportsRegisterForm";
 import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { FirebaseError } from "firebase/app";
 import Router from "next/router";
+import { stringify } from "querystring";
 
 export interface UserType {
   email: string | null;
@@ -467,7 +475,7 @@ export const AuthContextProvider = ({
       throw new Error("Team does not exist");
     }
 
-    const team: TeamType = {
+    let team: TeamType = {
       members: docSnap.data().members,
     };
 
@@ -484,31 +492,46 @@ export const AuthContextProvider = ({
     } catch (error: any) {
       if (typeof(error) === "string") throw new Error(error);
       if (error instanceof FirebaseError || error instanceof FirestoreError) {
-        switch(error.code) {
-          case "auth/argument-error": // invalid argument
-          case "unknown": // They don't know, we don't know, nobody knows
-          case "invalid-argument": // the arguments themselves are invalid
-          case "resource-exhausted": // per-user quota exceeded or out of space
-          case "unimplemented": // operation is not supported or implemented
-          case "internal": // Something is very broken
-          case "unavailable": // transient, firestore currently unavailable
-          case "data-loss": // very screwed
-          case "failed-precondition": // firestore not in a state to do this
-            throw new Error(`Should not happen: ${error.code}`);
-          case "auth/requires-recent-login":
-          case "unauthenticated":
-          case "auth/invalid-user-token": // needs to be signed in again
-            Router.push("/login");
-            break;
-          case "auth/network-request-failed":
-            throw new Error("No strong network connection");
-          case "permission-denied":
-          case "auth/operation-not-allowed":
-            throw new Error("Denied");
-        }
+        handleError(error);
       }
     }
     return team;
+  };
+
+  const getPotentialTeams = async () => {
+    let teams: {team: TeamType, tid: string}[] = [];
+    const q: Query<DocumentData> = query(teamRefStage, where("members", "array-contains", user.email));
+    const results: QuerySnapshot<DocumentData> = await getDocs(q);
+    results.forEach((elem) => {
+        teams.push({ team: { members: elem.data().members }, tid: elem.id });
+    });
+    return teams;
+  }
+
+  const linkUserToTeam = async (tid: string) => {
+    try {
+      const q: Query<DocumentData> = query(teamRefStage,
+        where("members", "array-contains", user.email),
+        where("__name__", "!=", tid));
+      const results: QuerySnapshot<DocumentData> = await getDocs(q);
+      results.forEach((elem) => {
+            let team: TeamType = { members: [] };
+            elem.data().members.forEach((elem: string) => {
+              if (elem !== user.email) team.members.push(elem);
+            });
+            updateDoc(elem.ref, {
+              members: team.members
+            }).catch(handleError);
+      });
+      const docRef = doc(userRef, user.uid ? user.uid : "");
+
+      await updateDoc(docRef, {
+        tid: tid,
+      });
+      setUserInformation(user.uid);
+    } catch (err: any) {
+      console.log(err);
+    }
   };
 
   const setUserInformation = async (uid: string | null) => {
@@ -558,9 +581,39 @@ export const AuthContextProvider = ({
         getTeam,
         userCreateTeam,
         addToTeam,
+        linkUserToTeam,
+        getPotentialTeams,
       }}
     >
       {loading ? null : children}
     </AuthContext.Provider>
   );
 };
+
+const handleError = (error: unknown) => {
+  if (typeof (error) === "string") throw new Error(error);
+  if (error instanceof FirebaseError || error instanceof FirestoreError) {
+      switch (error.code) {
+          case "auth/argument-error": // invalid argument
+          case "unknown": // They don't know, we don't know, nobody knows
+          case "invalid-argument": // the arguments themselves are invalid
+          case "resource-exhausted": // per-user quota exceeded or out of space
+          case "unimplemented": // operation is not supported or implemented
+          case "internal": // Something is very broken
+          case "unavailable": // transient, firestore currently unavailable
+          case "data-loss": // very screwed
+          case "failed-precondition": // firestore not in a state to do this
+              throw new Error(`Should not happen: ${error.code}`);
+          case "auth/requires-recent-login":
+          case "unauthenticated":
+          case "auth/invalid-user-token": // needs to be signed in again
+              Router.push("/login");
+              break;
+          case "auth/network-request-failed":
+              throw new Error("No strong network connection");
+          case "permission-denied":
+          case "auth/operation-not-allowed":
+              throw new Error("Denied");
+      }
+  }
+}

@@ -4062,7 +4062,6 @@ __metadata:
     eslint-config-next: ^13.1.1
     firebase: ^9.15.0
     next: 13.1.1
-    nodemailer: ^6.9.0
     postcss: ^8.4.21
     react: ^18.2.0
     react-dom: 18.2.0
@@ -4237,13 +4236,6 @@ __metadata:
   version: 2.0.8
   resolution: "node-releases@npm:2.0.8"
   checksum: b1ab02c0d5d8e081bf9537232777a7a787dc8fef07f70feabe70a344599b220fe16462f746ac30f3eed5a58549445ad69368964d12a1f8b3b764f6caab7ba34a
-  languageName: node
-  linkType: hard
-
-"nodemailer@npm:^6.9.0":
-  version: 6.9.0
-  resolution: "nodemailer@npm:6.9.0"
-  checksum: 152d38de71582436d8c6067dfa6a3ddae738437b6f9be9211bd22cf92b2f92786dbef4a4d2ca0282e76b18f0274a7fb6ec5a7acc22f57bdd05559a6ec379dd5c
   languageName: node
   linkType: hard
 
@@ -5605,7 +5597,6 @@ __metadata:
   resolution: "ugahacks-backend@workspace:."
   dependencies:
     husky: ^8.0.0
-    nodemailer: ^6.9.0
   languageName: unknown
   linkType: soft
 
