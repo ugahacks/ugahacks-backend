@@ -13,21 +13,26 @@ export default function ResetPassword() {
     email: string;
   }
 
-  let [show, setShow] = useState(false);
-  let [text, setText] = useState("");
-
   const router = useRouter();
+  const {bfShow, bfText} = router.query;
+  let [show, setShow] = useState((bfShow != undefined && typeof(bfShow) === "string") ? (bfShow === "true") : false);
+  let [text, setText] = useState((bfText != undefined && typeof(bfText) === "string") ? bfText : "");
+
   const { resetPassword } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<resetPasswordForm>();
+  } = useForm<resetPasswordForm>({mode:"onBlur"});
   const onSubmit: SubmitHandler<resetPasswordForm> = (data) => {
     resetPassword(data.email, (error: FirebaseError) => {
-      if (error.code === "auth/user-not-found") {
-        setShow(true);
-        setText("Sorry, we don't recognize this email. Please sign up.");
+      switch(error.code) {
+      case "auth/user-not-found":
+      case "auth/invalid-email":
+        let changeShow = true, changeText = "Sorry, we don't recognize this email. Please sign up.";
+        setShow(changeShow);
+        setText(changeText);
+        router.push(`/resetPassword?bfShow=${changeShow}&bfText=${changeText}`);
       }
     }, () => {
       router.push("/resetPasswordSuccess"); // TODO: Add whether the password reset was sent successfully (OPTIONAL)
@@ -53,7 +58,7 @@ export default function ResetPassword() {
               required:
                 "Please enter your email address to reset your password",
             })}
-            type="text"
+            type="email"
             className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
           />
           {errors.email && (
