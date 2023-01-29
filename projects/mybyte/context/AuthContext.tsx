@@ -16,8 +16,6 @@ import {
   updateDoc,
   serverTimestamp,
   getDoc,
-  FieldValue,
-  DocumentData,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { Events } from "../enums/events";
@@ -31,7 +29,6 @@ import {
 import { RegisterForm } from "../interfaces/registerForm";
 import { useRouter } from "next/router";
 import { ESportsRegisterForm } from "../interfaces/eSportsRegisterForm";
-import { Genders, Majors, StudentYears } from "../enums/registerEnums";
 
 export interface UserType {
   email: string | null;
@@ -48,21 +45,6 @@ export interface UserInfoType {
   points: number;
   registered: EventRegistered;
   //user_type: Users | null;
-}
-
-export interface RegistrationType {
-  uid: string | null;
-  gender: Genders | null;
-  phoneNumber: string | null;
-  countryResidence: string | null;
-  year: StudentYears | null;
-  major: Majors | null;
-  inputMajor: string | null;
-  minor: string | null;
-  school: string | null;
-  inputSchool: string | null;
-  dietaryRestrictions: string | null;
-  submitted_time: FieldValue | null;
 }
 
 const AuthContext = createContext({});
@@ -83,20 +65,6 @@ export const AuthContextProvider = ({
       HACKS8: null,
     },
     //user_type: null
-  });
-  const [registrationInfo, setRegistrationInfo] = useState<RegistrationType>({
-    uid: null,
-    gender: null,
-    phoneNumber: null,
-    countryResidence: null,
-    year: null,
-    major: null,
-    inputMajor: null,
-    minor: null,
-    school: null,
-    inputSchool: null,
-    dietaryRestrictions: null,
-    submitted_time: null,
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [currEvent, setCurrEvent] = useState<Events>();
@@ -363,45 +331,6 @@ export const AuthContextProvider = ({
     return docSnap.data().registered;
   };
 
-  const getRegisteredInfo = async () => {
-    const docRef = doc(registerRef, user.uid ? user.uid : "0");
-    const docSnap = await getDoc(docRef);
-
-    if (!docSnap.exists()) {
-      return {
-        uid: null,
-        gender: null,
-        phoneNumber: null,
-        countryResidence: null,
-        year: null,
-        major: null,
-        inputMajor: null,
-        minor: null,
-        school: null,
-        inputSchool: null,
-        dietaryRestrictions: null,
-        submitted_time: null,
-      };
-    }
-
-    const data: DocumentData = docSnap.data();
-    const registrationInfo: RegistrationType = {
-      uid: data.uid,
-      gender: data.gender,
-      phoneNumber: data.phoneNumber,
-      countryResidence: data.countryResidence,
-      year: data.year,
-      major: data.major,
-      inputMajor: data.inputMajor,
-      minor: data.minor,
-      school: data.school,
-      inputSchool: data.inputSchool,
-      dietaryRestrictions: data.dietaryRestrictions,
-      submitted_time: data.submitted_time,
-    }
-    return registrationInfo;
-  };
-
   const setUserInformation = async (uid: string | null) => {
     const docRef = doc(userRef, uid ? uid : "");
     const docSnap = await getDoc(docRef);
@@ -417,8 +346,6 @@ export const AuthContextProvider = ({
       registered: docSnap.data().registered,
       //user_type: docSnap.data().user_type,
     });
-
-    setRegistrationInfo(await getRegisteredInfo());
   };
 
   const logOut = async () => {
@@ -441,7 +368,6 @@ export const AuthContextProvider = ({
         validUser,
         getFirstName,
         getRegisteredEvents,
-        getRegisteredInfo,
         storeUserRegistrationInformation,
         setUserInformation,
         currEvent,
