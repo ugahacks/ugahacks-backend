@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { FormProvider, useForm } from "react-hook-form";
 import { TeamConfrimResponse } from '../types/teamConfirmResponse';
 import TeamCard from '../components/TeamCard';
+import { Typography } from '@material-tailwind/react';
 
 interface MemberType {
     member1: string,
@@ -48,33 +49,34 @@ export default function Team() {
 
     const noTeam = (
         <>
-            <div className="sign-up-form container mx-auto w-96 mt-12 border-2 border-gray-400 overflow-auto bg-white rounded-md">
-                <h2 className="px-12 mt-8 text-center text-xl">
+            <div className="sign-up-form container mx-auto w-96 mt-12 border-2 border-gray-400 overflow-auto bg-white bg-opacity-75 rounded-md">
+                <Typography variant="h2" className="px-12 mt-8 text-center text-xl">
                     Sorry, you are not in a team yet.
-                </h2>
+                </Typography>
 
                 <div className="mt-8 mb-8">
                     <div className="flex justify-center text-xl">
-                        <p className="text-cyan-500">
+                        <p className="text-cyan-500 transition-colors hover:text-cyan-400">
                             <button onClick={(e) => {
                                 e.preventDefault();
-                                userCreateTeam().then((message: Error | TeamType) => {
-                                    if (message instanceof FirebaseError) {
-                                        // need to do something here
-                                    } else if (message instanceof Error) {
-                                        // need to do something here
+                                userCreateTeam().then((message: TeamType) => {
+                                    setTeam(message);
+                                }).catch((error: Error) => {
+                                    if (error instanceof FirebaseError) {
+                                        console.log(error);
                                     } else {
-                                        setTeam(message);
+                                        console.log(error);
                                     }
                                 });
-                            }}>Create Team</button>
+                            }}> <Typography variant="h5">Create Team</Typography></button>
                         </p>
                     </div>
                 </div>
             </div>
+            <div className="flex-grow border-t w-[400px] mx-auto border-gray-400 my-6"></div>
             <div>
-                <h2>Invites:</h2>
-                <div className="flex">
+                <Typography variant="h2" className="display-block text-center text-xl my-6">Invites</Typography>
+                <div className="flex flex-wrap justify-around mx-5">
                     {teamsJSX}
                 </div>
             </div>
@@ -98,7 +100,9 @@ export default function Team() {
                 uniqueMembers.push(member);
             }
         });
-        addToTeam(uniqueMembers);
+        addToTeam(uniqueMembers).then((newTeam: TeamType) => {
+            setTeam(newTeam);
+        });
     }
 
     async function validateEmail(value: string) {
@@ -121,7 +125,7 @@ export default function Team() {
         if (response.status !== 200) return false || "Cannot connect to network";
         const values: TeamConfrimResponse = await response.json();
         if (values.member.length === 0 || 
-            values.member[0].confirmed === false) return false || "Not a user";
+            values.member[0].confirmed === false) return false || "Not a user or in another team";
         return true;
     }
 

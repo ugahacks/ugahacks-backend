@@ -25,6 +25,7 @@ import {
   where,
   getDocs,
   FieldPath,
+  WhereFilterOp,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { Events } from "../enums/events";
@@ -128,14 +129,15 @@ export const AuthContextProvider = ({
     return false;
   };
 
-  const userCreateTeam: () => Promise<Error | TeamType> = async () => {
-    if (userInfo.tid !== null && userInfo.tid !== undefined) return new Error("Already created");
+  const userCreateTeam: () => Promise<TeamType> = async () => {
+    if (userInfo.tid !== null && userInfo.tid !== undefined) throw new Error("Already created");
     const uid = (user.uid !== null) ? user.uid : "0";
     const email = (user.email !== null) ? user.email : "";
     const team: TeamType = {
       members: [email],
     };
     try {
+      await denyTeams("", "!=");
       const docTeamRef = await addDoc(teamRefStage, team);
       const docUserRef = doc(userRef, uid);
 
@@ -148,11 +150,11 @@ export const AuthContextProvider = ({
       if (typeof(error) === "string") {
         message = error;
       } else if (error instanceof FirebaseError) {
-        return error;
+        handleError(error);
       } else if (error instanceof Error) {
-        return error;
+        throw error;
       }
-      return new Error(message);
+      throw new Error(message);
     }
   };
 
@@ -510,19 +512,7 @@ export const AuthContextProvider = ({
 
   const linkUserToTeam = async (tid: string) => {
     try {
-      const q: Query<DocumentData> = query(teamRefStage,
-        where("members", "array-contains", user.email),
-        where("__name__", "!=", tid));
-      const results: QuerySnapshot<DocumentData> = await getDocs(q);
-      results.forEach((elem) => {
-            let team: TeamType = { members: [] };
-            elem.data().members.forEach((elem: string) => {
-              if (elem !== user.email) team.members.push(elem);
-            });
-            updateDoc(elem.ref, {
-              members: team.members
-            }).catch(handleError);
-      });
+      await denyTeams(tid, "!=");
       const docRef = doc(userRef, user.uid ? user.uid : "");
 
       await updateDoc(docRef, {
@@ -533,6 +523,31 @@ export const AuthContextProvider = ({
       console.log(err);
     }
   };
+
+  const denyTeams = async (tid: string, operator: WhereFilterOp = "!=") => {
+    if (user == undefined || user.uid == undefined) return;
+    try {
+      const q: Query<DocumentData> =  (tid === "") ? 
+        query(teamRefStage,
+          where("members", "array-contains", user.email))
+        :
+        query(teamRefStage,
+          where("members", "array-contains", user.email),
+          where("__name__", operator, tid));
+      const results: QuerySnapshot<DocumentData> = await getDocs(q);
+      results.forEach((elem) => {
+            let team: TeamType = { members: [] };
+            elem.data().members.forEach((elem: string) => {
+              if (elem !== user.email) team.members.push(elem);
+            });
+            updateDoc(elem.ref, {
+              members: team.members
+            }).catch(handleError);
+      });
+    } catch(err) {
+      console.log(err);
+    }
+  }
 
   const setUserInformation = async (uid: string | null) => {
     const docRef = doc(userRef, uid ? uid : "");
@@ -583,6 +598,7 @@ export const AuthContextProvider = ({
         addToTeam,
         linkUserToTeam,
         getPotentialTeams,
+        denyTeams,
       }}
     >
       {loading ? null : children}
