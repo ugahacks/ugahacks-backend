@@ -47,7 +47,7 @@ export default function Event(props: EventDetail) {
           <Typography>{props.date}</Typography>
           <Typography>{props.description}</Typography>
           <Typography className="text-[#DC4141]">
-            {props.in_person ? "In-Person" : "Hybrid"}
+            {props.in_person ? "In-Person" : "Hybrid (In-Person & Virtual)"}
           </Typography>
         </CardBody>
       </Card>
