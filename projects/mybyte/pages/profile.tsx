@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 import { Card, CardBody } from "@material-tailwind/react";
+import Image from "next/image";
 var QRCode = require("qrcode");
 
 const ProfilePage = () => {
     const {user, userInfo, /*getTeam*/} = useAuth();
     let [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+    const opts = {
+        errorCorrectionLevel: "H",
+        width: 200,
+    }
     if (canvas === null) {
         QRCode.toCanvas(user.uid, function (error: unknown, canvas: any) {
             if (error) console.error(error)
@@ -41,7 +46,7 @@ const ProfilePage = () => {
                     </span>
                 </div>
                 <div className="flex justify-center my-3 h-3/5" id="qr-code-div">
-                    {(canvas == null) ? '' : <img src={canvas.toDataURL()}></img>}
+                    {(canvas == null) ? '' : <Image src={canvas.toDataURL()} width={opts.width} height={opts.width} alt={`QRCode for ${userInfo.first_name} ${userInfo.last_name}`}/>}
                 </div>
             </div>
         </ProtectedRoute>
