@@ -31,7 +31,6 @@ const ProfilePage = () => {
                             <h3>Info:</h3>
                             <p>
                                 Email: {user.email},<br/>
-                                Teammates: {""},
                             </p>
                             <p>Quick Links: {}</p>
                         </CardBody>
