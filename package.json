@@ -15,5 +15,8 @@
   },
   "scripts": {
     "postinstall": "husky install"
+  },
+  "dependencies": {
+    "qrcode.react": "^3.1.0"
   }
 }
