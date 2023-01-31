@@ -20,7 +20,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { TeamConfrimResponse } from "../../types/teamConfirmResponse";
 
 /**The collection for `users-stage` */
-const userRefStage = collection(db, "users-stage");
+const userRef = collection(db, "users");
 /**The collection for `team-stage` */
 const teamRef = collection(db, "team-stage");
 
@@ -70,7 +70,7 @@ const confirmEmails: (emails: string[], strict?: boolean) => Promise<boolean[]>
                     = async (emails: string[], strict: boolean = true) => {
     let returned: boolean[] = [];
     for (let times: number = 0; times < emails.length; times++) returned.push(false);
-    const q: Query<DocumentData> = query(userRefStage, where("email", "in", emails));
+    const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
     const results: QuerySnapshot<DocumentData> = await getDocs(q);
     results.forEach((elem) => {
         emails.forEach((email, index) => {
@@ -90,7 +90,7 @@ const confirmedOnTeam: (emails: string[], tid: string) => Promise<boolean[]>
                     = async (emails: string[], tid: string) => {
     let returned: boolean[] = [];
     for (let times: number = 0; times < emails.length; times++) returned.push(false);
-    const q: Query<DocumentData> = query(userRefStage, where("email", "in", emails));
+    const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
     const results: QuerySnapshot<DocumentData> = await getDocs(q);
     if (results.empty) return returned;
     results.forEach((elem) => {
