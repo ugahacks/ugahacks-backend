@@ -6,7 +6,7 @@ import { Avatar, Card, CardBody, CardHeader } from "@material-tailwind/react";
 
 const ProfilePage = () => {
   const { user, userInfo } = useAuth();
-console.log(user.uid);
+
   return (
     <ProtectedRoute>
       <Card className="h-full">
