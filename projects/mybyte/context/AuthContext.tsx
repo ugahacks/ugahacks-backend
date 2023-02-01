@@ -26,6 +26,7 @@ import {
   getDocs,
   FieldPath,
   WhereFilterOp,
+  increment,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { Events } from "../enums/events";
@@ -85,6 +86,7 @@ export const AuthContextProvider = ({
     },
     //user_type: null
   });
+  const [user_type, setType] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [currEvent, setCurrEvent] = useState<Events>();
 
@@ -112,6 +114,7 @@ export const AuthContextProvider = ({
         setUserInformation(curr_user.uid);
       } else {
         setUser({ email: null, uid: null });
+        setType(null);
       }
     });
     setLoading(false);
@@ -549,6 +552,22 @@ export const AuthContextProvider = ({
     }
   }
 
+  const givePoints = async (uid: string, number: 1 | 2 | 3) => {
+    if (user_type == null || user_type == undefined || user_type != "service_writer") throw new Error("Unauthorized");
+    const docRef = doc(userRef, uid);
+    try {
+      updateDoc(docRef, {
+        points: increment(number),
+      });
+      return true;
+    } catch(error) {
+      if (error instanceof FirebaseError) handleError(error);
+      if (error instanceof Error) throw error;
+      if (typeof error === "string") throw new Error(error);
+    };
+    return false;
+  }
+
   const setUserInformation = async (uid: string | null) => {
     const docRef = doc(userRef, uid ? uid : "");
     const docSnap = await getDoc(docRef);
@@ -565,6 +584,7 @@ export const AuthContextProvider = ({
       registered: docSnap.data().registered,
       //user_type: docSnap.data().user_type,
     });
+    setType(docSnap.data().user_type);
   };
 
   const logOut = async () => {
@@ -599,6 +619,8 @@ export const AuthContextProvider = ({
         linkUserToTeam,
         getPotentialTeams,
         denyTeams,
+        user_type,
+        givePoints,
       }}
     >
       {loading ? null : children}

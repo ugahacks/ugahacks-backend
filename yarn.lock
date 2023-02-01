@@ -3277,6 +3277,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html5-qrcode@npm:^2.3.4":
+  version: 2.3.4
+  resolution: "html5-qrcode@npm:2.3.4"
+  checksum: 38d7b4179896e8f981abdd0fc47b43d35ebeebe6d0d196f718d5b79c7c17a8cab2b1d8454aa42bf5676945bcf35b9c82845e25942fbf42e9a7c153908da9a153
+  languageName: node
+  linkType: hard
+
 "http-cache-semantics@npm:^4.1.0":
   version: 4.1.0
   resolution: "http-cache-semantics@npm:4.1.0"
@@ -4061,6 +4068,7 @@ __metadata:
     eslint: ^8.31.0
     eslint-config-next: ^13.1.1
     firebase: ^9.15.0
+    html5-qrcode: ^2.3.4
     next: 13.1.1
     postcss: ^8.4.21
     react: ^18.2.0
