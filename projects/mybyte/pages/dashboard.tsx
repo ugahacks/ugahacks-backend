@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 import Event, { EventDetail } from "../components/Event";
-import { EventStatus } from "../enums/eventStatus";
 import { Events } from "../enums/events";
 
 const Hacks8: EventDetail = {
