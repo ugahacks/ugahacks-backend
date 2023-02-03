@@ -568,6 +568,22 @@ export const AuthContextProvider = ({
     return false;
   }
 
+  const checkIn = async (uid: string) => {
+    if (user_type == null || user_type == undefined || user_type != "service_writer") throw new Error("Unauthorized");
+    const docRef = doc(userRef, uid);
+    try {
+      updateDoc(docRef, {
+        checkIn: true,
+      });
+      return true;
+    } catch(error) {
+      if (error instanceof FirebaseError) handleError(error);
+      if (error instanceof Error) throw error;
+      if (typeof error === "string") throw new Error(error);
+    };
+    return false;
+  }
+
   const setUserInformation = async (uid: string | null) => {
     const docRef = doc(userRef, uid ? uid : "");
     const docSnap = await getDoc(docRef);
@@ -621,6 +637,7 @@ export const AuthContextProvider = ({
         denyTeams,
         user_type,
         givePoints,
+        checkIn,
       }}
     >
       {loading ? null : children}
