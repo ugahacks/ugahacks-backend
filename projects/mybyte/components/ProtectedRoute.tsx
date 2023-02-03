@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({ children, className = "h-screen min-h-full overflow-auto"  }: { children: React.ReactNode, className?: string }) => {
   const router = useRouter();
   const { user, userInfo } = useAuth();
 
@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
   }, [router, user]);
   return (
-    <div className="h-screen min-h-full overflow-auto">
+    <div className={className}>
       {user ? children : null}
     </div>
   );

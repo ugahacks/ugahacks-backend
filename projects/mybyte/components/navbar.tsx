@@ -82,6 +82,16 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     ) : null}
                   </li>
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
+                    {userInfo.first_name != null &&
+                    userInfo.first_name != "" ? (
+                      <Link href="/team">
+                        <span className="hover:text-blue-900 transition text-white">
+                          Team
+                        </span>
+                      </Link>
+                    ) : null}
+                  </li>
+                  <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
                     <a
                       onClick={handleLogout}
                       className="text-white hover:text-blue-900 transition cursor-pointer"
