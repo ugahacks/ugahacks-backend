@@ -114,6 +114,7 @@ dist
 .tern-port
 
 # Local Firebase things
+*firebase*
 *.rules
 firestore*
 
