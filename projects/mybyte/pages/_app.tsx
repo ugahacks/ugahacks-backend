@@ -22,6 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     "/registrationSuccess",
     "/eSportsRegistrationSuccess",
     "/presenterRegistrationSuccess",
+    "/team",
   ];
 
   useEffect(() => {
