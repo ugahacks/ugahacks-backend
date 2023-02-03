@@ -43,7 +43,6 @@ import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { FirebaseError } from "firebase/app";
 import Router from "next/router";
 
-// Auth Context
 export interface UserType {
   email: string | null;
   uid: string | null;
@@ -133,10 +132,9 @@ export const AuthContextProvider = ({
   };
 
   const userCreateTeam: () => Promise<TeamType> = async () => {
-    if (userInfo.tid !== null && userInfo.tid !== undefined)
-      throw new Error("Already created");
-    const uid = user.uid !== null ? user.uid : "0";
-    const email = user.email !== null ? user.email : "";
+    if (userInfo.tid !== null && userInfo.tid !== undefined) throw new Error("Already created");
+    const uid = (user.uid !== null) ? user.uid : "0";
+    const email = (user.email !== null) ? user.email : "";
     const team: TeamType = {
       members: [email],
     };
@@ -151,7 +149,7 @@ export const AuthContextProvider = ({
       return team; // good
     } catch (error: any) {
       let message: string = "Unknown";
-      if (typeof error === "string") {
+      if (typeof(error) === "string") {
         message = error;
       } else if (error instanceof FirebaseError) {
         handleError(error);
@@ -472,11 +470,8 @@ export const AuthContextProvider = ({
    * @throws "No strong network connection": Network timeout.
    * @throws "Denied": lacking permissions to do this with current user.
    */
-  const addToTeam: (newMembers: string[]) => Promise<TeamType> = async (
-    newMembers: string[]
-  ) => {
-    if (userInfo.tid === null || userInfo.tid === undefined)
-      throw new Error("No Team");
+  const addToTeam: (newMembers: string[]) => Promise<TeamType> = async (newMembers: string[]) => {
+    if (userInfo.tid === null || userInfo.tid === undefined) throw new Error("No Team");
     const docRef = doc(teamRefStage, userInfo.tid ? userInfo.tid : "0");
     const docSnap = await getDoc(docRef);
 
@@ -490,7 +485,7 @@ export const AuthContextProvider = ({
 
     newMembers.forEach((elem: string) => {
       if (!team.members.includes(elem)) team.members.push(elem);
-    });
+    })
 
     if (team.members.length > 4) {
       throw new Error("Team limit would be exceeded");
@@ -499,7 +494,7 @@ export const AuthContextProvider = ({
     try {
       await setDoc(docRef, team);
     } catch (error: any) {
-      if (typeof error === "string") throw new Error(error);
+      if (typeof(error) === "string") throw new Error(error);
       if (error instanceof FirebaseError || error instanceof FirestoreError) {
         handleError(error);
       }
@@ -508,17 +503,14 @@ export const AuthContextProvider = ({
   };
 
   const getPotentialTeams = async () => {
-    let teams: { team: TeamType; tid: string }[] = [];
-    const q: Query<DocumentData> = query(
-      teamRefStage,
-      where("members", "array-contains", user.email)
-    );
+    let teams: {team: TeamType, tid: string}[] = [];
+    const q: Query<DocumentData> = query(teamRefStage, where("members", "array-contains", user.email));
     const results: QuerySnapshot<DocumentData> = await getDocs(q);
     results.forEach((elem) => {
-      teams.push({ team: { members: elem.data().members }, tid: elem.id });
+        teams.push({ team: { members: elem.data().members }, tid: elem.id });
     });
     return teams;
-  };
+  }
 
   const linkUserToTeam = async (tid: string) => {
     try {
@@ -537,70 +529,59 @@ export const AuthContextProvider = ({
   const denyTeams = async (tid: string, operator: WhereFilterOp = "!=") => {
     if (user == undefined || user.uid == undefined) return;
     try {
-      const q: Query<DocumentData> =
-        tid === ""
-          ? query(teamRefStage, where("members", "array-contains", user.email))
-          : query(
-              teamRefStage,
-              where("members", "array-contains", user.email),
-              where("__name__", operator, tid)
-            );
+      const q: Query<DocumentData> =  (tid === "") ? 
+        query(teamRefStage,
+          where("members", "array-contains", user.email))
+        :
+        query(teamRefStage,
+          where("members", "array-contains", user.email),
+          where("__name__", operator, tid));
       const results: QuerySnapshot<DocumentData> = await getDocs(q);
       results.forEach((elem) => {
-        let team: TeamType = { members: [] };
-        elem.data().members.forEach((elem: string) => {
-          if (elem !== user.email) team.members.push(elem);
-        });
-        updateDoc(elem.ref, {
-          members: team.members,
-        }).catch(handleError);
+            let team: TeamType = { members: [] };
+            elem.data().members.forEach((elem: string) => {
+              if (elem !== user.email) team.members.push(elem);
+            });
+            updateDoc(elem.ref, {
+              members: team.members
+            }).catch(handleError);
       });
-    } catch (err) {
+    } catch(err) {
       console.log(err);
     }
-  };
+  }
 
   const givePoints = async (uid: string, number: 1 | 2 | 3) => {
-    if (
-      user_type == null ||
-      user_type == undefined ||
-      user_type != "service_writer"
-    )
-      throw new Error("Unauthorized");
+    if (user_type == null || user_type == undefined || user_type != "service_writer") throw new Error("Unauthorized");
     const docRef = doc(userRef, uid);
     try {
       updateDoc(docRef, {
         points: increment(number),
       });
       return true;
-    } catch (error) {
+    } catch(error) {
       if (error instanceof FirebaseError) handleError(error);
       if (error instanceof Error) throw error;
       if (typeof error === "string") throw new Error(error);
-    }
+    };
     return false;
-  };
+  }
 
   const checkIn = async (uid: string) => {
-    if (
-      user_type == null ||
-      user_type == undefined ||
-      user_type != "service_writer"
-    )
-      throw new Error("Unauthorized");
+    if (user_type == null || user_type == undefined || user_type != "service_writer") throw new Error("Unauthorized");
     const docRef = doc(userRef, uid);
     try {
       updateDoc(docRef, {
         checkIn: true,
       });
       return true;
-    } catch (error) {
+    } catch(error) {
       if (error instanceof FirebaseError) handleError(error);
       if (error instanceof Error) throw error;
       if (typeof error === "string") throw new Error(error);
-    }
+    };
     return false;
-  };
+  }
 
   const setUserInformation = async (uid: string | null) => {
     const docRef = doc(userRef, uid ? uid : "");
@@ -664,29 +645,29 @@ export const AuthContextProvider = ({
 };
 
 const handleError = (error: unknown) => {
-  if (typeof error === "string") throw new Error(error);
+  if (typeof (error) === "string") throw new Error(error);
   if (error instanceof FirebaseError || error instanceof FirestoreError) {
-    switch (error.code) {
-      case "auth/argument-error": // invalid argument
-      case "unknown": // They don't know, we don't know, nobody knows
-      case "invalid-argument": // the arguments themselves are invalid
-      case "resource-exhausted": // per-user quota exceeded or out of space
-      case "unimplemented": // operation is not supported or implemented
-      case "internal": // Something is very broken
-      case "unavailable": // transient, firestore currently unavailable
-      case "data-loss": // very screwed
-      case "failed-precondition": // firestore not in a state to do this
-        throw new Error(`Should not happen: ${error.code}`);
-      case "auth/requires-recent-login":
-      case "unauthenticated":
-      case "auth/invalid-user-token": // needs to be signed in again
-        Router.push("/login");
-        break;
-      case "auth/network-request-failed":
-        throw new Error("No strong network connection");
-      case "permission-denied":
-      case "auth/operation-not-allowed":
-        throw new Error("Denied");
-    }
+      switch (error.code) {
+          case "auth/argument-error": // invalid argument
+          case "unknown": // They don't know, we don't know, nobody knows
+          case "invalid-argument": // the arguments themselves are invalid
+          case "resource-exhausted": // per-user quota exceeded or out of space
+          case "unimplemented": // operation is not supported or implemented
+          case "internal": // Something is very broken
+          case "unavailable": // transient, firestore currently unavailable
+          case "data-loss": // very screwed
+          case "failed-precondition": // firestore not in a state to do this
+              throw new Error(`Should not happen: ${error.code}`);
+          case "auth/requires-recent-login":
+          case "unauthenticated":
+          case "auth/invalid-user-token": // needs to be signed in again
+              Router.push("/login");
+              break;
+          case "auth/network-request-failed":
+              throw new Error("No strong network connection");
+          case "permission-denied":
+          case "auth/operation-not-allowed":
+              throw new Error("Denied");
+      }
   }
-};
+}
