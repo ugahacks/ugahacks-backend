@@ -93,7 +93,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                   </li>
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
                     {userInfo.first_name != null && userInfo.first_name != "" &&
-                    user_type !== null && user_type !== undefined &&
+                    user_type !== null && user_type != undefined &&
                     user_type == "service_writer" ? (
                       <Link href="/qrRead">
                         <span className="hover:text-blue-900 transition text-white">
