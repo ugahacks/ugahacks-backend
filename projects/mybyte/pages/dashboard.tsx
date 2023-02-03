@@ -19,19 +19,6 @@ const events = [{ event: <Event {...Hacks8} /> }];
 
 const DashboardPage = () => {
   const { userInfo, setUserInformation } = useAuth();
-  //const [firstName, setFirstName] = useState('');
-
-  // useEffect(() => {
-  //   async function get_user_information() {
-  //     await setUserInformation();
-  //     //setFirstName(userInfo.first_name)
-  //   }
-
-  //   get_user_information();
-  // }, []);
-  // useEffect(() => {
-  //   document.querySelector("body")?.classList.remove("bg-[#e3e3e3]");
-  // });
 
   return (
     <ProtectedRoute>
