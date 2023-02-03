@@ -6,10 +6,20 @@ import { useAuth } from '../context/AuthContext';
 export default function QrRead(props: any) {
   const {givePoints, checkIn} = useAuth();
   const [data, setData] = useState('No result');
-  const [action, setAction] = useState<string>("checkIn");
+
+  const selectWhich: JSX.Element = (
+    <select id="what-for">
+      <option value="check-in">Check in</option>
+      <option value="give-1">Give 1 point</option>
+      <option value="give-2">Give 2 points</option>
+      <option value="give-3">Give 3 points</option>
+    </select>
+  );
 
   const determineAction = (uid: string) => {
-    switch(action) {
+    // action state kept resetting to its default state for some reason
+    const val = document.getElementsByTagName("select").namedItem("what-for")?.value;
+    switch(val) {
         case "give-1":
             givePoints(uid, 1);
             break;
@@ -44,18 +54,9 @@ export default function QrRead(props: any) {
             }
         }}
       />
-      <span>{data}</span>
+      <span>{data} </span>
       <span>| Which:</span>
-      <select id="what-for" onChange={
-        (event) => {
-            setAction(event.target.value);
-        }
-      }>
-        <option value="check-in">Check in</option>
-        <option value="give-1">Give 1 point</option>
-        <option value="give-2">Give 2 points</option>
-        <option value="give-3">Give 3 points</option>
-      </select>
+      {selectWhich}
     </OrganizerRoute>
   );
 };
