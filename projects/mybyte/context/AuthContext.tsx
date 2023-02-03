@@ -42,7 +42,6 @@ import { ESportsRegisterForm } from "../interfaces/eSportsRegisterForm";
 import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { FirebaseError } from "firebase/app";
 import Router from "next/router";
-import { stringify } from "querystring";
 
 // Auth Context
 export interface UserType {
