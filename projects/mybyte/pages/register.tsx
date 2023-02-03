@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
 import countryList from "react-select-country-list";
