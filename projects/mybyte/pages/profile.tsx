@@ -1,55 +1,41 @@
-import React, { useState } from "react";
+import React from "react";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
-import { Card, CardBody } from "@material-tailwind/react";
-import Image from "next/image";
-var QRCode = require("qrcode");
+import { QRCodeCanvas } from "qrcode.react";
+import { Avatar, Card, CardBody, CardHeader } from "@material-tailwind/react";
 
 const ProfilePage = () => {
-    const {user, userInfo, /*getTeam*/} = useAuth();
-    let [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
-    const opts = {
-        errorCorrectionLevel: "H",
-        width: 200,
-    }
-    if (canvas === null) {
-        QRCode.toCanvas(user.uid, function (error: unknown, canvas: any) {
-            if (error) console.error(error)
-            else console.log('success!');
-            setCanvas(canvas);
-        });
-    }
+  const { user, userInfo } = useAuth();
 
-    return (
-        <ProtectedRoute className="h-[82vh] min-h-full overflow-auto">
-            <div className="text-gray-600 px-12 pt-12 mx-auto h-4/5" id="parent-div">
-                <div className="mb-5 text-center" id="intro-div">
-                    <h2 className="text-5xl font-semibold my-2">Hey {`${userInfo.first_name} ${userInfo.last_name}`},</h2>
-                    <span className="text-xl italic my-2">Ready to Hack?</span>
-                    <Card>
-                        <CardBody>
-                            <h3>Info:</h3>
-                            <p>
-                                Email: {user.email},<br/>
-                            </p>
-                            <p>Quick Links: {}</p>
-                        </CardBody>
-                    </Card>
-                </div>
-                <div className="text-2xl text-center" id="points-div">
-                    <span>
-                        Points: 
-                        <span className="text-[#DC4141]">
-                            &nbsp;{userInfo.points}&nbsp;
-                        </span>
-                    </span>
-                </div>
-                <div className="flex justify-center my-3 h-3/5" id="qr-code-div">
-                    {(canvas == null) ? '' : <Image src={canvas.toDataURL()} width={opts.width} height={opts.width} alt={`QRCode for ${userInfo.first_name} ${userInfo.last_name}`}/>}
-                </div>
+  return (
+    <ProtectedRoute>
+      <Card className="h-full">
+        <CardHeader className="bg-[url('/UGAHacks8TanBG.png')] bg-fixed mt-2">
+          <div className="flex justify-center items-center">
+            <Avatar className="h-24 w-24 mt-20 mb-2 rounded-full ring-2 ring-white bg-white" src="/byte_mini.png" alt="MyByte"/>
+          </div>
+          <h2 className="text-5xl font-semibold text-center text-teal-900 mt-2 mb-2">
+            {userInfo.first_name} {userInfo.last_name}
+          </h2>
+        </CardHeader>
+        <CardBody>
+          <h2 className="text-2xl text-gray-600 font-semibold pt-10 text-center">
+              Points: {userInfo.points}
+            </h2>
+            <div className="flex justify-center items-center">
+              <button className="pt-10">
+              <QRCodeCanvas
+                id="qrCode"
+                size={300}
+                value={user.uid}
+                level={"H"}
+                />
+              </button>
             </div>
-        </ProtectedRoute>
-    );
-}
+        </CardBody>
+      </Card>
+    </ProtectedRoute>
+  );
+};
 
 export default ProfilePage;
