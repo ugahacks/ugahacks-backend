@@ -11,8 +11,8 @@
   "dependencies": {
     "@material-tailwind/react": "^1.2.5",
     "@next/font": "13.1.1",
-    "html5-qrcode": "^2.3.4",
     "firebase": "9.15.0",
+    "html5-qrcode": "^2.3.4",
     "next": "13.1.1",
     "qrcode": "^1.5.1",
     "react": "^18.2.0",
