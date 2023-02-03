@@ -2877,7 +2877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase@npm:^9.15.0":
+"firebase@npm:9.15.0":
   version: 9.15.0
   resolution: "firebase@npm:9.15.0"
   dependencies:
@@ -4125,8 +4125,8 @@ __metadata:
     autoprefixer: ^10.4.13
     eslint: ^8.31.0
     eslint-config-next: ^13.1.1
-    firebase: ^9.15.0
     html5-qrcode: ^2.3.4
+    firebase: 9.15.0
     next: 13.1.1
     postcss: ^8.4.21
     qrcode: ^1.5.1
@@ -4782,8 +4782,8 @@ __metadata:
   linkType: hard
 
 "protobufjs@npm:^7.0.0":
-  version: 7.1.2
-  resolution: "protobufjs@npm:7.1.2"
+  version: 7.2.1
+  resolution: "protobufjs@npm:7.2.1"
   dependencies:
     "@protobufjs/aspromise": ^1.1.2
     "@protobufjs/base64": ^1.1.2
@@ -4797,7 +4797,7 @@ __metadata:
     "@protobufjs/utf8": ^1.1.0
     "@types/node": ">=13.7.0"
     long: ^5.0.0
-  checksum: ae41669b1b0372fb1d49f506f2d1f2b0fb3dc3cece85987b17bcb544e4cef7c8d27f480486cdec324146ad0a5d22a327166a7ea864a9b3e49cc3c92a5d3f6500
+  checksum: 4dc0b11143b609548c539b90c3834eb94c42abe8fbc6809dc0ceb6ba117fb23c0c27add2ba6ec1444908d5c0b5b4d28aa571bb1b30b2fe68e321bd6deab4d6a2
   languageName: node
   linkType: hard
 
