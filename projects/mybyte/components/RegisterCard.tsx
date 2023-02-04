@@ -2,14 +2,10 @@ import {
   Card,
   CardHeader,
   CardBody,
-  CardFooter,
   Typography,
 } from "@material-tailwind/react";
 import { EventStatus } from "../enums/eventStatus";
 import { useRouter } from "next/router";
-import vercelPic from "../public/vercel.svg";
-import hacks8Byte from "../public/byte_mini.png";
-import hacks8Banner from "../public/byte_banner.png";
 import Image from "next/image";
 
 export interface EventDetail {

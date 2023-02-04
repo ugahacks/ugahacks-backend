@@ -15,6 +15,8 @@ export default function QrRead(props: any) {
       <option value="company-event">Company Event (1000)</option>
       <option value="workshop">Workshop (500)</option>
       <option value="escape-room">Escape Room Winner (1000)</option>
+      <option value="lunch">Check Lunch</option>
+      <option value="dinner">Check Dinner</option>
     </select>
   );
 
@@ -42,6 +44,12 @@ export default function QrRead(props: any) {
         break;
       case "escape-room":
         givePoints(uid, 1000).then(callback);
+        break;
+      case "lunch":
+        givePoints(uid, 1).then(callback);
+        break;
+      case "dinner":
+        givePoints(uid, 1).then(callback);
       default:
         givePoints(uid, 0).then(callback);
     }

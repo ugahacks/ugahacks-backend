@@ -24,7 +24,6 @@ import {
   query,
   where,
   getDocs,
-  FieldPath,
   WhereFilterOp,
   increment,
 } from "firebase/firestore";
@@ -42,7 +41,6 @@ import { ESportsRegisterForm } from "../interfaces/eSportsRegisterForm";
 import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { FirebaseError } from "firebase/app";
 import Router from "next/router";
-import { stringify } from "querystring";
 
 export interface UserType {
   email: string | null;
