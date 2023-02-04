@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Card } from "@material-tailwind/react";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useAuth } from "../../context/AuthContext";
@@ -11,7 +11,7 @@ const Hacks8 = () => {
 
   const application_path: ApplicationPaths = {
     application_type: "Participant 🐶💻",
-    deadline: "February 1st, 2023",
+    deadline: "February 4th, 2023",
     page: "/register",
     disabled: Events.hacks8 in userInfo.registered,
     image: "/byte_mini.png",
@@ -19,7 +19,7 @@ const Hacks8 = () => {
 
   const e_sports_path: ApplicationPaths = {
     application_type: "E-Sports 🎮",
-    deadline: "February 1st, 2022",
+    deadline: "February 4th, 2022",
     page: "/events/ESportsRegister",
     disabled: Events.e_sports_8 in userInfo.registered,
     image: "/Transparent_esports.png",
@@ -29,7 +29,7 @@ const Hacks8 = () => {
     application_type: "Host a Presentation/Workshop 🧑‍🏫",
     deadline: "Febrary 1st, 2022",
     page: "/events/PresenterRegister",
-    disabled: Events.present_8 in userInfo.registered,
+    disabled: true,
     image: "/byte_plane.png",
   };
 
@@ -67,7 +67,7 @@ const Hacks8 = () => {
               <button disabled={Events.hacks8 in userInfo.registered}>
                 <RegisterCard {...e_sports_path} />
               </button>
-              <button disabled={Events.present_8 in userInfo.registered}>
+              <button disabled={true}>
                 <RegisterCard {...presenter_path} />
               </button>
             </div>

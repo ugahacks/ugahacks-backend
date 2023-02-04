@@ -112,3 +112,10 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Local Firebase things
+*.rules
+firestore*
+
+# VS Code Configuration
+.vscode

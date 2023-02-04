@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 import Event, { EventDetail } from "../components/Event";
-import { EventStatus } from "../enums/eventStatus";
 import { Events } from "../enums/events";
 
 const Hacks8: EventDetail = {
@@ -19,19 +18,6 @@ const events = [{ event: <Event {...Hacks8} /> }];
 
 const DashboardPage = () => {
   const { userInfo, setUserInformation } = useAuth();
-  //const [firstName, setFirstName] = useState('');
-
-  // useEffect(() => {
-  //   async function get_user_information() {
-  //     await setUserInformation();
-  //     //setFirstName(userInfo.first_name)
-  //   }
-
-  //   get_user_information();
-  // }, []);
-  // useEffect(() => {
-  //   document.querySelector("body")?.classList.remove("bg-[#e3e3e3]");
-  // });
 
   return (
     <ProtectedRoute>
