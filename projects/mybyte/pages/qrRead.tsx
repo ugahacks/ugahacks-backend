@@ -1,11 +1,10 @@
-import React, { Fragment, useRef, useState } from "react";
-import { PassThrough } from "stream";
+import React, { useState } from "react";
 import Html5QrcodePlugin from "../components/Html5QrcodePlugin";
 import OrganizerRoute from "../components/OrganizerRoute";
 import { useAuth } from "../context/AuthContext";
 
 export default function QrRead(props: any) {
-  const { givePoints, checkIn } = useAuth();
+  const { givePoints } = useAuth();
   const [data, setData] = useState("No result");
   const ref = React.useRef<Html5QrcodePlugin | null>(null);
 
@@ -15,6 +14,12 @@ export default function QrRead(props: any) {
       <option value="company-event">Company Event (1000)</option>
       <option value="workshop">Workshop (500)</option>
       <option value="escape-room">Escape Room Winner (1000)</option>
+      <option value="e-sports-first-place">E-Sports First Place (2000)</option>
+      <option value="e-sports-second-place">
+        E-Sports Second Place (1000)
+      </option>
+      <option value="remove-500">Remove 500 Points</option>
+      <option value="remove-1000">Remove 1000 Points</option>
       <option value="lunch">Check Lunch</option>
       <option value="dinner">Check Dinner</option>
     </select>
@@ -44,6 +49,18 @@ export default function QrRead(props: any) {
         break;
       case "escape-room":
         givePoints(uid, 1000).then(callback);
+        break;
+      case "e-sports-first-place":
+        givePoints(uid, 2000).then(callback);
+        break;
+      case "e-sports-second-place":
+        givePoints(uid, 1000).then(callback);
+        break;
+      case "remove-500":
+        givePoints(uid, -500).then(callback);
+        break;
+      case "remove-1000":
+        givePoints(uid, -1000).then(callback);
         break;
       case "lunch":
         givePoints(uid, 1).then(callback);
