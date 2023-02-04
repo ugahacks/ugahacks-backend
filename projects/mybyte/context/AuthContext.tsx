@@ -142,7 +142,7 @@ export const AuthContextProvider = ({
     };
     try {
       await denyTeams("", "!=");
-      const docTeamRef = await addDoc(teamRefStage, team);
+      const docTeamRef = await addDoc(teamRef, team);
       const docUserRef = doc(userRef, uid);
 
       await updateDoc(docUserRef, { tid: docTeamRef.id });
@@ -448,7 +448,7 @@ export const AuthContextProvider = ({
 
   const getTeam: () => Promise<TeamType | null> = async () => {
     if (userInfo.tid === null || userInfo.tid === undefined) return null;
-    const docRef = doc(teamRefStage, userInfo.tid ? userInfo.tid : "0");
+    const docRef = doc(teamRef, userInfo.tid ? userInfo.tid : "0");
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
@@ -477,7 +477,7 @@ export const AuthContextProvider = ({
   ) => {
     if (userInfo.tid === null || userInfo.tid === undefined)
       throw new Error("No Team");
-    const docRef = doc(teamRefStage, userInfo.tid ? userInfo.tid : "0");
+    const docRef = doc(teamRef, userInfo.tid ? userInfo.tid : "0");
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
@@ -510,7 +510,7 @@ export const AuthContextProvider = ({
   const getPotentialTeams = async () => {
     let teams: { team: TeamType; tid: string }[] = [];
     const q: Query<DocumentData> = query(
-      teamRefStage,
+      teamRef,
       where("members", "array-contains", user.email)
     );
     const results: QuerySnapshot<DocumentData> = await getDocs(q);
@@ -539,9 +539,9 @@ export const AuthContextProvider = ({
     try {
       const q: Query<DocumentData> =
         tid === ""
-          ? query(teamRefStage, where("members", "array-contains", user.email))
+          ? query(teamRef, where("members", "array-contains", user.email))
           : query(
-              teamRefStage,
+              teamRef,
               where("members", "array-contains", user.email),
               where("__name__", operator, tid)
             );
