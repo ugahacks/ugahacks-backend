@@ -22,7 +22,7 @@ type TeamTypeWithId = {
 }
 
 export default function Team() {
-    const {getTeam, userCreateTeam, addToTeam, user, userInfo, getPotentialTeams} = useAuth();
+    const {getTeam, userCreateTeam, addToTeam, user, userInfo, getPotentialTeams, validateEmails} = useAuth();
     let [team, setTeam] = useState({members: [""]});
     let [pTeams, setPTeams] = useState<TeamTypeWithId[]>([]);
     useEffect( () => {
@@ -108,22 +108,7 @@ export default function Team() {
     async function validateEmail(value: string) {
         if (value === undefined || value === null ||
             value === "") return true; // if no value, true
-        const response = await fetch("api/teamConfirm", {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'riddle': 'ICNSOIBOEL@#EFUH_FERH*&84491erf01h  dbc',
-            },
-            body: JSON.stringify({
-                authUserEmail: user.email,
-                emails: [value],
-                tid: userInfo.tid,
-                which: "confirmEmail",
-            }),
-        });
-        if (response.status !== 200) return false || "Cannot connect to network";
-        const values: TeamConfrimResponse = await response.json();
+        const values: TeamConfrimResponse = await validateEmails([value]);
         if (values.member.length === 0 || 
             values.member[0].confirmed === false) return false || "Not a user or in another team";
         return true;
