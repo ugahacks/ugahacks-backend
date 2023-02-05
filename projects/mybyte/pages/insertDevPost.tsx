@@ -1,8 +1,10 @@
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import ProtectedRoute from "../components/ProtectedRoute";
+import { useAuth } from "../context/AuthContext";
 
 const InsertDevPost = () => {
+  const { giveTeamPoints } = useAuth();
   const methods = useForm<{ devPostLink: string }>({ mode: "onBlur" });
 
   const {
@@ -11,7 +13,9 @@ const InsertDevPost = () => {
     formState: { errors },
   } = methods;
 
-  const onSubmit = async (data: { devPostLink: string }) => {};
+  const onSubmit = async (data: { devPostLink: string }) => {
+    await giveTeamPoints();
+  };
 
   return (
     <ProtectedRoute>
