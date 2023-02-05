@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
 
 const Navbar = ({ children }: { children: React.ReactNode }) => {
-  const { user, logOut, currEvent, userInfo, user_type} = useAuth();
+  const { user, logOut, currEvent, userInfo, user_type } = useAuth();
   const router = useRouter();
 
   const menuItems = [
@@ -92,8 +92,10 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     ) : null}
                   </li>
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
-                    {userInfo.first_name != null && userInfo.first_name != "" &&
-                    user_type !== null && user_type !== undefined &&
+                    {userInfo.first_name != null &&
+                    userInfo.first_name != "" &&
+                    user_type !== null &&
+                    user_type !== undefined &&
                     user_type == "service_writer" ? (
                       <Link href="/qrRead">
                         <span className="hover:text-blue-900 transition text-white">
@@ -108,6 +110,16 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                       <Link href="/profile">
                         <span className="hover:text-blue-900 transition text-white">
                           Profile
+                        </span>
+                      </Link>
+                    ) : null}
+                  </li>
+                  <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
+                    {userInfo.first_name != null &&
+                    userInfo.first_name != "" ? (
+                      <Link href="/insertDevPost">
+                        <span className="hover:text-blue-900 transition text-white">
+                          Submit Devpost Link
                         </span>
                       </Link>
                     ) : null}
