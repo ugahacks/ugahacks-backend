@@ -22,7 +22,7 @@ type TeamTypeWithId = {
 }
 
 export default function Team() {
-    const {getTeam, userCreateTeam, addToTeam, user, userInfo, getPotentialTeams, validateEmails} = useAuth();
+    const {getTeam, userCreateTeam, addToTeam, user, userInfo, getPotentialTeams, validateEmails, giveTeamPoints} = useAuth();
     let [team, setTeam] = useState({members: [""]});
     let [pTeams, setPTeams] = useState<TeamTypeWithId[]>([]);
     useEffect( () => {
@@ -206,6 +206,7 @@ export default function Team() {
                     </FormProvider>
                 </div>
             </div>
+            <button onClick={giveTeamPoints}>Click</button>
         </div>);
   return (
     <ProtectedRoute>
