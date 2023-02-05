@@ -62,6 +62,7 @@ export interface UserInfoType {
 
 export interface TeamType {
   members: string[];
+  submitted?: boolean | null;
 }
 
 const AuthContext = createContext({});
@@ -455,6 +456,7 @@ export const AuthContextProvider = ({
 
     const team: TeamType = {
       members: docSnap.data().members,
+      submitted: docSnap.data().submitted,
     };
 
     return team;
@@ -677,6 +679,21 @@ export const AuthContextProvider = ({
       return data;
     }
 
+    const giveTeamPoints = async () => {
+      if (userInfo == undefined || userInfo.tid == undefined) return;
+      const team: TeamType | null = await getTeam();
+      if (team?.submitted == true) return;
+      const q: Query<DocumentData> = query(userRef, where("tid", "==", userInfo.tid));
+      const results: QuerySnapshot<DocumentData> = await getDocs(q);
+      results.forEach(async (elem) => {
+          await updateDoc(elem.ref, {
+            points: increment(2500),
+          });
+      });
+      const docRef = doc(teamRef, userInfo.tid ? userInfo.tid : "0");
+      await updateDoc(docRef, {submitted: true});
+    };
+
   const logOut = async () => {
     setUser({ email: null, uid: null });
     await signOut(auth);
@@ -715,6 +732,7 @@ export const AuthContextProvider = ({
         confirmEmails,
         confirmedOnTeam,
         validateEmails,
+        giveTeamPoints,
       }}
     >
       {loading ? null : children}
