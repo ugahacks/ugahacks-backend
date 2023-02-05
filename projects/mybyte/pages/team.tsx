@@ -206,7 +206,6 @@ export default function Team() {
                     </FormProvider>
                 </div>
             </div>
-            <button onClick={giveTeamPoints}>Click</button>
         </div>);
   return (
     <ProtectedRoute>
