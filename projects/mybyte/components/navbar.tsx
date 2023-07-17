@@ -31,17 +31,17 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <header className="flex flex-wrap container mx-auto max-w-full items-center p-6 justify-between bg-[#DC4141] shadow-md sticky top-0 z-50">
-        <div className="flex items-center text-blue-900 hover:text-blue-800 cursor-pointer transition duration-150 ">
+      <header className="flex flex-wrap container mx-auto max-w-full items-center p-6 justify-between bg-white shadow-md sticky top-0 z-50">
+        <div className="flex items-center hover:text-blue-800 cursor-pointer transition duration-150 ">
           {!user.uid ? (
             <Link href="/">
-              <span className="font-semibold text-lg font-sans text-white">
+              <span className="font-semibold text-lg font-sans">
                 UGAHACKS
               </span>
             </Link>
           ) : (
             <Link href="/dashboard">
-              <span className="font-semibold text-lg font-sans text-white">
+              <span className="font-semibold text-lg font-sans">
                 UGAHACKS
               </span>
             </Link>
@@ -55,7 +55,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                 menuItems.map((item) => (
                   <li
                     key={item.id}
-                    className="my-3 md:my-0 items-center mr-4 md:inline-block block text-white"
+                    className="my-3 md:my-0 items-center mr-4 md:inline-block block"
                   >
                     <Link href={item?.link}>
                       <span className="text-black-800 hover:text-red-900 transition">
@@ -70,7 +70,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     {userInfo.first_name != null &&
                     userInfo.first_name != "" ? (
                       <Link href="/dashboard">
-                        <span className="hover:text-blue-900 transition text-white">
+                        <span className="hover:text-blue-900 transition">
                           Dashboard
                         </span>
                       </Link>
@@ -80,7 +80,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     {userInfo.first_name != null &&
                     userInfo.first_name != "" ? (
                       <Link href="/team">
-                        <span className="hover:text-blue-900 transition text-white">
+                        <span className="hover:text-blue-900 transition">
                           Team
                         </span>
                       </Link>
@@ -93,7 +93,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     user_type !== undefined &&
                     user_type == "service_writer" ? (
                       <Link href="/qrRead">
-                        <span className="hover:text-blue-900 transition text-white">
+                        <span className="hover:text-blue-900 transition">
                           Scanner
                         </span>
                       </Link>
@@ -103,7 +103,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     {userInfo.first_name != null &&
                     userInfo.first_name != "" ? (
                       <Link href="/profile">
-                        <span className="hover:text-blue-900 transition text-white">
+                        <span className="hover:text-blue-900 transition">
                           Profile
                         </span>
                       </Link>
@@ -113,7 +113,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     {userInfo.first_name != null &&
                     userInfo.first_name != "" ? (
                       <Link href="/insertDevPost">
-                        <span className="hover:text-blue-900 transition text-white">
+                        <span className="hover:text-blue-900 transition">
                           Submit Devpost Link
                         </span>
                       </Link>
@@ -122,7 +122,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
                     <a
                       onClick={handleLogout}
-                      className="text-white hover:text-blue-900 transition cursor-pointer"
+                      className="hover:text-blue-900 transition cursor-pointer"
                     >
                       Logout
                     </a>
