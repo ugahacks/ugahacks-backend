@@ -7,9 +7,7 @@ import hacks8Byte from "../public/byte_mini.png";
 
 const Home: NextPage = () => {
   const mainPage = (
-    <div className="flex flex-col items-center justify-center py-2 font-inter overflow-y-auto flex-auto basis-[50vh] smh:basis-[58vh] md:basis-[90vh]">
-      
-    
+    <>
       <Head>
         <title>MyByte</title>
         <link rel="icon" href="/UGAHacks_General_Byte.png" />
@@ -42,7 +40,7 @@ const Home: NextPage = () => {
           <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
         </a>
       </footer> */}
-    </div>
+    </>
   );
   return mainPage;
 };

@@ -133,7 +133,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
           </ul>
         </nav>
       </header>
-      {children}
+      <div className="flex flex-col items-center justify-center py-2 font-inter overflow-y-auto flex-auto basis-[50vh] smh:basis-[58vh] md:basis-[90vh]">
+        {children}
+      </div>
     </div>
   ); // last div is to offset the navbar's position since it is fixed now
 };
