@@ -1,3 +1,4 @@
+import ReactDOMServer from 'react-dom/server';
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -5,8 +6,8 @@ import Link from "next/link";
 import hacks8Byte from "../public/byte_mini.png";
 
 const Home: NextPage = () => {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2 font-inter">
+  const mainPage = (
+    <div className="flex flex-col items-center justify-center py-2 font-inter overflow-y-auto flex-auto basis-[50vh] smh:basis-[58vh] md:basis-[90vh]">
       
     
       <Head>
@@ -14,7 +15,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/UGAHacks_General_Byte.png" />
       </Head>
      
-        <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
+        <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center pt-28 smh:pt-0">
           <div className="flex flex-col items-start justify-start space-y-4" >
             <h1 className="text-6xl font-bold text-left">MyByte</h1>
             <h1 className="text-6xl font-bold text-left">It&apos;s time to create.</h1>
@@ -43,6 +44,7 @@ const Home: NextPage = () => {
       </footer> */}
     </div>
   );
+  return mainPage;
 };
 
 export default Home;
