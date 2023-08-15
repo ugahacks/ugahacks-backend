@@ -21,7 +21,7 @@ const DashboardPage = () => {
 
   return (
     <ProtectedRoute>
-      <div className="flex py-2 container mx-auto">
+      <div className="flex py-2 container mx-auto flex-initial w-full">
         <div className="text-gray-600 px-12 py-24 mt-2 mx-auto">
           <h2 className="text-5xl font-semibold">
             Hey {userInfo.first_name}, welcome to the UGA Hacks Portal!

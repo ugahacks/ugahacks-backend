@@ -24,7 +24,7 @@ class MyDocument extends Document {
         <Head>
           <link rel="icon" href="/UGAHacks_General_Byte.png" />
         </Head>
-        <body className={this.getColor()}>
+        <body>
           <Main />
           <NextScript />
         </body>

@@ -30,8 +30,8 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <>
-      <header className="flex flex-wrap container mx-auto max-w-full items-center p-6 justify-between bg-white shadow-md sticky top-0 z-50">
+    <div className="flex flex-col overflow-y-auto min-h-screen">
+      <header id="nav" className="flex flex-wrap container mx-auto max-w-full items-center p-6 justify-between bg-white shadow-md flex-initial">
         <div className="flex items-center hover:text-blue-800 cursor-pointer transition duration-150 ">
           {!user.uid ? (
             <Link href="/">
@@ -133,9 +133,11 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
           </ul>
         </nav>
       </header>
-      {children}
-    </>
-  );
+      <div className="flex flex-col items-center justify-center py-2 font-inter overflow-y-auto flex-auto basis-[50vh] smh:basis-[58vh] md:basis-[90vh]">
+        {children}
+      </div>
+    </div>
+  ); // last div is to offset the navbar's position since it is fixed now
 };
 
 export default Navbar;

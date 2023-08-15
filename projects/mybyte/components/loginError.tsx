@@ -12,7 +12,7 @@ class loginError extends React.Component<ErrorDetails> {
 
     render() {
         return (
-            <div className={`rounded-xl bg-red-200 mx-4 text-center py-2 mb-5 ${(this.props.show) ? "visible" : "collapse"}`}>
+            <div className={`rounded-xl bg-red-200 mx-4 text-center py-2 mb-5 ${(this.props.show) ? "" : "hidden"}`}>
                 <span>{this.props.text}</span>
             </div>
         );
