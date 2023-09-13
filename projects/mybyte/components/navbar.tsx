@@ -30,8 +30,8 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <div className="flex flex-col overflow-y-auto min-h-screen">
-      <header id="nav" className="flex flex-wrap container mx-auto max-w-full items-center p-6 justify-between bg-white shadow-md flex-initial">
+    <div className="overflow-y-auto h-screen">
+      <header id="nav" className="sticky top-0 z-10 flex flex-wrap container mx-auto max-w-full items-center p-6 justify-between bg-white shadow-md flex-initial">
         <div className="flex items-center hover:text-blue-800 cursor-pointer transition duration-150 ">
           {!user.uid ? (
             <Link href="/">
@@ -133,11 +133,11 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
           </ul>
         </nav>
       </header>
-      <div className="flex flex-col items-center justify-center py-2 font-inter overflow-y-auto flex-auto basis-[50vh] smh:basis-[58vh] md:basis-[90vh]">
+      <div className="font-inter h-[calc(100%-168px)] md:h-[calc(100%-76px)]">
         {children}
       </div>
     </div>
-  ); // last div is to offset the navbar's position since it is fixed now
+  ); // last div's height is to offset the navbar's position since it is sticky now
 };
 
 export default Navbar;

@@ -72,7 +72,7 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="sign-up-form container mx-auto w-[90%] sm:w-96 flex-initial h-[50vh] smh:h-[58vh] md:h-[90vh]">
+    <div className="sign-up-form container mx-auto w-[90%] sm:w-96">
       <h2 className="px-12 mt-8 text-center text-2xl font-semibold inter">
         Sign up for an account
       </h2>

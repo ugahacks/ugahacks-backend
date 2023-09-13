@@ -66,7 +66,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="sign-up-form container mx-auto w-[90%] sm:w-96 flex-initial pt-20 smh:pt-10 md:pt-5">
+    <div className="sign-up-form container mx-auto w-[90%] sm:w-96">
       <h2 className="px-12 text-center text-2xl font-semibold inter">
         Log in to your account
       </h2>
