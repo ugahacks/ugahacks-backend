@@ -74,11 +74,11 @@ const LoginPage = () => {
       <div className="mt-8">
         <div className="mt-4 grid space-y-4 px-4">
           <button
-            className="group h-12 px-6 rounded-full bg-[#F8F8F8] transition duration-300 focus:bg-purple-50 active:bg-purple-100"
+            className="group h-12 px-6 rounded-full bg-[#F8F8F8] transition duration-300 focus:bg-primary-50 active:bg-primary-100"
             onClick={onSubmitGoogle}
           >
             <div className="relative flex items-center space-x-2 justify-center">
-              <span className="block w-max font-semibold tracking-wide text-gray-700 text-sm transition duration-300 group-hover:text-purple-600 sm:text-base">
+              <span className="block w-max font-semibold tracking-wide text-gray-700 text-sm transition duration-300 group-hover:text-primary-600 sm:text-base">
                 Sign in with Google
               </span>
               <Image
@@ -140,12 +140,12 @@ const LoginPage = () => {
             <div className="flex justify-center pt-8">
               <button
                 type="submit"
-                className={`h-12 text-center w-full bg-purple-700 rounded-md hover:shadow-lg hover:bg-purple-800 active:bg-purple-950 text-lg transition`}
+                className={`h-12 text-center w-full bg-primary-700 rounded-md hover:shadow-lg hover:bg-primary-800 active:bg-primary-950 text-lg transition`}
               >
                 <p className="capitalize text-white font-normal">Log in</p>
               </button>
             </div>
-            <div className="flex justify-between text-sm text-purple-400 mt-2">
+            <div className="flex justify-between text-sm text-primary-400 mt-2">
                 <Link href="/resetPassword">Forgot your password?</Link>
                 <Link href="/signup">Create account</Link>
             </div>
