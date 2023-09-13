@@ -78,7 +78,7 @@ const LoginPage = () => {
             onClick={onSubmitGoogle}
           >
             <div className="relative flex items-center space-x-2 justify-center">
-              <span className="block w-max font-semibold tracking-wide text-gray-700 text-sm transition duration-300 group-hover:text-primary-600 sm:text-base">
+              <span className="block w-max font-semibold tracking-wide text-gray-700 text-sm transition duration-300 group-hover:text-primary-500 sm:text-base">
                 Sign in with Google
               </span>
               <Image
@@ -102,7 +102,7 @@ const LoginPage = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="flex items-center justify-between">
-              <label htmlFor="" className="block mb-3 inter">
+              <label htmlFor="" className="block mb-3 inter font-bold">
                 Email
               </label>
             </div>
@@ -119,7 +119,7 @@ const LoginPage = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor=""
-                  className="block mb-3 inter"
+                  className="block mb-3 inter font-bold"
                 >
                   Password
                 </label>
@@ -133,19 +133,19 @@ const LoginPage = () => {
                 className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
               />
               {errors.password && (
-                <p className="text-red-400">{errors.password.message}</p>
+                <p className="text-red-500">{errors.password.message}</p>
               )}
             </div>
 
             <div className="flex justify-center pt-8">
               <button
                 type="submit"
-                className={`h-12 text-center w-full bg-primary-700 rounded-md hover:shadow-lg hover:bg-primary-800 active:bg-primary-950 text-lg transition`}
+                className={`h-12 text-center w-full hover:text-white bg-[#F8F8F8] rounded-md hover:shadow-lg hover:bg-primary-500 active:bg-primary-950 text-lg transition`}
               >
-                <p className="capitalize text-white font-normal">Log in</p>
+                <p className="capitalize font-normal">Log in</p>
               </button>
             </div>
-            <div className="flex justify-between text-sm text-primary-400 mt-2">
+            <div className="flex justify-between text-sm text-primary-500 mt-2">
                 <Link href="/resetPassword">Forgot your password?</Link>
                 <Link href="/signup">Create account</Link>
             </div>

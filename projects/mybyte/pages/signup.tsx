@@ -127,7 +127,7 @@ const SignupPage = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor=""
-                  className="block mb-3 inter"
+                  className="block mb-3 inter font-bold"
                 >
                   Email
                 </label>
@@ -139,14 +139,14 @@ const SignupPage = () => {
                 className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
               />
               {errors.email && (
-                <p className="text-red-400">{errors.email.message}</p>
+                <p className="text-red-500">{errors.email.message}</p>
               )}
             </div>
             <div className="mt-8">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor=""
-                  className="block mb-3 inter"
+                  className="block mb-3 inter font-bold"
                 >
                   First Name
                 </label>
@@ -160,14 +160,14 @@ const SignupPage = () => {
                 className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
               />
               {errors.first_name && (
-                <p className="text-red-400">{errors.first_name.message}</p>
+                <p className="text-red-500">{errors.first_name.message}</p>
               )}
             </div>
             <div className="mt-8">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor=""
-                  className="block mb-3 inter"
+                  className="block mb-3 inter font-bold"
                 >
                   Last Name
                 </label>
@@ -181,14 +181,14 @@ const SignupPage = () => {
                 className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
               />
               {errors.last_name && (
-                <p className="text-red-400">{errors.last_name.message}</p>
+                <p className="text-red-500">{errors.last_name.message}</p>
               )}
             </div>
             <div className="mt-8">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor=""
-                  className="block mb-3 inter"
+                  className="block mb-3 inter font-bold"
                 >
                   School
                 </label>
@@ -207,14 +207,14 @@ const SignupPage = () => {
                 )}
               </datalist>
               {errors.last_name && (
-                <p className="text-red-400">{errors.last_name.message}</p>
+                <p className="text-red-500">{errors.last_name.message}</p>
               )}
             </div>
             <div className="mt-8">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor=""
-                  className="block mb-3 inter"
+                  className="block mb-3 inter font-bold"
                 >
                   Password
                 </label>
@@ -226,14 +226,14 @@ const SignupPage = () => {
                 className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
               />
               {errors.password && (
-                <p className="text-red-400">{errors.password.message}</p>
+                <p className="text-red-500">{errors.password.message}</p>
               )}
             </div>
             <div className="mt-8">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor=""
-                  className="block mb-3 inter"
+                  className="block mb-3 inter font-bold"
                 >
                   Confirm Password
                 </label>
@@ -247,7 +247,7 @@ const SignupPage = () => {
                 className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
               />
               {errors.password_confirm && (
-                <p className="text-red-400">
+                <p className="text-red-500">
                   {errors.password_confirm.message}
                 </p>
               )}
@@ -255,12 +255,12 @@ const SignupPage = () => {
             <div className="flex justify-center pt-8">
               <button
                 type="submit"
-                className={`h-12 text-center w-full bg-primary-700 rounded-md hover:shadow-lg hover:bg-primary-800 active:bg-primary-950 text-lg transition`}
+                className={`h-12 text-center hover:text-white w-full bg-[#F8F8F8] rounded-md hover:shadow-lg hover:bg-primary-500 active:bg-primary-950 text-lg transition`}
               >
-                <p className="capitalize text-white font-normal">Sign up</p>
+                <p className="capitalize font-normal">Sign up</p>
               </button>
             </div>
-            <div className="flex justify-between text-sm text-primary-400 mt-2">
+            <div className="flex justify-between text-sm text-primary-500 mt-2">
                 <Link href="/login">Already have an account?</Link>
             </div>
           </form>

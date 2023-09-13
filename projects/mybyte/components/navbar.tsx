@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
+import { useLayoutEffect } from "react";
 
 const Navbar = ({ children }: { children: React.ReactNode }) => {
   const { user, logOut, currEvent, userInfo, user_type } = useAuth();
@@ -28,6 +29,28 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
       console.log(error.message);
     }
   };
+
+  const isElementXPercentInViewport = function(el: Element, percentVisible: number) {
+    let
+      rect = el.getBoundingClientRect(),
+      windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+  
+    return !(
+      Math.floor(100 - (((rect.top >= 0 ? 0 : rect.top) / +-rect.height) * 100)) < percentVisible ||
+      Math.floor(100 - ((rect.bottom - windowHeight) / rect.height) * 100) < percentVisible
+    )
+  };
+
+  useLayoutEffect(() => {
+    let element = document.getElementById("acdweafadaefd");
+    if (element !== null && element !== undefined && isElementXPercentInViewport(element, 100)) {
+      let parent = element.parentElement;
+      if (parent !== null) {
+        parent.style.display = "grid";
+        parent.style.alignItems = "center";
+      }
+    }
+  });
 
   return (
     <div className="overflow-y-auto h-screen">
@@ -58,7 +81,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     className="my-3 md:my-0 items-center mr-4 md:inline-block block"
                   >
                     <Link href={item?.link}>
-                      <span className="text-black-800 hover:text-red-900 transition">
+                      <span className="text-black-800 hover:text-red-500 transition">
                         {item?.name}
                       </span>
                     </Link>
@@ -134,7 +157,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
         </nav>
       </header>
       <div className="font-inter h-[calc(100%-168px)] md:h-[calc(100%-76px)]">
-        {children}
+        <div id="acdweafadaefd">
+          {children}
+        </div>
       </div>
     </div>
   ); // last div's height is to offset the navbar's position since it is sticky now
