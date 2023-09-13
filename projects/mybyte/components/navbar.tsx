@@ -75,18 +75,23 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
           <ul className="text-lg inline-block">
             <>
               {!user.uid ? (
-                menuItems.map((item) => (
+                menuItems.map((item) => {
+                  let cn = "text-black-800 hover:text-red-500 transition";
+                  if (item.link.replace('/', '') === router.pathname.replace('/', '')) {
+                    cn += " underline underline-offset-[5px]";
+                  }
+                  return (
                   <li
                     key={item.id}
                     className="my-3 md:my-0 items-center mr-4 md:inline-block block"
                   >
                     <Link href={item?.link}>
-                      <span className="text-black-800 hover:text-red-500 transition">
+                      <span className={cn}>
                         {item?.name}
                       </span>
                     </Link>
                   </li>
-                ))
+                )})
               ) : (
                 <>
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
