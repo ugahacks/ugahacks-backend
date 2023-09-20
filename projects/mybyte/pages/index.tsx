@@ -20,7 +20,7 @@ const Home: NextPage = () => {
             <p className="text-xl pt-4 font-bold text-left text-gray-500">
               Join your fellow hackers. Let&apos;s build the future, together.
             </p>
-            <Link href="/login" className="text-white bg-purple-600 rounded-full px-8 py-2 text-lg">
+            <Link href="/login" className="text-white bg-primary-600 rounded-full px-8 py-2 text-lg">
               Log in
             </Link>
           </div>

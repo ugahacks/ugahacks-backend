@@ -1,3 +1,4 @@
+const colors = require('tailwindcss/colors');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -17,6 +18,21 @@ module.exports = {
     extend: {
       fontFamily: {
         'inter': ['Inter', 'sans-serif'],
+      },
+      colors: {
+        primary: {
+          50: "#FEEDEC",
+          100: "#FDDCD9",
+          200: "#FBBDB7",
+          300: "#F89990",
+          400: "#F67A6F",
+          500: "#F4574A",
+          600: "#F0210F",
+          700: "#B2190B",
+          800: "#781107",
+          900: "#3A0804",
+          950: "#1D0402",
+        },
       },
     },
   },
