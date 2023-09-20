@@ -23,22 +23,28 @@ const DashboardPage = () => {
   return (
     <ProtectedRoute>
       <div className="flex py-2 container mx-auto flex-initial w-full">
-        <div className="text-gray-600 px-12 py-24 mt-2 mx-auto">
+        <div className="text-gray-600 px-4 py-24 mt-2 mx-auto">
           <h2 className="text-5xl font-semibold">
-            Hey {userInfo.first_name}, welcome to the UGA Hacks Portal!
+            Welcome, {userInfo.first_name}
           </h2>
           <h2 className="text-2xl font-semibold pt-10 text-center">
-            Pick an event from below!
+            This is the UGAHacks registration portal, feel free to register for any events below. Happy hacking!
           </h2>
-          <div className="flex justify-start items-center">
-              <button className="pt-10">
-              <QRCodeCanvas
-                id="qrCode"
-                size={300}
-                value={userInfo.uid}
-                level={"H"}
-                />
-              </button>
+          <div className="flex mt-5 items-center gap-10 justify-content-between">
+              <div>
+                <h2>Your stats</h2>
+                <button className="pt-3">
+                <QRCodeCanvas
+                  id="qrCode"
+                  size={300}
+                  value={userInfo.uid}
+                  level={"H"}
+                  />
+                </button>
+              </div>
+              <div>
+                <h2>Name: {userInfo.first_name}</h2>
+              </div>
             </div>
           <div className="flex container justify-center items-center">
             {events.map((data) => (
