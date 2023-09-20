@@ -3,6 +3,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 import Event, { EventDetail } from "../components/Event";
 import { Events } from "../enums/events";
+import { QRCodeCanvas } from "qrcode.react";
 
 const Hacks8: EventDetail = {
   key: Events.hacks8,
@@ -29,6 +30,16 @@ const DashboardPage = () => {
           <h2 className="text-2xl font-semibold pt-10 text-center">
             Pick an event from below!
           </h2>
+          <div className="flex justify-start items-center">
+              <button className="pt-10">
+              <QRCodeCanvas
+                id="qrCode"
+                size={300}
+                value={userInfo.uid}
+                level={"H"}
+                />
+              </button>
+            </div>
           <div className="flex container justify-center items-center">
             {events.map((data) => (
               <button className="pt-10" key={data.event.key}>
