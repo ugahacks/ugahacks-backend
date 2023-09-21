@@ -66,44 +66,43 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="sign-up-form container mx-auto w-96 mt-6 border-2 border-gray-400 overflow-auto bg-white">
-      <h2 className="px-12 mt-8 text-center text-2xl font-semibold text-[#DC4141]">
-        Log In
+    <div className="sign-up-form container mx-auto w-[90%] sm:w-96">
+      <h2 className="px-12 text-center text-2xl font-semibold inter">
+        Log in to your account
       </h2>
 
       <div className="mt-8">
         <div className="mt-4 grid space-y-4 px-4">
           <button
-            className="group h-12 px-6 border-2 border-gray-300 rounded-full transition duration-300 
- hover:border-blue-400 focus:bg-blue-50 active:bg-blue-100"
+            className="group h-12 px-6 rounded-full bg-[#F8F8F8] transition duration-300 focus:bg-primary-50 active:bg-primary-100"
             onClick={onSubmitGoogle}
           >
-            <div className="relative flex items-center space-x-4 justify-center">
+            <div className="relative flex items-center space-x-2 justify-center">
+              <span className="block w-max font-semibold tracking-wide text-gray-700 text-sm transition duration-300 group-hover:text-primary-500 sm:text-base">
+                Sign in with Google
+              </span>
               <Image
                 src={googleLogo}
-                className="absolute left-0 w-5"
+                className="w-5"
                 alt="google logo"
               />
-              <span className="block w-max font-semibold tracking-wide text-gray-700 text-sm transition duration-300 group-hover:text-blue-600 sm:text-base">
-                Continue with Google
-              </span>
             </div>
           </button>
         </div>
-        <div className="relative flex py-5 items-center px-4">
+        <div className="relative flex py-5 items-center space-x-1">
           <div className="flex-grow border-t border-gray-400"></div>
-          <span className="flex-shrink mx-4 text-gray-400">OR</span>
+          <span className="flex-shrink text-bold inter text-sm">or</span>
           <div className="flex-grow border-t border-gray-400"></div>
         </div>
         <LoginError show={show} text={text}></LoginError>
         <FormProvider {...methods}>
           <form
             action=""
-            className="w-80 mx-auto pb-12 px-4"
+            className="mx-auto mb-5"
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="flex items-center justify-between">
-              <label htmlFor="" className="block mb-3 font-sans text-[#DC4141]">
+              <label htmlFor="" className="block mb-3 inter font-bold">
                 Email
               </label>
             </div>
@@ -120,7 +119,7 @@ const LoginPage = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor=""
-                  className="block mb-3 font-sans text-[#DC4141]"
+                  className="block mb-3 inter font-bold"
                 >
                   Password
                 </label>
@@ -134,22 +133,21 @@ const LoginPage = () => {
                 className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
               />
               {errors.password && (
-                <p className="text-red-400">{errors.password.message}</p>
+                <p className="text-red-500">{errors.password.message}</p>
               )}
             </div>
 
             <div className="flex justify-center pt-8">
               <button
                 type="submit"
-                className={`h-12 text-center w-2/3 bg-[#DC4141] border-2 rounded-md hover:shadow-lg hover:bg-gray-800 text-lg transition`}
+                className={`h-12 text-center w-full hover:text-white bg-[#F8F8F8] rounded-md hover:shadow-lg hover:bg-primary-500 active:bg-primary-950 text-lg transition`}
               >
-                <p className="capitalize text-white font-normal">submit</p>
+                <p className="capitalize font-normal">Log in</p>
               </button>
             </div>
-            <div className="flex justify-center">
-              <p>
-                <Link href="/resetPassword">Forgot Password</Link>
-              </p>
+            <div className="flex justify-between text-sm text-primary-500 mt-2">
+                <Link href="/resetPassword">Forgot your password?</Link>
+                <Link href="/signup">Create account</Link>
             </div>
           </form>
         </FormProvider>

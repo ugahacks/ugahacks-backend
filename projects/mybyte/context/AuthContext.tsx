@@ -316,7 +316,8 @@ export const AuthContextProvider = ({
     first_name: string,
     last_name: string,
     email: string,
-    password: string
+    password: string,
+    school: string | undefined
   ) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -333,6 +334,7 @@ export const AuthContextProvider = ({
         email: email,
         points: 0,
         registered: {},
+        school: school,
         added_time: serverTimestamp(),
       });
       sendEmailVerification(user);

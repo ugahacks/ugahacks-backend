@@ -25,20 +25,20 @@ function MyApp({ Component, pageProps }: AppProps) {
     "/team",
   ];
 
-  useEffect(() => {
-    if (!hasHacks8Class() && hacks_8_bg_routes.includes(page)) {
-      document.body.className += "bg-[url('/UGAHacks8TanBG.png')]";
-    } else {
-      document.body.classList.remove("bg-[url('/UGAHacks8TanBG.png')]");
-    }
-    if (!hasGrayClasses() && gray_bg_routes.includes(page)) {
-      document.body.className += "bg-[#e3e3e3]";
-    } else if (hasGrayClasses() && !gray_bg_routes.includes(page)) {
-      document.body.classList.remove("bg-[#e3e3e3]");
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  });
+  //useEffect(() => {
+  //  if (!hasHacks8Class() && hacks_8_bg_routes.includes(page)) {
+  //    document.body.className += "bg-[url('/UGAHacks8TanBG.png')]";
+  //  } else {
+  //    document.body.classList.remove("bg-[url('/UGAHacks8TanBG.png')]");
+  //  }
+  //  if (!hasGrayClasses() && gray_bg_routes.includes(page)) {
+  //    document.body.className += "bg-[#e3e3e3]";
+  //  } else if (hasGrayClasses() && !gray_bg_routes.includes(page)) {
+  //    document.body.classList.remove("bg-[#e3e3e3]");
+  //  }
+//
+  //  // eslint-disable-next-line react-hooks/exhaustive-deps
+  //});
 
   return (
     <AuthContextProvider>
