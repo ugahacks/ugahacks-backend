@@ -43,7 +43,10 @@ const DashboardPage = () => {
                 </button>
               </div>
               <div>
-                <h2>Name: {userInfo.first_name}</h2>
+                <h2>Name: {userInfo.first_name} {userInfo.last_name}</h2>
+                <h2>School: </h2>
+                <h2>Points: {userInfo.points}</h2>
+                <h2>Next Registered Event: </h2>
               </div>
             </div>
           <div className="flex container justify-center items-center">
