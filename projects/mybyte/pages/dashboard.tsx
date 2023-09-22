@@ -36,7 +36,7 @@ const DashboardPage = () => {
                 <button className="pt-3">
                 <QRCodeCanvas
                   id="qrCode"
-                  size={300}
+                  size={200}
                   value={userInfo.uid}
                   level={"H"}
                   />
