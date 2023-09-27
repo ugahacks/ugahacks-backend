@@ -130,16 +130,6 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
                     {userInfo.first_name != null &&
                     userInfo.first_name != "" ? (
-                      <Link href="/profile">
-                        <span className="hover:text-blue-900 transition">
-                          Profile
-                        </span>
-                      </Link>
-                    ) : null}
-                  </li>
-                  <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
-                    {userInfo.first_name != null &&
-                    userInfo.first_name != "" ? (
                       <Link href="/insertDevPost">
                         <span className="hover:text-blue-900 transition">
                           Submit Devpost Link

@@ -3,6 +3,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 import Event, { EventDetail } from "../components/Event";
 import { Events } from "../enums/events";
+import { QRCodeCanvas } from "qrcode.react";
 
 const Hacks8: EventDetail = {
   key: Events.hacks8,
@@ -22,13 +23,32 @@ const DashboardPage = () => {
   return (
     <ProtectedRoute>
       <div className="flex py-2 container mx-auto flex-initial w-full">
-        <div className="text-gray-600 px-12 py-24 mt-2 mx-auto">
+        <div className="text-gray-600 px-4 py-24 mt-2 mx-auto">
           <h2 className="text-5xl font-semibold">
-            Welcome, {userInfo.first_name}.
+            Welcome, {userInfo.first_name}
           </h2>
-          <h2 className="text-2xl font-bold pt-10 text-center">
-            Register for events
+          <h2 className="text-2xl font-semibold pt-10 text-center">
+            This is the UGAHacks registration portal, feel free to register for any events below. Happy hacking!
           </h2>
+          <div className="flex mt-5 items-center gap-10 justify-content-between">
+              <div>
+                <h2>Your stats</h2>
+                <button className="pt-3">
+                <QRCodeCanvas
+                  id="qrCode"
+                  size={200}
+                  value={userInfo.uid}
+                  level={"H"}
+                  />
+                </button>
+              </div>
+              <div>
+                <h2>Name: {userInfo.first_name} {userInfo.last_name}</h2>
+                <h2>School: </h2>
+                <h2>Points: {userInfo.points}</h2>
+                <h2>Next Registered Event: </h2>
+              </div>
+            </div>
           <div className="flex container justify-center items-center">
             {events.map((data) => (
               <button className="pt-10" key={data.event.key}>
