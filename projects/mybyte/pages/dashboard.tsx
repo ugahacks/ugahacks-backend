@@ -24,10 +24,10 @@ const DashboardPage = () => {
       <div className="flex py-2 container mx-auto flex-initial w-full">
         <div className="text-gray-600 px-12 py-24 mt-2 mx-auto">
           <h2 className="text-5xl font-semibold">
-            Hey {userInfo.first_name}, welcome to the UGA Hacks Portal!
+            Welcome, {userInfo.first_name}.
           </h2>
-          <h2 className="text-2xl font-semibold pt-10 text-center">
-            Pick an event from below!
+          <h2 className="text-2xl font-bold pt-10 text-center">
+            Register for events
           </h2>
           <div className="flex container justify-center items-center">
             {events.map((data) => (
