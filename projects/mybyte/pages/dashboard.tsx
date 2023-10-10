@@ -19,6 +19,8 @@ const events = [{ event: <Event {...Hacks8} /> }];
 
 const DashboardPage = () => {
   const { userInfo, setUserInformation } = useAuth();
+  const registeredEvents = userInfo.registered;
+  const registeredEventKeys = Object.keys(registeredEvents);
 
   return (
     <ProtectedRoute>
@@ -46,7 +48,14 @@ const DashboardPage = () => {
                 <h2>Name: {userInfo.first_name} {userInfo.last_name}</h2>
                 <h2>School: {userInfo.school}</h2>
                 <h2>Points: {userInfo.points}</h2>
-                <h2>Next Registered Event: </h2>
+                <h2>Registered Events:</h2>
+                <ul>
+                  {registeredEventKeys.map((eventName) => (
+                    <li className="text-red-500 font-semibold" key={eventName}>
+                      {eventName}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           <div className="flex container justify-center items-center">
