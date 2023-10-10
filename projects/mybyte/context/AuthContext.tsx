@@ -56,6 +56,7 @@ export interface UserInfoType {
   last_name: string | null;
   points: number;
   tid: string | null;
+  school: string | null;
   registered: EventRegistered;
   //user_type: Users | null;
 }
@@ -80,9 +81,11 @@ export const AuthContextProvider = ({
     last_name: null,
     points: 0,
     tid: null,
+    school: null,
     registered: {
       HACKS8: null,
     },
+  
     //user_type: null
   });
   const [user_type, setType] = useState<string | null>(null);
@@ -617,6 +620,7 @@ export const AuthContextProvider = ({
       last_name: docSnap.data().last_name,
       points: docSnap.data().points,
       tid: docSnap.data().tid,
+      school: docSnap.data().school,
       registered: docSnap.data().registered,
     });
     setType(docSnap.data().user_type);
