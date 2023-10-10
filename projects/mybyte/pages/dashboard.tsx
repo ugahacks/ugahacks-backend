@@ -44,7 +44,7 @@ const DashboardPage = () => {
               </div>
               <div>
                 <h2>Name: {userInfo.first_name} {userInfo.last_name}</h2>
-                <h2>School: </h2>
+                <h2>School: {userInfo.school}</h2>
                 <h2>Points: {userInfo.points}</h2>
                 <h2>Next Registered Event: </h2>
               </div>
