@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const ProtectedRoute = ({ children, className= "h-screen min-h-full overflow-auto min-w-full"}: { children: React.ReactNode, className?: string}) => {
+const ProtectedRoute = ({ children, className= "container"}: { children: React.ReactNode, className?: string}) => {
   const router = useRouter();
   const { user, userInfo } = useAuth();
 
