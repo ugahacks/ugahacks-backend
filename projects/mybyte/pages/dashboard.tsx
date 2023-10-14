@@ -23,8 +23,8 @@ const DashboardPage = () => {
 
   return (
     <ProtectedRoute>
-      <div className="flex py-2 container mx-auto flex-initial w-full">
-        <div className="text-gray-600 px-4 py-24 mt-2 mx-auto">
+      <div className="flex py-2 container mx-auto flex-initial w-full" >
+        <div className="text-gray-600 px-4 py-3 mt-2 mx-auto">
           <h2 className="text-5xl font-semibold">
             Welcome, {userInfo.first_name}
           </h2>
