@@ -182,8 +182,6 @@ export const AuthContextProvider = ({
         await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setDoc(doc(registerRef, user.uid ? user.uid : ""), {
             uid: user.uid,
-            firstName: data.firstName,
-            lastName: data.lastName,
             gender: data.gender,
             phoneNumber: data.phoneNumber,
             countryResidence: data.countryResidence.label,
@@ -191,8 +189,6 @@ export const AuthContextProvider = ({
             major: data.major,
             inputMajor: data.inputMajor,
             minor: data.minor,
-            school: data.school.value,
-            inputSchool: data.inputSchool,
             email: data.email,
             participated: data.participated,
             hopeToSee: data.hopeToSee,
