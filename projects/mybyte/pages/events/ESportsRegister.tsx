@@ -28,13 +28,13 @@ export default function ESportsRegister() {
     <div>
       <ProtectedRoute>
         <Card >
-          <div className="min-h-screen pt-2 font-mono mb-8">
+          <div className="min-h-screen pt-2 inter mb-8">
             <div className="container mx-auto">
               <div className="inputs w-full max-w-sm mx-auto">
-                <form className="font-inter" onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="personal w-full pt-2">
-                      <h1 className="text-center font-inter font-weight-700 font-bold text-2xl ">
+                      <h1 className="text-center font-weight-700 font-bold text-2xl ">
                         E-Sports Registration
                       </h1>
                       <h2 className="font-weight-300 text-[11px] text-gray-900 mt-4">
