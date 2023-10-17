@@ -14,7 +14,17 @@ const Hacks9: EventDetail = {
   deadline: new Date("02/04/2024"),
   // Add in person attribute
 };
-const events = [{ event: <EventRect {...Hacks9} /> }];
+
+const ESports: EventDetail = {
+  key: Events.e_sports_9,
+  page: "/events/ESportsRegister",
+  image: "/ESportsByte.jpeg",
+  startDate: new Date("02/03/2024"),
+  endDate: new Date("02/05/2024"),
+  deadline: new Date("02/04/2024"),
+  // Add in person attribute
+};
+const events = [{ event: <EventRect {...Hacks9} /> }, { event: <EventRect {...ESports} /> }];
 
 const DashboardPage = () => {
   const { userInfo, setUserInformation } = useAuth();
@@ -69,7 +79,7 @@ const DashboardPage = () => {
             </div>
           <div className=" mt-5">
             <h3 className="text-bold text-lg text-black">Register for events</h3>
-            <div className="flex container">
+            <div className="flex container gap-10">
               {events.map((data) => (
                 <button className="pt-4" key={data.event.key}>
                   {data.event}
