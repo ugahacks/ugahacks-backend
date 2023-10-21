@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import Image from "next/image";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
 import countryList from "react-select-country-list";
@@ -90,8 +91,14 @@ export default function Register() {
       <ProtectedRoute className="h-screen min-h-full min-w-full">
         <Card className="bg-opacity-0">
           <div className="min-h-screen pt-2 font-inter my-8">
-            <div className="container mx-auto flex flex-column justify-between">
-              <div className="min-w-0 w-1/4 shrink grow-0"></div>
+            <div className="mx-auto flex flex-column justify-between">
+              <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
+              <div className="flex flex-col flex-wrap h-full justify-center">
+                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                    <Image src="/two_circles_left.png" alt="two circles" fill className="object-contain"></Image>
+                  </div>
+                </div>
+              </div>
               <div className="inputs w-1/2 min-w-[24rem] max-w-2xl p-6 mx-auto shrink-0 grow">
                 <form className="mt-3 pt-4" onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-wrap -mx-3 mb-6">
@@ -598,8 +605,15 @@ export default function Register() {
                   </div>
                 </form>
               </div>
-              <div className="min-w-0 w-1/4 shrink grow-0">
-                {/*<Circle height="h-[285px]" width="w-[295px]"></Circle>*/}
+              <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
+                <div className="flex flex-col flex-wrap h-full justify-between">
+                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                    <Image src="/three_circles.png" alt="three circles" fill className="object-contain"></Image>
+                  </div>
+                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                    <Image src="/two_circles_right.png" alt="two circles" fill className="object-contain"></Image>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
