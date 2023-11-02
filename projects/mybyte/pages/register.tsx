@@ -228,6 +228,70 @@ export default function Register() {
                       <h2 className="text-2xl text-gray-900 text-center mb-5">
                         Registration Info:
                       </h2>
+                      <div className="flex items-center justify-between mt-4">
+                        <div className="w-full md:w-1/2 px-3 mb-6">
+                          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                            first name<span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                            {...register("firstName", {
+                              required: "Please enter your first name",
+                              pattern: {
+                                value: /^[a-z ,.'-]+$/i,
+                                message: "Contains invalid characters",
+                              },
+                            })}
+                            type="text"
+                            maxLength={50}
+                          />
+                          {errors.firstName ? (
+                            <>
+                              {errors.firstName.type === "required" && (
+                                <p className="text-red-500">
+                                  {errors.firstName.message}
+                                </p>
+                              )}
+                              {errors.firstName.type === "pattern" && (
+                                <p className="text-red-500">
+                                  {errors.firstName.message}
+                                </p>
+                              )}
+                            </>
+                          ) : null}
+                        </div>
+                        <div className="w-full md:w-1/2 px-3 mb-6">
+                          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                            last name<span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                            {...register("lastName", {
+                              required: "Please enter your last name",
+                              pattern: {
+                                value: /^[a-z ,.'-]+$/i,
+                                message: "Contains invalid characters",
+                              },
+                            })}
+                            type="text"
+                            maxLength={50}
+                          />
+                          {errors.lastName ? (
+                            <>
+                              {errors.lastName.type === "required" && (
+                                <p className="text-red-500">
+                                  {errors.lastName.message}
+                                </p>
+                              )}
+                              {errors.lastName.type === "pattern" && (
+                                <p className="text-red-500">
+                                  {errors.lastName.message}
+                                </p>
+                              )}
+                            </>
+                          ) : null}
+                        </div>
+                      </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           Gender
