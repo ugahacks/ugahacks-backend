@@ -16,6 +16,7 @@ import {
   StudentYears,
   Majors,
   ShirtSizes,
+  LevelsOfStudy,
 } from "../enums/registerEnums";
 
 import {
@@ -44,6 +45,7 @@ export default function Register() {
     defaultValues: {
       phoneNumber: "",
       inputMajor: "",
+      inputSchool: "",
     },
   });
 
@@ -53,16 +55,119 @@ export default function Register() {
   };
   //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);
 
-  const watchers = watch(["major"]); // Watching major  input fields in case user selects "other" option
+  const watchers = watch(["major", "school"]); // Watching major  input fields in case user selects "other" option
 
   const countryOptions = useMemo(() => countryList().getData(), []);
+  // ref: http://stackoverflow.com/a/1293163/2343
+  // This will parse a delimited string into an array of
+  // arrays. The default delimiter is the comma, but this
+  // can be overriden in the second argument.
+  function CSVToArray( strData: string, strDelimiter: string ){
+      // Check to see if the delimiter is defined. If not,
+      // then default to comma.
+      strDelimiter = (strDelimiter || ",");
+
+      // Create a regular expression to parse the CSV values.
+      let objPattern = new RegExp(
+          (
+              // Delimiters.
+              "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+
+              // Quoted fields.
+              "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+              // Standard fields.
+              "([^\"\\" + strDelimiter + "\\r\\n]*))"
+          ),
+          "gi"
+          );
+
+
+      // Create an array to hold our data. Give the array
+      // a default empty first row.
+      let arrData: string[][] = [[]];
+
+      // Create an array to hold our individual pattern
+      // matching groups.
+      let arrMatches = null;
+
+
+      // Keep looping over the regular expression matches
+      // until we can no longer find a match.
+      while (arrMatches = objPattern.exec( strData )){
+
+          // Get the delimiter that was found.
+          let strMatchedDelimiter = arrMatches[ 1 ];
+
+          // Check to see if the given delimiter has a length
+          // (is not the start of string) and if it matches
+          // field delimiter. If id does not, then we know
+          // that this delimiter is a row delimiter.
+          if (
+              strMatchedDelimiter.length &&
+              strMatchedDelimiter !== strDelimiter
+              ){
+
+              // Since we have reached a new row of data,
+              // add an empty row to our data array.
+              arrData.push( [] );
+
+          }
+
+          let strMatchedValue;
+
+          // Now that we have our delimiter out of the way,
+          // let's check to see which kind of value we
+          // captured (quoted or unquoted).
+          if (arrMatches[ 2 ]){
+
+              // We found a quoted value. When we capture
+              // this value, unescape any double quotes.
+              strMatchedValue = arrMatches[ 2 ].replace(
+                  new RegExp( "\"\"", "g" ),
+                  "\""
+                  );
+
+          } else {
+
+              // We found a non-quoted value.
+              strMatchedValue = arrMatches[ 3 ];
+
+          }
+
+
+          // Now that we have our value string, let's add
+          // it to the data array.
+          arrData[ arrData.length - 1 ].push( strMatchedValue );
+      }
+
+      // Return the parsed data.
+      return( arrData );
+  }
+  let schoolOptions: {value: string, label: string}[] = [];
+  fetch("/schools.csv")
+  .then((resp) => resp.text())
+  .then((text) => {
+    CSVToArray(text, ",").forEach((row, index) => {
+      if (index != 0) {
+        schoolOptions.push({value: row[0], label: row[0]});
+      }
+    });
+  });
+  schoolOptions.push({value: "Augusta University", label: "Augusta University"});
+  schoolOptions.push({value: "other", label: "Other"});
 
   const [otherMajor, setOtherMajor] = useState(false);
+  const [otherSchool, setOtherSchool] = useState(false);
   const [resumeUploadProgress, setResumeUploadProgress] = useState();
   const [textCount, setTextCount] = useState(0);
 
   register("major", {
     onChange: (e) => otherMajorInput(e.target.value),
+  });
+
+  register("school", {
+    onChange: (e) => otherSchoolInput(e.target.value.value),
   });
 
   function otherMajorInput(value: string) {
@@ -71,6 +176,15 @@ export default function Register() {
     } else {
       setOtherMajor(false);
       resetField("inputMajor");
+    }
+  }
+
+  function otherSchoolInput(value: string) {
+    if (value == "other") {
+      setOtherSchool(true);
+    } else {
+      setOtherSchool(false);
+      resetField("inputSchool");
     }
   }
 
@@ -140,6 +254,33 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Age
+                          
+                        </label>
+                        <Controller
+                          name="age"
+                          rules={{
+                            required: "Please provide an age",
+                          }}
+                          render={({ field: { name, onChange, value } }) => (
+                            <input type="number" 
+                            placeholder={name}
+                            className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                            value={value}
+                            onChange={onChange}
+                            {...register}
+                            />
+                          )}
+                          control={control}
+                        />
+                        {errors.age && (
+                          <p className="text-red-400">
+                            {errors.age.message}
+                          </p>
+                        )}
+                      </div>
+                      <div className="w-full md:w-full px-3 mb-6">
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           Country of Residence
                           
                         </label>
@@ -203,6 +344,93 @@ export default function Register() {
                             </>
                           ) : null}
                         </div>
+                      </div>
+                      <div className="w-full md:w-full px-3 mb-6">
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Level of Study
+                        </label>
+                        <div className="flex-shrink w-full inline-block relative">
+                          <select
+                            className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                            {...register("levelsOfStudy", {
+                              required: "Select level of study",
+                            })}
+                          >
+                            <option value="">Select your level of study</option>
+                            {Object.keys(LevelsOfStudy).map((key) => (
+                              <option key={key} value={key}>
+                                {LevelsOfStudy[key as keyof typeof LevelsOfStudy]}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                            <svg
+                              className="fill-current h-4 w-4"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                          </div>
+                          {errors.levelsOfStudy && (
+                            <p className="text-red-400">
+                              {errors.levelsOfStudy.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="w-full md:w-full px-3 mb-6">
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          School
+                        </label>
+                        <Controller
+                          name="school"
+                          rules={{ required: "Please select your school" }}
+                          render={({ field: { name, onChange, value } }) => (
+                            <Select
+                              className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                              options={schoolOptions}
+                              value={value}
+                              onChange={onChange}
+                              name={name}
+                            />
+                          )}
+                          control={control}
+                        />
+                        {errors.school && (
+                          <p className="text-red-400">
+                            {errors.school.message}
+                          </p>
+                        )}
+                        {otherSchool ? (
+                          <input
+                            className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                            {...register("inputSchool", {
+                              required: "Please enter your school",
+                              pattern: {
+                                value: /^[a-z ,.'-]+$/i,
+                                message: "Contains invalid characters",
+                              },
+                            })}
+                            type="text"
+                            maxLength={100}
+                            placeholder="Type your school here"
+                          />
+                        ) : null}
+                        {errors.inputSchool ? (
+                          <>
+                            {errors.inputSchool.type === "required" && (
+                              <p className="text-red-500">
+                                {errors.inputSchool.message}
+                              </p>
+                            )}
+                            {errors.inputSchool.type === "pattern" && (
+                              <p className="text-red-500">
+                                {errors.inputSchool.message}
+                              </p>
+                            )}
+                          </>
+                        ) : null}
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">

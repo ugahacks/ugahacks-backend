@@ -1,4 +1,4 @@
-import { Genders, StudentYears, Majors, ShirtSizes } from "../enums/registerEnums"
+import { Genders, StudentYears, Majors, ShirtSizes, LevelsOfStudy } from "../enums/registerEnums"
 import { ReactSelectObject } from "../interfaces/react-select";
 
 
@@ -24,5 +24,7 @@ export interface RegisterForm {
     mlhCommunication: boolean;
     resume: FileList;
     resumeLink: string;
+    age: number;
+    levelsOfStudy: LevelsOfStudy;
     // excitement: Number; // Scale of 1- 100
 }
