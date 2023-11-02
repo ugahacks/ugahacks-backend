@@ -746,7 +746,7 @@ export default function Register() {
                           <select
                             className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
                             {...register("shirtSize", {
-                              required: "PLease select a shirt size",
+                              required: "Please select a shirt size",
                             })}
                           >
                             <option value="">Select your shirt size</option>
