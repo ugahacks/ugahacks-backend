@@ -57,5 +57,6 @@ export enum DietaryRestrictions {
   celiacDisease = "Celiac Disease",
   kosher = "Kosher",
   halal = "Halal",
+  none = "None",
   other = "Other",
 }

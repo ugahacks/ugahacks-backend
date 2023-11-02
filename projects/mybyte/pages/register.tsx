@@ -17,6 +17,7 @@ import {
   Majors,
   ShirtSizes,
   LevelsOfStudy,
+  DietaryRestrictions,
 } from "../enums/registerEnums";
 
 import {
@@ -46,6 +47,7 @@ export default function Register() {
       phoneNumber: "",
       inputMajor: "",
       inputSchool: "",
+      inputDietaryRestrictions: "",
     },
   });
 
@@ -55,110 +57,99 @@ export default function Register() {
   };
   //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);
 
-  const watchers = watch(["major", "school"]); // Watching major  input fields in case user selects "other" option
+  const watchers = watch(["major", "school", "dietaryRestrictions"]); // Watching major  input fields in case user selects "other" option
 
   const countryOptions = useMemo(() => countryList().getData(), []);
   // ref: http://stackoverflow.com/a/1293163/2343
   // This will parse a delimited string into an array of
   // arrays. The default delimiter is the comma, but this
   // can be overriden in the second argument.
-  function CSVToArray( strData: string, strDelimiter: string ){
-      // Check to see if the delimiter is defined. If not,
-      // then default to comma.
-      strDelimiter = (strDelimiter || ",");
+  function CSVToArray(strData: string, strDelimiter: string) {
+    // Check to see if the delimiter is defined. If not,
+    // then default to comma.
+    strDelimiter = strDelimiter || ",";
 
-      // Create a regular expression to parse the CSV values.
-      let objPattern = new RegExp(
-          (
-              // Delimiters.
-              "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+    // Create a regular expression to parse the CSV values.
+    let objPattern = new RegExp(
+      // Delimiters.
+      "(\\" +
+        strDelimiter +
+        "|\\r?\\n|\\r|^)" +
+        // Quoted fields.
+        '(?:"([^"]*(?:""[^"]*)*)"|' +
+        // Standard fields.
+        '([^"\\' +
+        strDelimiter +
+        "\\r\\n]*))",
+      "gi"
+    );
 
-              // Quoted fields.
-              "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+    // Create an array to hold our data. Give the array
+    // a default empty first row.
+    let arrData: string[][] = [[]];
 
-              // Standard fields.
-              "([^\"\\" + strDelimiter + "\\r\\n]*))"
-          ),
-          "gi"
-          );
+    // Create an array to hold our individual pattern
+    // matching groups.
+    let arrMatches = null;
 
+    // Keep looping over the regular expression matches
+    // until we can no longer find a match.
+    while ((arrMatches = objPattern.exec(strData))) {
+      // Get the delimiter that was found.
+      let strMatchedDelimiter = arrMatches[1];
 
-      // Create an array to hold our data. Give the array
-      // a default empty first row.
-      let arrData: string[][] = [[]];
-
-      // Create an array to hold our individual pattern
-      // matching groups.
-      let arrMatches = null;
-
-
-      // Keep looping over the regular expression matches
-      // until we can no longer find a match.
-      while (arrMatches = objPattern.exec( strData )){
-
-          // Get the delimiter that was found.
-          let strMatchedDelimiter = arrMatches[ 1 ];
-
-          // Check to see if the given delimiter has a length
-          // (is not the start of string) and if it matches
-          // field delimiter. If id does not, then we know
-          // that this delimiter is a row delimiter.
-          if (
-              strMatchedDelimiter.length &&
-              strMatchedDelimiter !== strDelimiter
-              ){
-
-              // Since we have reached a new row of data,
-              // add an empty row to our data array.
-              arrData.push( [] );
-
-          }
-
-          let strMatchedValue;
-
-          // Now that we have our delimiter out of the way,
-          // let's check to see which kind of value we
-          // captured (quoted or unquoted).
-          if (arrMatches[ 2 ]){
-
-              // We found a quoted value. When we capture
-              // this value, unescape any double quotes.
-              strMatchedValue = arrMatches[ 2 ].replace(
-                  new RegExp( "\"\"", "g" ),
-                  "\""
-                  );
-
-          } else {
-
-              // We found a non-quoted value.
-              strMatchedValue = arrMatches[ 3 ];
-
-          }
-
-
-          // Now that we have our value string, let's add
-          // it to the data array.
-          arrData[ arrData.length - 1 ].push( strMatchedValue );
+      // Check to see if the given delimiter has a length
+      // (is not the start of string) and if it matches
+      // field delimiter. If id does not, then we know
+      // that this delimiter is a row delimiter.
+      if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
+        // Since we have reached a new row of data,
+        // add an empty row to our data array.
+        arrData.push([]);
       }
 
-      // Return the parsed data.
-      return( arrData );
+      let strMatchedValue;
+
+      // Now that we have our delimiter out of the way,
+      // let's check to see which kind of value we
+      // captured (quoted or unquoted).
+      if (arrMatches[2]) {
+        // We found a quoted value. When we capture
+        // this value, unescape any double quotes.
+        strMatchedValue = arrMatches[2].replace(new RegExp('""', "g"), '"');
+      } else {
+        // We found a non-quoted value.
+        strMatchedValue = arrMatches[3];
+      }
+
+      // Now that we have our value string, let's add
+      // it to the data array.
+      arrData[arrData.length - 1].push(strMatchedValue);
+    }
+
+    // Return the parsed data.
+    return arrData;
   }
-  let schoolOptions: {value: string, label: string}[] = [];
+  let schoolOptions: { value: string; label: string }[] = [];
   fetch("/schools.csv")
-  .then((resp) => resp.text())
-  .then((text) => {
-    CSVToArray(text, ",").forEach((row, index) => {
-      if (index != 0) {
-        schoolOptions.push({value: row[0], label: row[0]});
-      }
+    .then((resp) => resp.text())
+    .then((text) => {
+      CSVToArray(text, ",").forEach((row, index) => {
+        if (index != 0) {
+          schoolOptions.push({ value: row[0], label: row[0] });
+        }
+      });
     });
+  schoolOptions.push({
+    value: "Augusta University",
+    label: "Augusta University",
   });
-  schoolOptions.push({value: "Augusta University", label: "Augusta University"});
-  schoolOptions.push({value: "other", label: "Other"});
+  schoolOptions.push({ value: "other", label: "Other" });
 
   const [otherMajor, setOtherMajor] = useState(false);
   const [otherSchool, setOtherSchool] = useState(false);
+  const [otherDietaryRestrictions, setOtherDietaryRestrictions] =
+    useState(false);
   const [resumeUploadProgress, setResumeUploadProgress] = useState();
   const [textCount, setTextCount] = useState(0);
 
@@ -168,6 +159,10 @@ export default function Register() {
 
   register("school", {
     onChange: (e) => otherSchoolInput(e.target.value.value),
+  });
+
+  register("dietaryRestrictions", {
+    onChange: (e) => otherDietaryRestrictionsInput(e.target.value),
   });
 
   function otherMajorInput(value: string) {
@@ -185,6 +180,17 @@ export default function Register() {
     } else {
       setOtherSchool(false);
       resetField("inputSchool");
+    }
+  }
+
+  function otherDietaryRestrictionsInput(value: string) {
+    if (value == "other") {
+      console.log(value);
+      setOtherDietaryRestrictions(true);
+    } else {
+      console.log(value);
+      setOtherDietaryRestrictions(false);
+      resetField("inputDietaryRestrictions");
     }
   }
 
@@ -207,9 +213,14 @@ export default function Register() {
           <div className="min-h-screen pt-2 font-inter my-8">
             <div className="mx-auto flex flex-column justify-between">
               <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
-              <div className="flex flex-col flex-wrap h-full justify-center">
+                <div className="flex flex-col flex-wrap h-full justify-center">
                   <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
-                    <Image src="/two_circles_left.png" alt="two circles" fill className="object-contain"></Image>
+                    <Image
+                      src="/two_circles_left.png"
+                      alt="two circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
                   </div>
                 </div>
               </div>
@@ -217,7 +228,9 @@ export default function Register() {
                 <form className="mt-3 pt-4" onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="personal w-full pt-2">
-                      <h2 className="text-2xl text-gray-900 text-center mb-5">Registration Info:</h2>
+                      <h2 className="text-2xl text-gray-900 text-center mb-5">
+                        Registration Info:
+                      </h2>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           Gender
@@ -255,7 +268,6 @@ export default function Register() {
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           Age
-                          
                         </label>
                         <Controller
                           name="age"
@@ -263,26 +275,24 @@ export default function Register() {
                             required: "Please provide an age",
                           }}
                           render={({ field: { name, onChange, value } }) => (
-                            <input type="number" 
-                            placeholder={name}
-                            className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                            value={value}
-                            onChange={onChange}
-                            {...register}
+                            <input
+                              type="number"
+                              placeholder={name}
+                              className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                              value={value}
+                              onChange={onChange}
+                              {...register}
                             />
                           )}
                           control={control}
                         />
                         {errors.age && (
-                          <p className="text-red-400">
-                            {errors.age.message}
-                          </p>
+                          <p className="text-red-400">{errors.age.message}</p>
                         )}
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           Country of Residence
-                          
                         </label>
                         <Controller
                           name="countryResidence"
@@ -359,7 +369,11 @@ export default function Register() {
                             <option value="">Select your level of study</option>
                             {Object.keys(LevelsOfStudy).map((key) => (
                               <option key={key} value={key}>
-                                {LevelsOfStudy[key as keyof typeof LevelsOfStudy]}
+                                {
+                                  LevelsOfStudy[
+                                    key as keyof typeof LevelsOfStudy
+                                  ]
+                                }
                               </option>
                             ))}
                           </select>
@@ -435,7 +449,6 @@ export default function Register() {
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           Year
-                          
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -593,20 +606,34 @@ export default function Register() {
                                 htmlFor="grid-text-1"
                               >
                                 First Time at a Hackathon?
-                                
                               </label>
                               <label className="relative inline-flex items-center mb-4 cursor-pointer">
-                                <input type="checkbox" value="" id="grid-text-1" className="sr-only peer"
+                                <input
+                                  type="checkbox"
+                                  value=""
+                                  id="grid-text-1"
+                                  className="sr-only peer"
                                   onChange={() => {
                                     onChange(!value);
-                                    let span = document.getElementById("grid-text-1-span");
+                                    let span =
+                                      document.getElementById(
+                                        "grid-text-1-span"
+                                      );
                                     if (span === null) return;
                                     let text = span.innerText;
-                                    span.innerText = (text.includes("No")) ? "Yes" : "No";
+                                    span.innerText = text.includes("No")
+                                      ? "Yes"
+                                      : "No";
                                   }}
-                                  checked={value}/>
+                                  checked={value}
+                                />
                                 <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
-                                <span className="ml-3 text-sm" id="grid-text-1-span">No</span>
+                                <span
+                                  className="ml-3 text-sm"
+                                  id="grid-text-1-span"
+                                >
+                                  No
+                                </span>
                               </label>
                             </>
                           )}
@@ -620,7 +647,6 @@ export default function Register() {
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           What do you expect out of UGA Hacks?
-                          
                         </label>
                         <textarea
                           className="bg-gray-100 rounded-md border leading-normal resize-none w-full h-20 py-2 px-3 shadow-inner border border-gray-400 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
@@ -637,22 +663,81 @@ export default function Register() {
                           </p>
                         )}
                       </div>
+
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label
-                          className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
-                          htmlFor="grid-text-1"
-                        >
-                          Dietary Restrictions
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Dietary Restrictions?
                         </label>
-                        <input
-                          className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
-                          {...register("dietaryRestrictions")}
-                          id="grid-text-1"
-                          type="text"
-                          maxLength={100}
-                          placeholder="Enter dietary restrictions"
-                        />
+                        <div className="flex-shrink w-full inline-block relative">
+                          <select
+                            className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                            {...register("dietaryRestrictions", {
+                              required:
+                                "Please select your dietary restrictions",
+                            })}
+                          >
+                            <option value="">
+                              Select your dietary restrictions
+                            </option>
+                            {Object.keys(DietaryRestrictions).map((key) => (
+                              <option key={key} value={key}>
+                                {
+                                  DietaryRestrictions[
+                                    key as keyof typeof DietaryRestrictions
+                                  ]
+                                }
+                              </option>
+                            ))}
+                          </select>
+                          {otherDietaryRestrictions ? (
+                            <input
+                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                              {...register("inputDietaryRestrictions", {
+                                required:
+                                  "Please select your dietary restrictions",
+                                pattern: {
+                                  value: /^[a-z ,.'-]+$/i,
+                                  message: "Contains invalid characters",
+                                },
+                              })}
+                              type="text"
+                              maxLength={100}
+                              placeholder="Type your dietary restrictions here"
+                            />
+                          ) : null}
+                          <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                            <svg
+                              className="fill-current h-4 w-4"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                          </div>
+                          {errors.dietaryRestrictions && (
+                            <p className="text-red-400">
+                              {errors.dietaryRestrictions.message}
+                            </p>
+                          )}
+                          {errors.inputDietaryRestrictions ? (
+                            <>
+                              {errors.inputDietaryRestrictions.type ===
+                                "required" && (
+                                <p className="text-red-500">
+                                  {errors.inputDietaryRestrictions.message}
+                                </p>
+                              )}
+                              {errors.inputDietaryRestrictions.type ===
+                                "pattern" && (
+                                <p className="text-red-500">
+                                  {errors.inputDietaryRestrictions.message}
+                                </p>
+                              )}
+                            </>
+                          ) : null}
+                        </div>
                       </div>
+
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           T-Shirt Size
@@ -713,9 +798,16 @@ export default function Register() {
                                 .&quot;
                               </label>
                               <label className="relative inline-flex items-center mb-4 cursor-pointer">
-                                <input type="checkbox" value="" id="grid-text-1" className="sr-only peer"
-                                  onChange={() => {onChange(!value)}}
-                                  checked={value}/>
+                                <input
+                                  type="checkbox"
+                                  value=""
+                                  id="grid-text-1"
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                  }}
+                                  checked={value}
+                                />
                                 <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                               </label>
                             </>
@@ -772,9 +864,16 @@ export default function Register() {
                                 .”
                               </label>
                               <label className="relative inline-flex items-center mb-4 cursor-pointer">
-                                <input type="checkbox" value="" id="grid-text-1" className="sr-only peer"
-                                  onChange={() => {onChange(!value)}}
-                                  checked={value}/>
+                                <input
+                                  type="checkbox"
+                                  value=""
+                                  id="grid-text-1"
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                  }}
+                                  checked={value}
+                                />
                                 <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                               </label>
                             </>
@@ -804,12 +903,18 @@ export default function Register() {
                                 into the MLH Hacker, Events, or Organizer
                                 Newsletters and other communications from
                                 MLH.&quot;
-                                
                               </label>
                               <label className="relative inline-flex items-center mb-4 cursor-pointer">
-                                <input type="checkbox" value="" id="grid-text-1" className="sr-only peer"
-                                  onChange={() => {onChange(!value)}}
-                                  checked={value}/>
+                                <input
+                                  type="checkbox"
+                                  value=""
+                                  id="grid-text-1"
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                  }}
+                                  checked={value}
+                                />
                                 <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                               </label>
                             </>
@@ -836,10 +941,20 @@ export default function Register() {
               <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
                 <div className="flex flex-col flex-wrap h-full justify-between">
                   <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
-                    <Image src="/three_circles.png" alt="three circles" fill className="object-contain"></Image>
+                    <Image
+                      src="/three_circles.png"
+                      alt="three circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
                   </div>
                   <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
-                    <Image src="/two_circles_right.png" alt="two circles" fill className="object-contain"></Image>
+                    <Image
+                      src="/two_circles_right.png"
+                      alt="two circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
                   </div>
                 </div>
               </div>
