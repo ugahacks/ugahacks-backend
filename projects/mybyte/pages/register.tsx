@@ -140,10 +140,7 @@ export default function Register() {
         }
       });
     });
-  schoolOptions.push({
-    value: "Augusta University",
-    label: "Augusta University",
-  });
+
   schoolOptions.push({ value: "other", label: "Other" });
 
   const [otherMajor, setOtherMajor] = useState(false);
@@ -928,7 +925,7 @@ export default function Register() {
                       </div>
                       <div className="">
                         <button
-                          className="border rounded w-full border-gray-100 bg-gray-100 hover:bg-primary-600 hover:border-primary-500 hover:text-white transition-colors"
+                          className="border rounded w-full border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors p-2"
                           type="submit"
                         >
                           Register!
