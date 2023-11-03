@@ -47,7 +47,7 @@ export interface UserType {
   uid: string | null;
 }
 
-interface EventRegistered {
+export interface EventRegistered {
   HACKS8: boolean | null;
   HACKS9: boolean | null;
 }
@@ -198,10 +198,18 @@ export const AuthContextProvider = ({
             participated: data.participated,
             hopeToSee: data.hopeToSee,
             dietaryRestrictions: data.dietaryRestrictions,
+            inputDietaryRestrictions: data.inputDietaryRestrictions,
             shirtSize: data.shirtSize,
             codeOfConduct: data.codeOfConduct,
             eventLogisticsInfo: data.eventLogisticsInfo,
             mlhCommunication: data.mlhCommunication,
+            age: data.age,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            levelOfStudy: data.levelsOfStudy,
+            school: data.school,
+            inputSchool: data.inputSchool,
+            elCreditInterest: data.elCreditInterest,
             resumeLink: downloadURL,
             submitted_time: serverTimestamp(),
           });

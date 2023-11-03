@@ -48,6 +48,8 @@ export default function Register() {
       inputMajor: "",
       inputSchool: "",
       inputDietaryRestrictions: "",
+      participated: false,
+      elCreditInterest: false,
     },
   });
 
@@ -605,7 +607,7 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          Current Major
+                          Current Major<span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -668,7 +670,7 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-1/2 px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          Minor<span className="text-red-600">*</span>
+                          Minor
                         </label>
                         <input
                           className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
@@ -765,7 +767,6 @@ export default function Register() {
                                 htmlFor="grid-text-2"
                               >
                                 Interested in EL Credit? (UGA students ONLY)
-                                <span className="text-red-600">*</span>
                               </label>
                               <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input

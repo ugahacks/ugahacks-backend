@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ProtectedRoute from "../components/ProtectedRoute";
-import { useAuth } from "../context/AuthContext";
+import { useAuth, EventRegistered } from "../context/AuthContext";
 import EventRect, { EventDetail } from "../components/EventRect";
 import { Events } from "../enums/events";
 import { QRCodeCanvas } from "qrcode.react";
@@ -25,8 +25,8 @@ const ESports: EventDetail = {
   // Add in person attribute
 };
 const events = [
-  { event: <EventRect {...Hacks9} /> },
-  { event: <EventRect {...ESports} /> },
+  { event: <EventRect {...Hacks9} />, id: (re: EventRegistered) => {return !re.HACKS9;} },
+  { event: <EventRect {...ESports} />, id: (re: EventRegistered) => {return false} },
 ];
 
 const openEvents = ["UGAHacks 9", "ESports 9"];
@@ -49,7 +49,7 @@ eventMap.set("ESPORTS9", "eSports 9");
 
 const DashboardPage = () => {
   const { userInfo, setUserInformation } = useAuth();
-  const registeredEvents = userInfo.registered;
+  const registeredEvents: EventRegistered = userInfo.registered;
   const registeredEventKeys = Object.keys(registeredEvents);
 
   return (
@@ -115,11 +115,16 @@ const DashboardPage = () => {
               Register for events
             </h3>
             <div className="flex container gap-10">
-              {events.map((data) => (
-                <button className="pt-4" key={data.event.key}>
-                  {data.event}
-                </button>
-              ))}
+              {events.map((data) => {
+                if (data.id(registeredEvents)) {
+                  return (
+                    <button className="pt-4" key={data.event.key}>
+                      {data.event}
+                    </button>
+                  );
+                }
+                return <></>;
+              })}
             </div>
           </div>
         </div>
