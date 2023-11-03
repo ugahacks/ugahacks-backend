@@ -25,8 +25,26 @@ const ESports: EventDetail = {
   // Add in person attribute
 };
 const events = [
-  { event: <EventRect {...Hacks9} />, id: (re: EventRegistered) => {return !re.HACKS9;} },
-  { event: <EventRect {...ESports} />, id: (re: EventRegistered) => {return false} },
+  { event: 
+    (re: EventRegistered) => {
+      if (!re.HACKS9) {
+        return <EventRect disabled={false} event={Hacks9} />;
+      } else {
+        return <EventRect disabled={true} event={Hacks9} />;
+      }
+    }, id:
+    (re: EventRegistered) => {
+      return true;
+    }
+  },
+  { event:
+    (re: any) => {
+      if (true) {
+        return <EventRect disabled={false} event={ESports} />;
+      } else {
+        return <EventRect disabled={true} event={ESports} />;
+      }
+    }, id: (re: EventRegistered) => {return false} },
 ];
 
 const openEvents = ["UGAHacks 9", "ESports 9"];
@@ -117,9 +135,10 @@ const DashboardPage = () => {
             <div className="flex container gap-10">
               {events.map((data) => {
                 if (data.id(registeredEvents)) {
+                  let ev = data.event(registeredEvents);
                   return (
-                    <button className="pt-4" key={data.event.key}>
-                      {data.event}
+                    <button className="pt-4" key={ev.key}>
+                      {ev}
                     </button>
                   );
                 }
