@@ -29,6 +29,24 @@ const events = [
   { event: <EventRect {...ESports} /> },
 ];
 
+const openEvents = ["UGAHacks 9", "ESports 9"];
+const eventMap = new Map<string, string>();
+eventMap.set("HACKS9", "UGAHacks 9");
+eventMap.set("ESPORTS9", "eSports 9");
+
+// function registeredEventsDisplayed(
+//   registeredEventKeys: string[],
+//   eventMap: Map<string, string>
+// ) {
+//   let s = "";
+//   for (let i = 0; i < registeredEventKeys.length; i++) {
+//     if (eventMap.has(registeredEventKeys[i]))
+//       s += eventMap.get(registeredEventKeys[i]) + ", ";
+//   }
+
+//   return s;
+// }
+
 const DashboardPage = () => {
   const { userInfo, setUserInformation } = useAuth();
   const registeredEvents = userInfo.registered;
@@ -72,12 +90,14 @@ const DashboardPage = () => {
                   <ul>
                     <h2>Registered Events:</h2>
                     {registeredEventKeys.map((eventName) => (
-                      <li
+                      <span
                         className="text-red-500 font-semibold"
                         key={eventName}
                       >
-                        {eventName}
-                      </li>
+                        {eventMap.has(eventName)
+                          ? eventMap.get(eventName) + " "
+                          : null}
+                      </span>
                     ))}
                   </ul>
                 ) : (

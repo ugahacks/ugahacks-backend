@@ -49,6 +49,7 @@ export interface UserType {
 
 interface EventRegistered {
   HACKS8: boolean | null;
+  HACKS9: boolean | null;
 }
 
 export interface UserInfoType {
@@ -84,8 +85,9 @@ export const AuthContextProvider = ({
     school: null,
     registered: {
       HACKS8: null,
+      HACKS9: null,
     },
-  
+
     //user_type: null
   });
   const [user_type, setType] = useState<string | null>(null);
@@ -209,7 +211,8 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks8
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKS8": true,
+      "registered.HACKS8": false,
+      "registered.HACKS9": true,
     });
 
     // Update userInfo
@@ -229,7 +232,8 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks8
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.ESPORTS8": true,
+      "registered.ESPORTS8": false,
+      "registered.ESPORTS9": true,
     });
 
     // Update userInfo
@@ -623,78 +627,94 @@ export const AuthContextProvider = ({
   };
 
   /**
- * Confirms whether they are valid emails in the database.
- * @param emails the emails to validate against.
- * @param strict whether to also check if they signed up to a different team.
- * @returns Promise<boolean[]>, a boolean array in the order of the `emails` array.
- */
-  const confirmEmails: (emails: string[], strict?: boolean) => Promise<boolean[]>
-    = async (emails: string[], strict: boolean = true) => {
-      let returned: boolean[] = [];
-      for (let times: number = 0; times < emails.length; times++) returned.push(false);
-      const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
-      const results: QuerySnapshot<DocumentData> = await getDocs(q);
-      results.forEach((elem) => {
-        emails.forEach((email, index) => {
-          if (email === elem.data().email && (!strict || elem.data().tid == undefined)) returned[index] = true;
-        });
+   * Confirms whether they are valid emails in the database.
+   * @param emails the emails to validate against.
+   * @param strict whether to also check if they signed up to a different team.
+   * @returns Promise<boolean[]>, a boolean array in the order of the `emails` array.
+   */
+  const confirmEmails: (
+    emails: string[],
+    strict?: boolean
+  ) => Promise<boolean[]> = async (
+    emails: string[],
+    strict: boolean = true
+  ) => {
+    let returned: boolean[] = [];
+    for (let times: number = 0; times < emails.length; times++)
+      returned.push(false);
+    const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
+    const results: QuerySnapshot<DocumentData> = await getDocs(q);
+    results.forEach((elem) => {
+      emails.forEach((email, index) => {
+        if (
+          email === elem.data().email &&
+          (!strict || elem.data().tid == undefined)
+        )
+          returned[index] = true;
       });
-      return returned;
-    }
+    });
+    return returned;
+  };
 
   /**
-  * Checks if `emails` is in the given team.
-  * @param emails the emails to validate against.
-  * @param tid the team to validate against.
-  * @returns Promise<boolean[]>, a boolean array in the order of the `emails` array.
-  */
-  const confirmedOnTeam: (emails: string[], tid: string) => Promise<boolean[]>
-    = async (emails: string[], tid: string) => {
-      let returned: boolean[] = [];
-      for (let times: number = 0; times < emails.length; times++) returned.push(false);
-      const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
-      const results: QuerySnapshot<DocumentData> = await getDocs(q);
-      if (results.empty) return returned;
-      results.forEach((elem) => {
-        const index = emails.indexOf(elem.data().email)
-        if (index <= 0) return;
-        returned[index] = (tid === elem.data().tid);
-      });
+   * Checks if `emails` is in the given team.
+   * @param emails the emails to validate against.
+   * @param tid the team to validate against.
+   * @returns Promise<boolean[]>, a boolean array in the order of the `emails` array.
+   */
+  const confirmedOnTeam: (
+    emails: string[],
+    tid: string
+  ) => Promise<boolean[]> = async (emails: string[], tid: string) => {
+    let returned: boolean[] = [];
+    for (let times: number = 0; times < emails.length; times++)
+      returned.push(false);
+    const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
+    const results: QuerySnapshot<DocumentData> = await getDocs(q);
+    if (results.empty) return returned;
+    results.forEach((elem) => {
+      const index = emails.indexOf(elem.data().email);
+      if (index <= 0) return;
+      returned[index] = tid === elem.data().tid;
+    });
 
-      return returned;
-    }
+    return returned;
+  };
 
-    const validateEmails = async (emails: string[]) => {
-      const truth = await confirmEmails(emails);
-      let data: {member: {email: string, confirmed: boolean}[]} = {
-          member: [],
-      };
-      if (emails.length !== truth.length) {
-          throw new Error("Should not happen");
-      } // I don't know how this can happen, but it shouldn't
-      for (let times: number = 0; times < emails.length; times++) {
-          data.member.push({
-              email: emails[times],
-              confirmed: truth[times],
-          });
-      } // for every email, push whether it has been confirmed in user
-      return data;
-    }
-
-    const giveTeamPoints = async () => {
-      if (userInfo == undefined || userInfo.tid == undefined) return;
-      const team: TeamType | null = await getTeam();
-      if (team?.submitted == true) return;
-      const q: Query<DocumentData> = query(userRef, where("tid", "==", userInfo.tid));
-      const results: QuerySnapshot<DocumentData> = await getDocs(q);
-      results.forEach(async (elem) => {
-          await updateDoc(elem.ref, {
-            points: increment(2500),
-          });
-      });
-      const docRef = doc(teamRef, userInfo.tid ? userInfo.tid : "0");
-      await updateDoc(docRef, {submitted: true});
+  const validateEmails = async (emails: string[]) => {
+    const truth = await confirmEmails(emails);
+    let data: { member: { email: string; confirmed: boolean }[] } = {
+      member: [],
     };
+    if (emails.length !== truth.length) {
+      throw new Error("Should not happen");
+    } // I don't know how this can happen, but it shouldn't
+    for (let times: number = 0; times < emails.length; times++) {
+      data.member.push({
+        email: emails[times],
+        confirmed: truth[times],
+      });
+    } // for every email, push whether it has been confirmed in user
+    return data;
+  };
+
+  const giveTeamPoints = async () => {
+    if (userInfo == undefined || userInfo.tid == undefined) return;
+    const team: TeamType | null = await getTeam();
+    if (team?.submitted == true) return;
+    const q: Query<DocumentData> = query(
+      userRef,
+      where("tid", "==", userInfo.tid)
+    );
+    const results: QuerySnapshot<DocumentData> = await getDocs(q);
+    results.forEach(async (elem) => {
+      await updateDoc(elem.ref, {
+        points: increment(2500),
+      });
+    });
+    const docRef = doc(teamRef, userInfo.tid ? userInfo.tid : "0");
+    await updateDoc(docRef, { submitted: true });
+  };
 
   const logOut = async () => {
     setUser({ email: null, uid: null });

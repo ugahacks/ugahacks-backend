@@ -230,8 +230,8 @@ export default function Register() {
                       </h2>
                       <div className="flex items-center justify-between mt-4">
                         <div className="w-full md:w-1/2 px-3 mb-6">
-                          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                            first name<span className="text-red-600">*</span>
+                          <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                            First Name<span className="text-red-600">*</span>
                           </label>
                           <input
                             className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
@@ -243,6 +243,7 @@ export default function Register() {
                               },
                             })}
                             type="text"
+                            placeholder="first name"
                             maxLength={50}
                           />
                           {errors.firstName ? (
@@ -261,8 +262,8 @@ export default function Register() {
                           ) : null}
                         </div>
                         <div className="w-full md:w-1/2 px-3 mb-6">
-                          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                            last name<span className="text-red-600">*</span>
+                          <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                            Last Name<span className="text-red-600">*</span>
                           </label>
                           <input
                             className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
@@ -274,6 +275,7 @@ export default function Register() {
                               },
                             })}
                             type="text"
+                            placeholder="last name"
                             maxLength={50}
                           />
                           {errors.lastName ? (
@@ -293,8 +295,45 @@ export default function Register() {
                         </div>
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
+                        <label
+                          className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
+                          htmlFor="grid-text-1"
+                        >
+                          Email
+                          <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                          className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                          {...register("email", {
+                            required: "Please enter your school email",
+                            pattern: {
+                              value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu)/,
+                              message: "Needs to be a valid school email",
+                            },
+                          })}
+                          id="grid-text-1"
+                          type="text"
+                          placeholder="byte@ugahacks.com"
+                          maxLength={100}
+                        />
+                        {errors.email ? (
+                          <>
+                            {errors.email.type === "required" && (
+                              <p className="text-red-500">
+                                {errors.email.message}
+                              </p>
+                            )}
+                            {errors.email.type === "pattern" && (
+                              <p className="text-red-500">
+                                {errors.email.message}
+                              </p>
+                            )}
+                          </>
+                        ) : null}
+                      </div>
+                      <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          Gender
+                          Gender<span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -328,7 +367,7 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          Age
+                          Age<span className="text-red-600">*</span>
                         </label>
                         <Controller
                           name="age"
@@ -379,7 +418,7 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-1/2 px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          Phone Number
+                          Phone Number<span className="text-red-600">*</span>
                         </label>
                         <div className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500">
                           <Controller
@@ -418,7 +457,7 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          Level of Study
+                          Level of Study<span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -456,7 +495,7 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          School
+                          School<span className="text-red-600">*</span>
                         </label>
                         <Controller
                           name="school"
@@ -509,7 +548,7 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          Year
+                          Year<span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -543,7 +582,7 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          Resume
+                          Resume<span className="text-red-600">*</span>
                         </label>
                         <p>
                           NOTE: Resume will be sent to our hackathon sponsors;
@@ -629,7 +668,7 @@ export default function Register() {
                       </div>
                       <div className="w-full md:w-1/2 px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          Minor
+                          Minor<span className="text-red-600">*</span>
                         </label>
                         <input
                           className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
@@ -705,9 +744,71 @@ export default function Register() {
                           </p>
                         )}
                       </div>
+
+                      <div className="w-full md:w-full px-3 mb-6">
+                        <Controller
+                          control={control}
+                          name="elCreditInterest"
+                          rules={{
+                            validate: (value) => {
+                              if (value == null) {
+                                return "Please select an option";
+                              }
+
+                              return true;
+                            },
+                          }}
+                          render={({ field: { onChange, value } }) => (
+                            <>
+                              <label
+                                className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
+                                htmlFor="grid-text-2"
+                              >
+                                Interested in EL Credit? (UGA students ONLY)
+                                <span className="text-red-600">*</span>
+                              </label>
+                              <label className="relative inline-flex items-center mb-4 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  value=""
+                                  id="grid-text-2"
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                    let span =
+                                      document.getElementById(
+                                        "grid-text-2-span"
+                                      );
+                                    if (span === null) return;
+                                    let text = span.innerText;
+                                    span.innerText = text.includes("No")
+                                      ? "Yes"
+                                      : "No";
+                                  }}
+                                  checked={value}
+                                />
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                                <span
+                                  className="ml-3 text-sm"
+                                  id="grid-text-2-span"
+                                >
+                                  No
+                                </span>
+                              </label>
+                            </>
+                          )}
+                        />
+                        {errors.elCreditInterest && (
+                          <p className="text-red-400">
+                            {errors.elCreditInterest.message}
+                          </p>
+                        )}
+                      </div>
+
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           What do you expect out of UGA Hacks?
+                          <span className="text-red-600">*</span>
                         </label>
                         <textarea
                           className="bg-gray-100 rounded-md border leading-normal resize-none w-full h-20 py-2 px-3 shadow-inner border border-gray-400 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
@@ -728,6 +829,7 @@ export default function Register() {
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                           Dietary Restrictions?
+                          <span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -801,7 +903,7 @@ export default function Register() {
 
                       <div className="w-full md:w-full px-3 mb-6">
                         <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                          T-Shirt Size
+                          T-Shirt Size<span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -856,7 +958,7 @@ export default function Register() {
                                 >
                                   MLH Code of Conduct
                                 </Link>
-                                .&quot;
+                                .&quot;<span className="text-red-600">*</span>
                               </label>
                               <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
@@ -922,7 +1024,7 @@ export default function Register() {
                                 >
                                   MLH Privacy Policy
                                 </Link>
-                                .”
+                                .”<span className="text-red-600">*</span>
                               </label>
                               <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
@@ -964,6 +1066,7 @@ export default function Register() {
                                 into the MLH Hacker, Events, or Organizer
                                 Newsletters and other communications from
                                 MLH.&quot;
+                                <span className="text-red-600">*</span>
                               </label>
                               <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
