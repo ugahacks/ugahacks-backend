@@ -6,6 +6,7 @@ import ProtectedRoute from "../../components/ProtectedRoute";
 import { Card } from "@material-tailwind/react";
 import { ESportsRegisterForm } from "../../interfaces/eSportsRegisterForm";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ESportsRegister() {
   const router = useRouter();
@@ -28,8 +29,21 @@ export default function ESportsRegister() {
     <div>
       <ProtectedRoute>
         <Card >
-          <div className="min-h-screen pt-2 font-mono mb-8">
-            <div className="container mx-auto">
+          <div className="flex justify-center min-h-screen pt-2 font-mono mb-8">
+            <div className="flex container mx-auto">
+              <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
+                <div className="flex flex-col flex-wrap h-full justify-center">
+                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                    <Image
+                      src="/two_circles_left.png"
+                      alt="two circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
+                  </div>
+                </div>
+              </div>
+              </div>
               <div className="inputs w-full max-w-sm mx-auto">
                 <form className="font-inter" onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-wrap -mx-3 mb-6">
@@ -230,7 +244,18 @@ export default function ESportsRegister() {
                   </div>
                 </form>
               </div>
-            </div>
+              <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
+                <div className="flex flex-col flex-wrap h-full justify-center">
+                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                    <Image
+                      src="/two_circles_left.png"
+                      alt="two circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
+                  </div>
+                </div>
+              </div>
           </div>
         </Card>
       </ProtectedRoute>
