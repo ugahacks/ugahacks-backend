@@ -25,26 +25,30 @@ const ESports: EventDetail = {
   // Add in person attribute
 };
 const events = [
-  { event: 
-    (re: EventRegistered) => {
+  {
+    event: (re: EventRegistered) => {
       if (!re.HACKS9) {
         return <EventRect disabled={false} event={Hacks9} />;
       } else {
         return <EventRect disabled={true} event={Hacks9} />;
       }
-    }, id:
-    (re: EventRegistered) => {
+    },
+    id: (re: EventRegistered) => {
       return true;
-    }
+    },
   },
-  { event:
-    (re: any) => {
+  {
+    event: (re: any) => {
       if (true) {
         return <EventRect disabled={false} event={ESports} />;
       } else {
         return <EventRect disabled={true} event={ESports} />;
       }
-    }, id: (re: EventRegistered) => {return false} },
+    },
+    id: (re: EventRegistered) => {
+      return false;
+    },
+  },
 ];
 
 const eventMap = new Map<string, string>();
@@ -59,40 +63,52 @@ const DashboardPage = () => {
   return (
     <ProtectedRoute>
       <div className="flex py-2 container mx-auto flex-initial w-full">
-        <div className="text-gray-600 px-4 py-3 mt-2 mx-auto inter">
+        <div className="text-black px-4 py-3 mt-2 mx-auto inter">
           <h2 className="text-5xl font-semibold">
             Welcome, {userInfo.first_name}
           </h2>
-          <h2 className="text-2xl font-semibold pt-10 text-center">
-            This is the UGAHacks registration portal, feel free to register for
-            any events below. Happy hacking!
-          </h2>
+          <div className="text-2xl pt-5 pb-5 text-left font-mono container w-3/4">
+            <p>
+              This is the UGAHacks registration portal, feel free to register
+              for any events below. Happy hacking!
+            </p>
+          </div>
           <div className="flex mt-5 items-center gap-10 justify-content-between">
             <div>
-              <h2 className="text-bold text-lg text-black">Your stats</h2>
-              <div className="rounded-lg overflow-hidden">
-                {/* <button className="pt-3"> */}
+              <h2 className="font-bold text-xl text-black pt-2 pb-2">
+                Your Stats
+              </h2>
+              <div className="overflow-hidden pb-10">
                 <QRCodeCanvas
                   id="qrCode"
                   size={200}
                   value={userInfo.uid}
                   level={"H"}
+                  className="rounded-md"
                 />
-                {/* </button> */}
               </div>
             </div>
-            <div>
+            <div className="font-mono">
               <h2>
-                Name: {userInfo.first_name} {userInfo.last_name}
+                Name:{" "}
+                <span className="font-bold">
+                  {userInfo.first_name} {userInfo.last_name}
+                </span>
               </h2>
               <h2>
-                School: {userInfo.school != null ? userInfo.school : "n/a"}
+                School:{" "}
+                <span className="font-bold">
+                  {userInfo.school != null ? userInfo.school : "N/A"}
+                </span>
               </h2>
-              <h2>Points: {userInfo.points}</h2>
+              <h2>
+                Points:{" "}
+                <span className="font-bold">{userInfo.points + "pts"}</span>
+              </h2>
               <ul>
                 {registeredEventKeys.length > 0 ? (
                   <ul>
-                    <h2>Registered Events:</h2>
+                    <h2>Next Registered Event(s):</h2>
                     {registeredEventKeys.map((eventName) => (
                       <span
                         className="text-red-500 font-semibold"
@@ -114,8 +130,8 @@ const DashboardPage = () => {
               </ul>
             </div>
           </div>
-          <div className=" mt-5">
-            <h3 className="text-bold text-lg text-black">
+          <div className="mt-5">
+            <h3 className="font-semibold text-xl text-black">
               Register for events
             </h3>
             <div className="flex container gap-10">
@@ -123,7 +139,10 @@ const DashboardPage = () => {
                 if (data.id(registeredEvents)) {
                   let ev = data.event(registeredEvents);
                   return (
-                    <button className="pt-4" key={ev.key}>
+                    <button
+                      className="pt-2 transform hover:scale-95 duration-300"
+                      key={ev.key}
+                    >
                       {ev}
                     </button>
                   );
