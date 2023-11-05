@@ -49,6 +49,7 @@ export interface UserType {
 
 interface EventRegistered {
   HACKS8: boolean | null;
+  HACKS9: boolean | null;
 }
 
 export interface UserInfoType {
@@ -84,6 +85,7 @@ export const AuthContextProvider = ({
     school: null,
     registered: {
       HACKS8: null,
+      HACKS9: null,
     },
   
     //user_type: null
@@ -209,7 +211,7 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks8
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKS8": true,
+      "registered.HACKS9": true,
     });
 
     // Update userInfo
@@ -229,7 +231,8 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks8
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.ESPORTS8": true,
+    
+      "registered.ESPORTS9": true,
     });
 
     // Update userInfo
