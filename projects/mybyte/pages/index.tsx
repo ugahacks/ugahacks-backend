@@ -13,7 +13,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/UGAHacks_General_Byte.png" />
       </Head>
      
-        <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center pt-28 smh:pt-0">
+        <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center pt-28 smh:pt-0 inter">
           <div className="flex flex-col items-start justify-start space-y-4" >
             <h1 className="text-6xl font-bold text-left">MyByte</h1>
             <h1 className="text-6xl font-bold text-left">It&apos;s time to create.</h1>

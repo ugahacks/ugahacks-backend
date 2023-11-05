@@ -6,14 +6,14 @@ import RegisterCard, { ApplicationPaths } from "../../components/RegisterCard";
 import { Events } from "../../enums/events";
 import ColorCode from "../../components/colorCode";
 
-const Hacks8 = () => {
+const Hacks9 = () => {
   const { userInfo } = useAuth();
 
   const application_path: ApplicationPaths = {
     application_type: "Participant 🐶💻",
     deadline: "February 4th, 2023",
     page: "/register",
-    disabled: Events.hacks8 in userInfo.registered,
+    disabled: Events.hacks9 in userInfo.registered,
     image: "/byte_mini.png",
   };
 
@@ -21,7 +21,7 @@ const Hacks8 = () => {
     application_type: "E-Sports 🎮",
     deadline: "February 4th, 2022",
     page: "/events/ESportsRegister",
-    disabled: Events.e_sports_8 in userInfo.registered,
+    disabled: Events.e_sports_9 in userInfo.registered,
     image: "/Transparent_esports.png",
   };
 
@@ -40,11 +40,11 @@ const Hacks8 = () => {
           <Card className="w-full bg-opacity-75 rounded-full">
             <div className="text-gray-600 px-6 py-12 mt-2 mx-auto text-center">
               <h2 className="text-3xl font-bold text-center">
-                Hey {userInfo.first_name}, this is the UGA Hacks 8 Registration
+                Hey {userInfo.first_name}, this is the UGA Hacks 9 Registration
                 Page 🚀
               </h2>
               <h2 className="text-2xl text-center mt-4">
-                We&apos;re excited that you are participating in UGA Hacks 8! We
+                We&apos;re excited that you are participating in UGA Hacks 9! We
                 would love to see you at the event! 🤗
               </h2>
               <h2 className="text-2xl text-center">
@@ -61,10 +61,10 @@ const Hacks8 = () => {
           </h1>
           <div className="flex pt-5">
             <div className="flex-1 space-x-4">
-              <button disabled={Events.hacks8 in userInfo.registered}>
+              <button disabled={Events.hacks9 in userInfo.registered}>
                 <RegisterCard {...application_path} />
               </button>
-              <button disabled={Events.hacks8 in userInfo.registered}>
+              <button disabled={Events.hacks9 in userInfo.registered}>
                 <RegisterCard {...e_sports_path} />
               </button>
               <button disabled={true}>
@@ -78,4 +78,4 @@ const Hacks8 = () => {
   );
 };
 
-export default Hacks8;
+export default Hacks9;

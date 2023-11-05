@@ -17,6 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     "/resetPassword",
     "/resetPasswordSuccess",
     "/emailVerification",
+    "events/ESportsRegister",
   ];
   const hacks_8_bg_routes = [
     "/registrationSuccess",

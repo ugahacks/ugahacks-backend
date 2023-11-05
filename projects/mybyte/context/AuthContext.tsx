@@ -49,6 +49,7 @@ export interface UserType {
 
 interface EventRegistered {
   HACKS8: boolean | null;
+  HACKS9: boolean | null;
 }
 
 export interface UserInfoType {
@@ -56,6 +57,7 @@ export interface UserInfoType {
   last_name: string | null;
   points: number;
   tid: string | null;
+  school: string | null;
   registered: EventRegistered;
   //user_type: Users | null;
 }
@@ -80,9 +82,12 @@ export const AuthContextProvider = ({
     last_name: null,
     points: 0,
     tid: null,
+    school: null,
     registered: {
       HACKS8: null,
+      HACKS9: null,
     },
+  
     //user_type: null
   });
   const [user_type, setType] = useState<string | null>(null);
@@ -182,8 +187,6 @@ export const AuthContextProvider = ({
         await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setDoc(doc(registerRef, user.uid ? user.uid : ""), {
             uid: user.uid,
-            firstName: data.firstName,
-            lastName: data.lastName,
             gender: data.gender,
             phoneNumber: data.phoneNumber,
             countryResidence: data.countryResidence.label,
@@ -191,8 +194,6 @@ export const AuthContextProvider = ({
             major: data.major,
             inputMajor: data.inputMajor,
             minor: data.minor,
-            school: data.school.value,
-            inputSchool: data.inputSchool,
             email: data.email,
             participated: data.participated,
             hopeToSee: data.hopeToSee,
@@ -210,7 +211,7 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks8
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKS8": true,
+      "registered.HACKS9": true,
     });
 
     // Update userInfo
@@ -230,7 +231,8 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks8
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.ESPORTS8": true,
+    
+      "registered.ESPORTS9": true,
     });
 
     // Update userInfo
@@ -617,6 +619,7 @@ export const AuthContextProvider = ({
       last_name: docSnap.data().last_name,
       points: docSnap.data().points,
       tid: docSnap.data().tid,
+      school: docSnap.data().school,
       registered: docSnap.data().registered,
     });
     setType(docSnap.data().user_type);
