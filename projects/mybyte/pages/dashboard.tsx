@@ -7,7 +7,7 @@ import { QRCodeCanvas } from "qrcode.react";
 
 const Hacks9: EventDetail = {
   key: Events.hacks9,
-  page: "/events/hacks-9",
+  page: "/register",
   image: "/uh9_banner.png",
   startDate: new Date("02/03/2024"),
   endDate: new Date("02/05/2024"),
@@ -55,14 +55,14 @@ const DashboardPage = () => {
               </div>
               <div>
                 <h2>Name: {userInfo.first_name} {userInfo.last_name}</h2>
-                <h2>School: {userInfo.school}</h2>
+                <h2>School: {userInfo.school == 'uga' ? 'University of Georgia': userInfo.school}</h2>
                 <h2>Points: {userInfo.points}</h2>
                 <ul>
                 {registeredEventKeys.length > 0 ? (
                     <ul>
                       <h2>Registered Events:</h2>
                       {registeredEventKeys.map((eventName) => (
-                        <li className="text-red-500 font-semibold" key={eventName}>
+                        <li className="font-semibold" key={eventName}>
                           {eventName}
                         </li>
                       ))}
