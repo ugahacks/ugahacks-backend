@@ -44,18 +44,18 @@ export default function EventRect(props: {
     month: "long",
     day: "numeric",
   };
-  const gray = props.disabled ? "grayscale-[20%]" : "";
+  const gray = props.disabled ? "grayscale-[20%] pb-2" : "";
   return (
     <div
       onClick={!props.disabled ? handleClick : () => {}}
       className={props.disabled ? "cursor-default opacity-70" : ""}
     >
       <Card className="w-96">
-        <CardHeader color="blue" className="h-28 w-96 mx-0">
+        <CardHeader color="blue" className="h-28 w-96 mx-0 rounded-none">
           <Image
             src={props.event.image}
             alt="img-blur-shadow"
-            className={"h-full w-60 object-contain" + gray}
+            className={"h-full w-60 rounded-t-lg pb-2" + gray}
             fill
           />
         </CardHeader>

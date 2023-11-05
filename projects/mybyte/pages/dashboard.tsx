@@ -51,9 +51,19 @@ const events = [
   },
 ];
 
+// Valid Open Events (pretty name):
 const eventMap = new Map<string, string>();
 eventMap.set("HACKS9", "UGAHacks 9");
 eventMap.set("ESPORTS9", "eSports 9");
+
+function openEventsRegistered(allRegisteredEvents: string[]) {
+  let events = "";
+  allRegisteredEvents.forEach((e: string) => {
+    if (eventMap.has(e)) events += eventMap.get(e) + " ";
+  });
+
+  return events;
+}
 
 const DashboardPage = () => {
   const { userInfo, setUserInformation } = useAuth();
@@ -65,7 +75,7 @@ const DashboardPage = () => {
       <div className="flex py-2 container mx-auto flex-initial w-full">
         <div className="text-black px-4 py-3 mt-2 mx-auto inter">
           <h2 className="text-5xl font-semibold">
-            Welcome, {userInfo.first_name}
+            Welcome, {userInfo.first_name + " " + userInfo.last_name}
           </h2>
           <div className="text-2xl pt-5 pb-5 text-left font-mono container w-3/4">
             <p>
@@ -105,29 +115,18 @@ const DashboardPage = () => {
                 Points:{" "}
                 <span className="font-bold">{userInfo.points + "pts"}</span>
               </h2>
-              <ul>
-                {registeredEventKeys.length > 0 ? (
-                  <ul>
-                    <h2>Next Registered Event(s):</h2>
-                    {registeredEventKeys.map((eventName) => (
-                      <span
-                        className="text-red-500 font-semibold"
-                        key={eventName}
-                      >
-                        {eventMap.has(eventName)
-                          ? eventMap.get(eventName) + " "
-                          : null}
-                      </span>
-                    ))}
-                  </ul>
-                ) : (
-                  // Render nothing when there are no events to display.
-                  <div>
-                    <h2>Registration Status:</h2>
-                    <h2>You are not registered for any events.</h2>
-                  </div>
-                )}
-              </ul>
+              <h2>
+                Next Registered Event(s):{" "}
+                <span className="font-bold">
+                  {openEventsRegistered(registeredEventKeys).length != 0 ? (
+                    <span className="">
+                      {openEventsRegistered(registeredEventKeys)}
+                    </span>
+                  ) : (
+                    "N/A"
+                  )}
+                </span>
+              </h2>
             </div>
           </div>
           <div className="mt-5">
