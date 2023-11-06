@@ -7,7 +7,7 @@ import { QRCodeCanvas } from "qrcode.react";
 
 const Hacks9: EventDetail = {
   key: Events.hacks9,
-  page: "/events/hacks-9",
+  page: "/register",
   image: "/uh9_banner.png",
   startDate: new Date("02/03/2024"),
   endDate: new Date("02/05/2024"),
@@ -33,8 +33,8 @@ const DashboardPage = () => {
 
   return (
     <ProtectedRoute>
-      <div className="flex py-2 container mx-auto flex-initial w-full">
-        <div className="text-gray-600 px-4 py-24 mt-2 mx-auto">
+      <div className="flex py-2 container mx-auto flex-initial w-full" >
+        <div className="text-gray-600 px-4 py-3 mt-2 mx-auto inter">
           <h2 className="text-5xl font-semibold">
             Welcome, {userInfo.first_name}
           </h2>
@@ -43,7 +43,7 @@ const DashboardPage = () => {
           </h2>
           <div className="flex mt-5 items-center gap-10 justify-content-between">
               <div>
-                <h2>Your stats</h2>
+                <h2 className="text-bold text-lg text-black">Your stats</h2>
                 <button className="pt-3">
                 <QRCodeCanvas
                   id="qrCode"
@@ -55,15 +55,25 @@ const DashboardPage = () => {
               </div>
               <div>
                 <h2>Name: {userInfo.first_name} {userInfo.last_name}</h2>
-                <h2>School: {userInfo.school}</h2>
+                <h2>School: {userInfo.school == 'uga' ? 'University of Georgia': userInfo.school}</h2>
                 <h2>Points: {userInfo.points}</h2>
-                <h2>Registered Events:</h2>
                 <ul>
-                  {registeredEventKeys.map((eventName) => (
-                    <li className="text-red-500 font-semibold" key={eventName}>
-                      {eventName}
-                    </li>
-                  ))}
+                {registeredEventKeys.length > 0 ? (
+                    <ul>
+                      <h2>Registered Events:</h2>
+                      {registeredEventKeys.map((eventName) => (
+                        <li className="font-semibold" key={eventName}>
+                          {eventName}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    // Render nothing when there are no events to display.
+                    <div>
+                      <h2>Registration Status:</h2>
+                      <h2>You are not registered for any events.</h2>
+                    </div>
+                  )}
                 </ul>
               </div>
             </div>

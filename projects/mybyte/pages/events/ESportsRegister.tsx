@@ -46,7 +46,7 @@ export default function ESportsRegister() {
                 <form className="font-inter" onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="personal w-full pt-2">
-                      <h1 className="text-center font-inter font-weight-700 font-bold text-2xl ">
+                      <h1 className="text-center font-weight-700 font-bold text-2xl ">
                         E-Sports Registration
                       </h1>
                       <h2 className="font-weight-300 text-[11px] text-gray-900 mt-4">
