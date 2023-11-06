@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth, EventRegistered } from "../context/AuthContext";
 import EventRect, { EventDetail } from "../components/EventRect";
@@ -74,7 +75,7 @@ const DashboardPage = () => {
     <ProtectedRoute>
       <div className="flex py-2 container mx-auto flex-initial w-full">
         <div className="text-black px-4 py-3 mt-2 mx-auto inter">
-          <h2 className="text-5xl font-semibold">
+          <h2 className="text-4xl font-semibold">
             Welcome, {userInfo.first_name + " " + userInfo.last_name}
           </h2>
           <div className="text-2xl pt-5 pb-5 text-left font-mono container w-3/4">
@@ -150,6 +151,30 @@ const DashboardPage = () => {
               })}
             </div>
           </div>
+        </div>
+        <div
+          className="fixed -bottom-72 -right-10 overflow-hidden"
+          style={{ width: "500px", height: "500px" }}
+        >
+          <Image
+            src="/red_circle.png" // Make sure the path is correct
+            alt="circle"
+            width={500} // Set the width of the image
+            height={500} // Set the height of the image
+            className="hidden lg:block" // Images will be hidden on screens below medium (md) width
+          />
+        </div>
+        <div
+          className="fixed -bottom-32 -right-72 overflow-hidden"
+          style={{ width: "500px", height: "500px" }}
+        >
+          <Image
+            src="/red_circle.png" // Make sure the path is correct
+            alt="circle"
+            width={500} // Set the width of the image
+            height={500} // Set the height of the image
+            className="hidden lg:block" // Images will be hidden on screens below medium (md) width
+          />
         </div>
       </div>
     </ProtectedRoute>
