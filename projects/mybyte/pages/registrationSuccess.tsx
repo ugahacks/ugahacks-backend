@@ -32,7 +32,7 @@ export default function RegistrationSuccess() {
 
           <div className="mt-8 mb-8">
             <div className="flex justify-center text-xl">
-              <p className="text-primary-500 hover:underline underline-offset-2">
+              <p className="text-primary-500 hover:underline underline-offset-2 cursor-pointer">
                 <Link href="/dashboard">return to dashboard</Link>
               </p>
             </div>

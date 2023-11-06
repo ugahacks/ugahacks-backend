@@ -191,9 +191,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
           </ul>
         </nav>
       </header>
-      <div className="font-inter h-[calc(100%-168px)] md:h-[calc(100%-76px)]">
-        <div id="acdweafadaefd">{children}</div>
-      </div>
+      <div className="font-inter">{children}</div>
     </div>
   ); // last div's height is to offset the navbar's position since it is sticky now
 };
