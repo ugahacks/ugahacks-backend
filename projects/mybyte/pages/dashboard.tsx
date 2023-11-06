@@ -74,11 +74,11 @@ const DashboardPage = () => {
   return (
     <ProtectedRoute>
       <div className="flex py-2 container mx-auto flex-initial w-full">
-        <div className="text-black px-4 py-3 mt-2 mx-auto inter">
-          <h2 className="text-4xl font-semibold">
+        <div className="text-gray-800 px-3 py-3 mt-4 mx-5 inter">
+          <h2 className="text-3xl font-semibold">
             Welcome, {userInfo.first_name + " " + userInfo.last_name}
           </h2>
-          <div className="text-2xl pt-5 pb-5 text-left font-mono container w-3/4">
+          <div className="text-xl pt-5 pb-5 text-left font-mono container w-3/4">
             <p>
               This is the UGAHacks registration portal, feel free to register
               for any events below. Happy hacking!
@@ -86,7 +86,7 @@ const DashboardPage = () => {
           </div>
           <div className="flex mt-5 items-center gap-10 justify-content-between">
             <div>
-              <h2 className="font-bold text-xl text-black pt-2 pb-2">
+              <h2 className="font-bold text-lg text-black pt-2 pb-2">
                 Your Stats
               </h2>
               <div className="overflow-hidden pb-10">
@@ -131,7 +131,7 @@ const DashboardPage = () => {
             </div>
           </div>
           <div className="mt-5">
-            <h3 className="font-semibold text-xl text-black">
+            <h3 className="font-semibold text-lg text-black">
               Register for events
             </h3>
             <div className="flex container gap-10">
