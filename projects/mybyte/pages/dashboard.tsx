@@ -157,11 +157,11 @@ const DashboardPage = () => {
           style={{ width: "500px", height: "500px" }}
         >
           <Image
-            src="/red_circle.png" // Make sure the path is correct
+            src="/red_circle.png"
             alt="circle"
-            width={500} // Set the width of the image
-            height={500} // Set the height of the image
-            className="hidden lg:block" // Images will be hidden on screens below medium (md) width
+            width={500}
+            height={500}
+            className="hidden lg:block"
           />
         </div>
         <div
@@ -169,11 +169,11 @@ const DashboardPage = () => {
           style={{ width: "500px", height: "500px" }}
         >
           <Image
-            src="/red_circle.png" // Make sure the path is correct
+            src="/red_circle.png"
             alt="circle"
-            width={500} // Set the width of the image
-            height={500} // Set the height of the image
-            className="hidden lg:block" // Images will be hidden on screens below medium (md) width
+            width={500}
+            height={500}
+            className="hidden lg:block"
           />
         </div>
       </div>
