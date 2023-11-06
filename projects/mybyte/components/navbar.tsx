@@ -62,8 +62,8 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
   });
 
   const selectedStyles =
-    "hover:text-blue-900 underline underline-offset-[5px] transition";
-  const nonSelectedStyles = "hover:text-blue-900 transition";
+    "hover:text-red-500 underline underline-offset-[5px] transition";
+  const nonSelectedStyles = "hover:text-red-500 transition";
 
   return (
     <div className="overflow-y-auto h-screen">
@@ -71,7 +71,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
         id="nav"
         className="sticky top-0 z-10 flex flex-wrap container mx-auto max-w-full items-center p-6 justify-between bg-white shadow-md flex-initial"
       >
-        <div className="flex items-center hover:text-blue-800 cursor-pointer transition duration-150 ">
+        <div className="flex items-center hover:text-red-500 cursor-pointer transition duration-150 ">
           {!user.uid ? (
             <Link href="/">
               <span className="font-semibold text-xl font-inter">UGAHACKS</span>
@@ -180,7 +180,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
                     <a
                       onClick={handleLogout}
-                      className="hover:text-blue-900 transition cursor-pointer"
+                      className="hover:text-red-500 transition cursor-pointer"
                     >
                       Logout
                     </a>
