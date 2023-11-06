@@ -26,11 +26,10 @@ export default function ESportsRegister() {
   };
 
   return (
-    <div>
-      <ProtectedRoute>
+    <div className="overflow-y-hidden">
+      <ProtectedRoute className="">
         <Card >
-          <div className="flex justify-center min-h-screen pt-2 font-mono mb-8">
-            <div className="flex container mx-auto">
+            <div className="flex overflow-y-hidden">
               <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
                 <div className="flex flex-col flex-wrap h-full justify-center">
                   <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
@@ -43,8 +42,7 @@ export default function ESportsRegister() {
                   </div>
                 </div>
               </div>
-              </div>
-              <div className="inputs w-full max-w-sm mx-auto">
+              <div className="mx-auto flex flex-column justify-between inputs w-full max-w-sm mx-auto">
                 <form className="font-inter" onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="personal w-full pt-2">
@@ -141,7 +139,6 @@ export default function ESportsRegister() {
                               <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
                                   type="checkbox"
-                                  value=""
                                   id="grid-text-1"
                                   className="sr-only peer"
                                   onChange={() => {
@@ -243,20 +240,28 @@ export default function ESportsRegister() {
                     </div>
                   </div>
                 </form>
-              </div>
+                </div>
               <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
-                <div className="flex flex-col flex-wrap h-full justify-center">
-                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                <div className="flex flex-col flex-wrap h-full justify-between">
+                  <div className="relative min-w-0 w-full h-[250px] shrink grow-0 ml-auto">
                     <Image
-                      src="/two_circles_left.png"
-                      alt="two circles"
+                      src="/three_circles.png"
+                      alt="three circles"
                       fill
                       className="object-contain"
                     ></Image>
                   </div>
+                  <div className="relative min-w-0 w-full h-[250px] shrink grow-0 ml-auto">
+                    <Image
+                      src="/two_circles_right.png"
+                      alt="two circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
+                    </div>
                 </div>
               </div>
-          </div>
+              </div>
         </Card>
       </ProtectedRoute>
     </div>
