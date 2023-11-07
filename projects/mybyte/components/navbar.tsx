@@ -30,20 +30,29 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const isElementXPercentInViewport = function(el: Element, percentVisible: number) {
-    let
-      rect = el.getBoundingClientRect(),
-      windowHeight = (window.innerHeight || document.documentElement.clientHeight);
-  
+  const isElementXPercentInViewport = function (
+    el: Element,
+    percentVisible: number
+  ) {
+    let rect = el.getBoundingClientRect(),
+      windowHeight =
+        window.innerHeight || document.documentElement.clientHeight;
+
     return !(
-      Math.floor(100 - (((rect.top >= 0 ? 0 : rect.top) / +-rect.height) * 100)) < percentVisible ||
-      Math.floor(100 - ((rect.bottom - windowHeight) / rect.height) * 100) < percentVisible
-    )
+      Math.floor(100 - ((rect.top >= 0 ? 0 : rect.top) / +-rect.height) * 100) <
+        percentVisible ||
+      Math.floor(100 - ((rect.bottom - windowHeight) / rect.height) * 100) <
+        percentVisible
+    );
   };
 
   useLayoutEffect(() => {
     let element = document.getElementById("acdweafadaefd");
-    if (element !== null && element !== undefined && isElementXPercentInViewport(element, 100)) {
+    if (
+      element !== null &&
+      element !== undefined &&
+      isElementXPercentInViewport(element, 100)
+    ) {
       let parent = element.parentElement;
       if (parent !== null) {
         parent.style.display = "grid";
@@ -52,19 +61,26 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
     }
   });
 
+  const selectedStyles =
+    "hover:text-red-500 underline underline-offset-[5px] transition";
+  const nonSelectedStyles = "hover:text-red-500 transition";
+
   return (
     <div className="overflow-y-auto h-screen">
-      <header id="nav" className="sticky top-0 z-10 flex flex-wrap container mx-auto max-w-full items-center p-6 justify-between bg-white shadow-md flex-initial">
-        <div className="flex items-center hover:text-blue-800 cursor-pointer transition duration-150 ">
+      <header
+        id="nav"
+        className="sticky top-0 z-10 flex flex-wrap container mx-auto max-w-full items-center p-6 justify-between bg-white shadow-md flex-initial"
+      >
+        <div className="flex items-center hover:text-red-500 cursor-pointer transition duration-150 ">
           {!user.uid ? (
             <Link href="/">
-              <span className="font-semibold text-lg font-sans">
+              <span className="font-semibold text-xl tracking-5px font-inter">
                 UGAHACKS
               </span>
             </Link>
           ) : (
             <Link href="/dashboard">
-              <span className="font-semibold text-lg font-sans">
+              <span className="font-semibold text-xl tracking-5px font-inter">
                 UGAHACKS
               </span>
             </Link>
@@ -72,33 +88,41 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
         </div>
 
         <nav className={`md:flex md:items-center font-title w-full md:w-auto`}>
-          <ul className="text-lg inline-block">
+          <ul className="text-md inline-block font-light">
             <>
               {!user.uid ? (
                 menuItems.map((item) => {
                   let cn = "text-black-800 hover:text-red-500 transition";
-                  if (item.link.replace('/', '') === router.pathname.replace('/', '')) {
+                  if (
+                    item.link.replace("/", "") ===
+                    router.pathname.replace("/", "")
+                  ) {
                     cn += " underline underline-offset-[5px]";
                   }
                   return (
-                  <li
-                    key={item.id}
-                    className="my-3 md:my-0 items-center mr-4 md:inline-block block"
-                  >
-                    <Link href={item?.link}>
-                      <span className={cn}>
-                        {item?.name}
-                      </span>
-                    </Link>
-                  </li>
-                )})
+                    <li
+                      key={item.id}
+                      className="my-3 md:my-0 items-center mr-4 md:inline-block block"
+                    >
+                      <Link href={item?.link}>
+                        <span className={cn}>{item?.name}</span>
+                      </Link>
+                    </li>
+                  );
+                })
               ) : (
                 <>
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
                     {userInfo.first_name != null &&
                     userInfo.first_name != "" ? (
                       <Link href="/dashboard">
-                        <span className="hover:text-blue-900 transition">
+                        <span
+                          className={
+                            "/dashboard" === router.asPath
+                              ? selectedStyles
+                              : nonSelectedStyles
+                          }
+                        >
                           Dashboard
                         </span>
                       </Link>
@@ -108,7 +132,13 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     {userInfo.first_name != null &&
                     userInfo.first_name != "" ? (
                       <Link href="/team">
-                        <span className="hover:text-blue-900 transition">
+                        <span
+                          className={
+                            "/team" === router.asPath
+                              ? selectedStyles
+                              : nonSelectedStyles
+                          }
+                        >
                           Team
                         </span>
                       </Link>
@@ -121,7 +151,13 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     user_type !== undefined &&
                     user_type == "service_writer" ? (
                       <Link href="/qrRead">
-                        <span className="hover:text-blue-900 transition">
+                        <span
+                          className={
+                            "/qrRead" === router.asPath
+                              ? selectedStyles
+                              : nonSelectedStyles
+                          }
+                        >
                           Scanner
                         </span>
                       </Link>
@@ -130,18 +166,14 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
                     {userInfo.first_name != null &&
                     userInfo.first_name != "" ? (
-                      <Link href="/profile">
-                        <span className="hover:text-blue-900 transition">
-                          Profile
-                        </span>
-                      </Link>
-                    ) : null}
-                  </li>
-                  <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
-                    {userInfo.first_name != null &&
-                    userInfo.first_name != "" ? (
                       <Link href="/insertDevPost">
-                        <span className="hover:text-blue-900 transition">
+                        <span
+                          className={
+                            "/insertDevPost" === router.asPath
+                              ? selectedStyles
+                              : nonSelectedStyles
+                          }
+                        >
                           Submit Devpost Link
                         </span>
                       </Link>
@@ -150,7 +182,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                   <li className="my-3 md:my-0 items-center mr-4 md:inline-block block ">
                     <a
                       onClick={handleLogout}
-                      className="hover:text-blue-900 transition cursor-pointer"
+                      className="hover:text-red-500 transition cursor-pointer"
                     >
                       Logout
                     </a>
@@ -162,9 +194,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
         </nav>
       </header>
       <div className="font-inter h-[calc(100%-168px)] md:h-[calc(100%-76px)]">
-        <div id="acdweafadaefd">
-          {children}
-        </div>
+        <div id="acdweafadaefd">{children}</div>
       </div>
     </div>
   ); // last div's height is to offset the navbar's position since it is sticky now

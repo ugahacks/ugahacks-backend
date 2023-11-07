@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import Image from "next/image";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
 import countryList from "react-select-country-list";
@@ -15,6 +16,8 @@ import {
   StudentYears,
   Majors,
   ShirtSizes,
+  LevelsOfStudy,
+  DietaryRestrictions,
 } from "../enums/registerEnums";
 
 import {
@@ -26,6 +29,7 @@ import {
 import "react-phone-number-input/style.css";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { Card } from "@material-tailwind/react";
+import { Circle } from "../components/circle";
 
 export default function Register() {
   const router = useRouter();
@@ -43,6 +47,9 @@ export default function Register() {
       phoneNumber: "",
       inputMajor: "",
       inputSchool: "",
+      inputDietaryRestrictions: "",
+      participated: false,
+      elCreditInterest: false,
     },
   });
 
@@ -52,21 +59,96 @@ export default function Register() {
   };
   //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);
 
-  const watchers = watch(["major", "school"]); // Watching major and school input fields in case user selects "other" option
+  const watchers = watch(["major", "school", "dietaryRestrictions"]); // Watching major  input fields in case user selects "other" option
 
   const countryOptions = useMemo(() => countryList().getData(), []);
-  const schoolOptions = [
-    { value: "uga", label: "University of Georgia" },
-    { value: "gt", label: "Georgia Tech" },
-    { value: "georgia-state", label: "Georgia State" },
-    { value: "georgia-college", label: "Georgia College" },
-    { value: "ucf", label: "University of Central Florida" },
-    { value: "stanford", label: "Stanford University" },
-    { value: "other", label: "Other" },
-  ];
+  // ref: http://stackoverflow.com/a/1293163/2343
+  // This will parse a delimited string into an array of
+  // arrays. The default delimiter is the comma, but this
+  // can be overriden in the second argument.
+  function CSVToArray(strData: string, strDelimiter: string) {
+    // Check to see if the delimiter is defined. If not,
+    // then default to comma.
+    strDelimiter = strDelimiter || ",";
+
+    // Create a regular expression to parse the CSV values.
+    let objPattern = new RegExp(
+      // Delimiters.
+      "(\\" +
+        strDelimiter +
+        "|\\r?\\n|\\r|^)" +
+        // Quoted fields.
+        '(?:"([^"]*(?:""[^"]*)*)"|' +
+        // Standard fields.
+        '([^"\\' +
+        strDelimiter +
+        "\\r\\n]*))",
+      "gi"
+    );
+
+    // Create an array to hold our data. Give the array
+    // a default empty first row.
+    let arrData: string[][] = [[]];
+
+    // Create an array to hold our individual pattern
+    // matching groups.
+    let arrMatches = null;
+
+    // Keep looping over the regular expression matches
+    // until we can no longer find a match.
+    while ((arrMatches = objPattern.exec(strData))) {
+      // Get the delimiter that was found.
+      let strMatchedDelimiter = arrMatches[1];
+
+      // Check to see if the given delimiter has a length
+      // (is not the start of string) and if it matches
+      // field delimiter. If id does not, then we know
+      // that this delimiter is a row delimiter.
+      if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
+        // Since we have reached a new row of data,
+        // add an empty row to our data array.
+        arrData.push([]);
+      }
+
+      let strMatchedValue;
+
+      // Now that we have our delimiter out of the way,
+      // let's check to see which kind of value we
+      // captured (quoted or unquoted).
+      if (arrMatches[2]) {
+        // We found a quoted value. When we capture
+        // this value, unescape any double quotes.
+        strMatchedValue = arrMatches[2].replace(new RegExp('""', "g"), '"');
+      } else {
+        // We found a non-quoted value.
+        strMatchedValue = arrMatches[3];
+      }
+
+      // Now that we have our value string, let's add
+      // it to the data array.
+      arrData[arrData.length - 1].push(strMatchedValue);
+    }
+
+    // Return the parsed data.
+    return arrData;
+  }
+  let schoolOptions: { value: string; label: string }[] = [];
+  fetch("/schools.csv")
+    .then((resp) => resp.text())
+    .then((text) => {
+      CSVToArray(text, ",").forEach((row, index) => {
+        if (index != 0) {
+          schoolOptions.push({ value: row[0], label: row[0] });
+        }
+      });
+    });
+
+  schoolOptions.push({ value: "other", label: "Other" });
 
   const [otherMajor, setOtherMajor] = useState(false);
   const [otherSchool, setOtherSchool] = useState(false);
+  const [otherDietaryRestrictions, setOtherDietaryRestrictions] =
+    useState(false);
   const [resumeUploadProgress, setResumeUploadProgress] = useState();
   const [textCount, setTextCount] = useState(0);
 
@@ -76,6 +158,10 @@ export default function Register() {
 
   register("school", {
     onChange: (e) => otherSchoolInput(e.target.value.value),
+  });
+
+  register("dietaryRestrictions", {
+    onChange: (e) => otherDietaryRestrictionsInput(e.target.value),
   });
 
   function otherMajorInput(value: string) {
@@ -96,6 +182,17 @@ export default function Register() {
     }
   }
 
+  function otherDietaryRestrictionsInput(value: string) {
+    if (value == "other") {
+      console.log(value);
+      setOtherDietaryRestrictions(true);
+    } else {
+      console.log(value);
+      setOtherDietaryRestrictions(false);
+      resetField("inputDietaryRestrictions");
+    }
+  }
+
   function validateFileInput(value: FileList) {
     const fileRegex = /^.*\.(doc|docx|pdf)$/i;
 
@@ -109,20 +206,34 @@ export default function Register() {
   //   const uploadTask = uploadBytesResumable(storageRef, file)
 
   return (
-    <div className="bg-cover bg-[url('/UGAHacks8TanBG.png')]">
-      <ProtectedRoute>
-        <Card className="bg-opacity-75">
-          <div className="min-h-screen pt-2 font-mono my-8">
-            <div className="container mx-auto">
-              <div className="inputs w-full max-w-2xl p-6 mx-auto">
+    <div className="">
+      <ProtectedRoute className="h-screen min-h-full min-w-full">
+        <Card className="bg-opacity-0">
+          <div className="min-h-screen pt-2 font-inter my-8">
+            <div className="mx-auto flex flex-column justify-between">
+              <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
+                <div className="flex flex-col flex-wrap h-full justify-center">
+                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                    <Image
+                      src="/two_circles_left.png"
+                      alt="two circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
+                  </div>
+                </div>
+              </div>
+              <div className="inputs w-1/2 min-w-[24rem] max-w-2xl p-6 mx-auto shrink-0 grow">
                 <form className="mt-3 pt-4" onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="personal w-full pt-2">
-                      <h2 className="text-2xl text-gray-900">Personal Info:</h2>
+                      <h2 className="text-2xl text-gray-900 text-center mb-5">
+                        Registration Info:
+                      </h2>
                       <div className="flex items-center justify-between mt-4">
                         <div className="w-full md:w-1/2 px-3 mb-6">
-                          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                            first name<span className="text-red-600">*</span>
+                          <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                            First Name<span className="text-red-600">*</span>
                           </label>
                           <input
                             className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
@@ -134,6 +245,7 @@ export default function Register() {
                               },
                             })}
                             type="text"
+                            placeholder="first name"
                             maxLength={50}
                           />
                           {errors.firstName ? (
@@ -152,8 +264,8 @@ export default function Register() {
                           ) : null}
                         </div>
                         <div className="w-full md:w-1/2 px-3 mb-6">
-                          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                            last name<span className="text-red-600">*</span>
+                          <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                            Last Name<span className="text-red-600">*</span>
                           </label>
                           <input
                             className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
@@ -165,6 +277,7 @@ export default function Register() {
                               },
                             })}
                             type="text"
+                            placeholder="last name"
                             maxLength={50}
                           />
                           {errors.lastName ? (
@@ -184,8 +297,45 @@ export default function Register() {
                         </div>
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          gender<span className="text-red-600">*</span>
+                        <label
+                          className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
+                          htmlFor="grid-text-1"
+                        >
+                          Email
+                          <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                          className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                          {...register("email", {
+                            required: "Please enter your school email",
+                            pattern: {
+                              value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu)/,
+                              message: "Needs to be a valid school email",
+                            },
+                          })}
+                          id="grid-text-1"
+                          type="text"
+                          placeholder="byte@ugahacks.com"
+                          maxLength={100}
+                        />
+                        {errors.email ? (
+                          <>
+                            {errors.email.type === "required" && (
+                              <p className="text-red-500">
+                                {errors.email.message}
+                              </p>
+                            )}
+                            {errors.email.type === "pattern" && (
+                              <p className="text-red-500">
+                                {errors.email.message}
+                              </p>
+                            )}
+                          </>
+                        ) : null}
+                      </div>
+                      <div className="w-full md:w-full px-3 mb-6">
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Gender<span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -218,9 +368,33 @@ export default function Register() {
                         </div>
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          pick your country of residence
-                          <span className="text-red-600">*</span>
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Age<span className="text-red-600">*</span>
+                        </label>
+                        <Controller
+                          name="age"
+                          rules={{
+                            required: "Please provide an age",
+                          }}
+                          render={({ field: { name, onChange, value } }) => (
+                            <input
+                              type="number"
+                              placeholder={name}
+                              className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                              value={value}
+                              onChange={onChange}
+                              {...register}
+                            />
+                          )}
+                          control={control}
+                        />
+                        {errors.age && (
+                          <p className="text-red-400">{errors.age.message}</p>
+                        )}
+                      </div>
+                      <div className="w-full md:w-full px-3 mb-6">
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Country of Residence
                         </label>
                         <Controller
                           name="countryResidence"
@@ -245,8 +419,8 @@ export default function Register() {
                         )}
                       </div>
                       <div className="w-full md:w-1/2 px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          phone number<span className="text-red-600">*</span>
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Phone Number<span className="text-red-600">*</span>
                         </label>
                         <div className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500">
                           <Controller
@@ -284,9 +458,99 @@ export default function Register() {
                         </div>
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          current school year
-                          <span className="text-red-600">*</span>
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Level of Study<span className="text-red-600">*</span>
+                        </label>
+                        <div className="flex-shrink w-full inline-block relative">
+                          <select
+                            className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                            {...register("levelsOfStudy", {
+                              required: "Select level of study",
+                            })}
+                          >
+                            <option value="">Select your level of study</option>
+                            {Object.keys(LevelsOfStudy).map((key) => (
+                              <option key={key} value={key}>
+                                {
+                                  LevelsOfStudy[
+                                    key as keyof typeof LevelsOfStudy
+                                  ]
+                                }
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                            <svg
+                              className="fill-current h-4 w-4"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                          </div>
+                          {errors.levelsOfStudy && (
+                            <p className="text-red-400">
+                              {errors.levelsOfStudy.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="w-full md:w-full px-3 mb-6">
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          School<span className="text-red-600">*</span>
+                        </label>
+                        <Controller
+                          name="school"
+                          rules={{ required: "Please select your school" }}
+                          render={({ field: { name, onChange, value } }) => (
+                            <Select
+                              className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                              options={schoolOptions}
+                              value={value}
+                              onChange={onChange}
+                              name={name}
+                            />
+                          )}
+                          control={control}
+                        />
+                        {errors.school && (
+                          <p className="text-red-400">
+                            {errors.school.message}
+                          </p>
+                        )}
+                        {otherSchool ? (
+                          <input
+                            className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                            {...register("inputSchool", {
+                              required: "Please enter your school",
+                              pattern: {
+                                value: /^[a-z ,.'-]+$/i,
+                                message: "Contains invalid characters",
+                              },
+                            })}
+                            type="text"
+                            maxLength={100}
+                            placeholder="Type your school here"
+                          />
+                        ) : null}
+                        {errors.inputSchool ? (
+                          <>
+                            {errors.inputSchool.type === "required" && (
+                              <p className="text-red-500">
+                                {errors.inputSchool.message}
+                              </p>
+                            )}
+                            {errors.inputSchool.type === "pattern" && (
+                              <p className="text-red-500">
+                                {errors.inputSchool.message}
+                              </p>
+                            )}
+                          </>
+                        ) : null}
+                      </div>
+                      <div className="w-full md:w-full px-3 mb-6">
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Year<span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -319,8 +583,8 @@ export default function Register() {
                         </div>
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          resume<span className="text-red-600">*</span>
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Resume<span className="text-red-600">*</span>
                         </label>
                         <p>
                           NOTE: Resume will be sent to our hackathon sponsors;
@@ -342,8 +606,8 @@ export default function Register() {
                         )}
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          current major<span className="text-red-600">*</span>
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Current Major<span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
@@ -405,8 +669,8 @@ export default function Register() {
                         </div>
                       </div>
                       <div className="w-full md:w-1/2 px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          minor
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Minor
                         </label>
                         <input
                           className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
@@ -425,97 +689,6 @@ export default function Register() {
                         )}
                       </div>
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          select your school
-                          <span className="text-red-600">*</span>
-                        </label>
-                        <Controller
-                          name="school"
-                          rules={{ required: "Please select your school" }}
-                          render={({ field: { name, onChange, value } }) => (
-                            <Select
-                              className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                              options={schoolOptions}
-                              value={value}
-                              onChange={onChange}
-                              name={name}
-                            />
-                          )}
-                          control={control}
-                        />
-                        {errors.school && (
-                          <p className="text-red-400">
-                            {errors.school.message}
-                          </p>
-                        )}
-                        {otherSchool ? (
-                          <input
-                            className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
-                            {...register("inputSchool", {
-                              required: "Please enter your school",
-                              pattern: {
-                                value: /^[a-z ,.'-]+$/i,
-                                message: "Contains invalid characters",
-                              },
-                            })}
-                            type="text"
-                            maxLength={100}
-                            placeholder="Type your school here"
-                          />
-                        ) : null}
-                        {errors.inputSchool ? (
-                          <>
-                            {errors.inputSchool.type === "required" && (
-                              <p className="text-red-500">
-                                {errors.inputSchool.message}
-                              </p>
-                            )}
-                            {errors.inputSchool.type === "pattern" && (
-                              <p className="text-red-500">
-                                {errors.inputSchool.message}
-                              </p>
-                            )}
-                          </>
-                        ) : null}
-                      </div>
-                      <div className="w-full md:w-full px-3 mb-6">
-                        <label
-                          className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                          htmlFor="grid-text-1"
-                        >
-                          enter school email address (.edu)
-                          <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                          className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
-                          {...register("email", {
-                            required: "Please enter your school email",
-                            pattern: {
-                              value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu)/,
-                              message: "Needs to be a valid school email",
-                            },
-                          })}
-                          id="grid-text-1"
-                          type="text"
-                          placeholder="Enter school email"
-                          maxLength={100}
-                        />
-                        {errors.email ? (
-                          <>
-                            {errors.email.type === "required" && (
-                              <p className="text-red-500">
-                                {errors.email.message}
-                              </p>
-                            )}
-                            {errors.email.type === "pattern" && (
-                              <p className="text-red-500">
-                                {errors.email.message}
-                              </p>
-                            )}
-                          </>
-                        ) : null}
-                      </div>
-                      <div className="w-full md:w-full px-3 mb-6">
                         <Controller
                           control={control}
                           name="participated"
@@ -531,30 +704,38 @@ export default function Register() {
                           render={({ field: { onChange, value } }) => (
                             <>
                               <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
                                 htmlFor="grid-text-1"
                               >
-                                have you participated in a hackathon before?
-                                <span className="text-red-600">*</span>
+                                First Time at a Hackathon?
                               </label>
-                              <label>
-                                Yes{" "}
+                              <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
-                                  className="mr-10"
+                                  type="checkbox"
+                                  value=""
                                   id="grid-text-1"
-                                  type="radio"
-                                  onChange={() => onChange(true)}
-                                  checked={value === true}
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                    let span =
+                                      document.getElementById(
+                                        "grid-text-1-span"
+                                      );
+                                    if (span === null) return;
+                                    let text = span.innerText;
+                                    span.innerText = text.includes("No")
+                                      ? "Yes"
+                                      : "No";
+                                  }}
+                                  checked={value}
                                 />
-                              </label>
-                              <label>
-                                No{" "}
-                                <input
-                                  id="grid-text-1"
-                                  type="radio"
-                                  onChange={() => onChange(false)}
-                                  checked={value === false}
-                                />
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                                <span
+                                  className="ml-3 text-sm"
+                                  id="grid-text-1-span"
+                                >
+                                  No
+                                </span>
                               </label>
                             </>
                           )}
@@ -565,9 +746,69 @@ export default function Register() {
                           </p>
                         )}
                       </div>
+
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          what do you hope to see from UGA Hacks 8?
+                        <Controller
+                          control={control}
+                          name="elCreditInterest"
+                          rules={{
+                            validate: (value) => {
+                              if (value == null) {
+                                return "Please select an option";
+                              }
+
+                              return true;
+                            },
+                          }}
+                          render={({ field: { onChange, value } }) => (
+                            <>
+                              <label
+                                className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
+                                htmlFor="grid-text-2"
+                              >
+                                Interested in EL Credit? (UGA students ONLY)
+                              </label>
+                              <label className="relative inline-flex items-center mb-4 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  value=""
+                                  id="grid-text-2"
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                    let span =
+                                      document.getElementById(
+                                        "grid-text-2-span"
+                                      );
+                                    if (span === null) return;
+                                    let text = span.innerText;
+                                    span.innerText = text.includes("No")
+                                      ? "Yes"
+                                      : "No";
+                                  }}
+                                  checked={value}
+                                />
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                                <span
+                                  className="ml-3 text-sm"
+                                  id="grid-text-2-span"
+                                >
+                                  No
+                                </span>
+                              </label>
+                            </>
+                          )}
+                        />
+                        {errors.elCreditInterest && (
+                          <p className="text-red-400">
+                            {errors.elCreditInterest.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="w-full md:w-full px-3 mb-6">
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          What do you expect out of UGA Hacks?
                           <span className="text-red-600">*</span>
                         </label>
                         <textarea
@@ -585,31 +826,91 @@ export default function Register() {
                           </p>
                         )}
                       </div>
+
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label
-                          className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                          htmlFor="grid-text-1"
-                        >
-                          dietary restrictions
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          Dietary Restrictions?
+                          <span className="text-red-600">*</span>
                         </label>
-                        <input
-                          className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
-                          {...register("dietaryRestrictions")}
-                          id="grid-text-1"
-                          type="text"
-                          maxLength={100}
-                          placeholder="Enter dietary restrictions"
-                        />
+                        <div className="flex-shrink w-full inline-block relative">
+                          <select
+                            className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                            {...register("dietaryRestrictions", {
+                              required:
+                                "Please select your dietary restrictions",
+                            })}
+                          >
+                            <option value="">
+                              Select your dietary restrictions
+                            </option>
+                            {Object.keys(DietaryRestrictions).map((key) => (
+                              <option key={key} value={key}>
+                                {
+                                  DietaryRestrictions[
+                                    key as keyof typeof DietaryRestrictions
+                                  ]
+                                }
+                              </option>
+                            ))}
+                          </select>
+                          {otherDietaryRestrictions ? (
+                            <input
+                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                              {...register("inputDietaryRestrictions", {
+                                required:
+                                  "Please select your dietary restrictions",
+                                pattern: {
+                                  value: /^[a-z ,.'-]+$/i,
+                                  message: "Contains invalid characters",
+                                },
+                              })}
+                              type="text"
+                              maxLength={100}
+                              placeholder="Type your dietary restrictions here"
+                            />
+                          ) : null}
+                          <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                            <svg
+                              className="fill-current h-4 w-4"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                          </div>
+                          {errors.dietaryRestrictions && (
+                            <p className="text-red-400">
+                              {errors.dietaryRestrictions.message}
+                            </p>
+                          )}
+                          {errors.inputDietaryRestrictions ? (
+                            <>
+                              {errors.inputDietaryRestrictions.type ===
+                                "required" && (
+                                <p className="text-red-500">
+                                  {errors.inputDietaryRestrictions.message}
+                                </p>
+                              )}
+                              {errors.inputDietaryRestrictions.type ===
+                                "pattern" && (
+                                <p className="text-red-500">
+                                  {errors.inputDietaryRestrictions.message}
+                                </p>
+                              )}
+                            </>
+                          ) : null}
+                        </div>
                       </div>
+
                       <div className="w-full md:w-full px-3 mb-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                          Shirt size<span className="text-red-600">*</span>
+                        <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                          T-Shirt Size<span className="text-red-600">*</span>
                         </label>
                         <div className="flex-shrink w-full inline-block relative">
                           <select
                             className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
                             {...register("shirtSize", {
-                              required: "PLease select a shirt size",
+                              required: "Please select a shirt size",
                             })}
                           >
                             <option value="">Select your shirt size</option>
@@ -646,7 +947,7 @@ export default function Register() {
                           render={({ field: { onChange, value } }) => (
                             <>
                               <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
                                 htmlFor="grid-text-1"
                               >
                                 <em>MLH Code of Conduct: </em>&quot;I have read
@@ -660,15 +961,18 @@ export default function Register() {
                                 </Link>
                                 .&quot;<span className="text-red-600">*</span>
                               </label>
-                              <label>
-                                Yes{" "}
+                              <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
-                                  className="mr-10"
+                                  type="checkbox"
+                                  value=""
                                   id="grid-text-1"
-                                  type="radio"
-                                  onChange={() => onChange(true)}
-                                  checked={value === true}
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                  }}
+                                  checked={value}
                                 />
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                               </label>
                             </>
                           )}
@@ -690,7 +994,7 @@ export default function Register() {
                           render={({ field: { onChange, value } }) => (
                             <>
                               <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
                                 htmlFor="grid-text-1"
                               >
                                 <em>Event Logistics Information: </em>“I
@@ -723,15 +1027,18 @@ export default function Register() {
                                 </Link>
                                 .”<span className="text-red-600">*</span>
                               </label>
-                              <label>
-                                Yes{" "}
+                              <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
-                                  className="mr-10"
+                                  type="checkbox"
+                                  value=""
                                   id="grid-text-1"
-                                  type="radio"
-                                  onChange={() => onChange(true)}
-                                  checked={value === true}
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                  }}
+                                  checked={value}
                                 />
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                               </label>
                             </>
                           )}
@@ -752,7 +1059,7 @@ export default function Register() {
                           render={({ field: { onChange, value } }) => (
                             <>
                               <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
                                 htmlFor="grid-text-1"
                               >
                                 <em>Communication from MLH: </em>“I authorize
@@ -762,15 +1069,18 @@ export default function Register() {
                                 MLH.&quot;
                                 <span className="text-red-600">*</span>
                               </label>
-                              <label>
-                                Yes{" "}
+                              <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
-                                  className="mr-10"
+                                  type="checkbox"
+                                  value=""
                                   id="grid-text-1"
-                                  type="radio"
-                                  onChange={() => onChange(true)}
-                                  checked={value === true}
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                  }}
+                                  checked={value}
                                 />
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                               </label>
                             </>
                           )}
@@ -781,12 +1091,9 @@ export default function Register() {
                           </p>
                         )}
                       </div>
-                      <div className="flex justify-between">
-                        <button className="appearance-none bg-gray-200 text-gray-900 px-2 py-1 shadow-sm border border-gray-400 rounded-md mr-3">
-                          <Link href="/events/hacks-8">Go Back</Link>
-                        </button>
+                      <div className="">
                         <button
-                          className="appearance-none bg-gray-200 text-gray-900 px-2 py-1 shadow-sm border border-gray-400 rounded-md mr-3"
+                          className="border rounded w-full border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors p-2"
                           type="submit"
                         >
                           Register!
@@ -795,6 +1102,26 @@ export default function Register() {
                     </div>
                   </div>
                 </form>
+              </div>
+              <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
+                <div className="flex flex-col flex-wrap h-full justify-between">
+                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                    <Image
+                      src="/three_circles.png"
+                      alt="three circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
+                  </div>
+                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                    <Image
+                      src="/two_circles_right.png"
+                      alt="two circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

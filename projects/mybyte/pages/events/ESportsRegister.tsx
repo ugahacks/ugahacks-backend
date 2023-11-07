@@ -25,41 +25,41 @@ export default function ESportsRegister() {
   };
 
   return (
-    <div className="bg-cover bg-[url('/UGAHacks8TanBG.png')]">
+    <div>
       <ProtectedRoute>
-        <Card className="bg-opacity-75">
-          <div className="min-h-screen pt-2 font-mono my-8">
+        <Card >
+          <div className="min-h-screen pt-2 inter mb-8">
             <div className="container mx-auto">
-              <div className="inputs w-full max-w-2xl p-6 mx-auto">
-                <form className="mt-3 pt-4" onSubmit={handleSubmit(onSubmit)}>
+              <div className="inputs w-full max-w-sm mx-auto">
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="personal w-full pt-2">
-                      <h2 className="text-2xl text-gray-900">
-                        E-Sports Registration:
-                      </h2>
-                      <h2 className="text-l text-gray-900 mt-4">
+                      <h1 className="text-center font-weight-700 font-bold text-2xl ">
+                        E-Sports Registration
+                      </h1>
+                      <h2 className="font-weight-300 text-[11px] text-gray-900 mt-4">
                         This year we will be hosting a Super Smash Bros.
                         Ultimate Tournament! If interested, please register here
                         :)
                       </h2>
-                      <h2 className="text-l text-gray-900 mt-4">
+                      <h2 className="font-weight-300 text-[11px] text-gray-900 mt-0">
                         There will also be freeplay for other fighting games
                         e.g. Guilty Gear on PS4 🕹️
                       </h2>
-                      <div className="w-full md:w-full px-3 mb-6 mt-6">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                      <div className="w-full md:w-full mb-6 mt-6">
+                        <label className="block uppercase tracking-wide text-black-700 text-[11px] font-bold mb-2">
                           Skill level description (hours played, any competetive
                           experience, etc). None is fine (type &quot;N/A&quot;):
                           <span className="text-red-600">*</span>
                         </label>
-                        <p className="text-s">
+                        <p className="text-s text-[11px] pb-2">
                           This is to help us match up players with similar skill
                           levels! We welcome all skill levels 😇
                         </p>
                         <textarea
                           className="bg-gray-100 rounded-md border leading-normal resize-none w-full h-20 py-2 px-3 shadow-inner border border-gray-400 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
                           {...register("skillLevel", {
-                            required: "Please enter a response",
+                            required: "Type here...",
                           })}
                           maxLength={250}
                           onChange={(e) => setTextCount(e.target.value.length)}
@@ -71,9 +71,9 @@ export default function ESportsRegister() {
                           </p>
                         )}
                       </div>
-                      <div className="w-full md:w-full px-3 mb-6">
+                      <div className="w-full md:w-full mb-6">
                         <label
-                          className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                          className="block uppercase tracking-wide text-black-700 text-[11px] font-bold mb-2"
                           htmlFor="grid-text-1"
                         >
                           What should we call you (e.g. real name, username and
@@ -82,7 +82,7 @@ export default function ESportsRegister() {
                           full username).<span className="text-red-600">*</span>
                         </label>
                         <input
-                          className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                          className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-2 px-2 leading-tight focus:outline-none  focus:border-gray-500"
                           {...register("preferredName", {
                             required: "Please enter a response",
                           })}
@@ -97,7 +97,7 @@ export default function ESportsRegister() {
                           </p>
                         )}
                       </div>
-                      <div className="w-full md:w-full px-3 mb-6">
+                      <div className="w-full md:w-full mb-6">
                         <Controller
                           control={control}
                           name="canBringController"
@@ -113,7 +113,7 @@ export default function ESportsRegister() {
                           render={({ field: { onChange, value } }) => (
                             <>
                               <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                className="block uppercase tracking-wide text-black-700 text-[11px] font-bold mb-2"
                                 htmlFor="grid-text-1"
                               >
                                 This event is Bring Your Own Controller (BYOC).
@@ -152,7 +152,7 @@ export default function ESportsRegister() {
                           </p>
                         )}
                       </div>
-                      <div className="w-full md:w-full px-3 mb-6">
+                      <div className="w-full md:w-full mb-6">
                         <Controller
                           control={control}
                           name="tardyAgreement"
@@ -163,7 +163,7 @@ export default function ESportsRegister() {
                           render={({ field: { onChange, value } }) => (
                             <>
                               <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                className="block uppercase tracking-wide text-black-700 text-[11px] font-bold mb-2"
                                 htmlFor="grid-text-1"
                               >
                                 I understand that if I am more than 10 min late
@@ -191,15 +191,12 @@ export default function ESportsRegister() {
                           </p>
                         )}
                       </div>
-                      <div className="flex justify-between">
-                        <button className="appearance-none bg-gray-200 text-gray-900 px-2 py-1 shadow-sm border border-gray-400 rounded-md mr-3">
-                          <Link href="/events/hacks-8">Go Back</Link>
-                        </button>
+                      <div className="flex justify-around">
                         <button
-                          className="appearance-none bg-gray-200 text-gray-900 px-2 py-1 shadow-sm border border-gray-400 rounded-md mr-3"
+                          className="appearance-none w-full h-[30px] font-bold font-inter bg-gray-100 text-black-900 "
                           type="submit"
                         >
-                          Register!
+                          Register
                         </button>
                       </div>
                     </div>

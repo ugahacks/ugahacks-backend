@@ -9,11 +9,15 @@
   "workspaces": [
     "projects/*"
   ],
-  "packageManager": "yarn@3.3.1",
+  "packageManager": "yarn@4.0.1",
   "devDependencies": {
     "husky": "^8.0.0"
   },
   "scripts": {
     "postinstall": "husky install"
+  },
+  "dependencies": {
+    "react-tsparticles": "^2.12.2",
+    "tsparticles": "^2.12.0"
   }
 }
