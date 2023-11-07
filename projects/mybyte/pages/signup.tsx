@@ -111,7 +111,7 @@ const SignupPage = () => {
       });
     });
     setSO(so);
-  }, [setSO, CSVToArray, fetch, so]);
+  }, [setSO, CSVToArray, so]);
 
   const onSubmit = async (data: SignupType) => {
     try {
