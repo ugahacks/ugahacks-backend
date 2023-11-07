@@ -50,16 +50,16 @@ export default function EventRect(props: {
       onClick={!props.disabled ? handleClick : () => {}}
       className={props.disabled ? "cursor-default opacity-70" : ""}
     >
-      <Card className="w-96">
-        <CardHeader color="blue" className="h-28 w-96 mx-0 rounded-none">
+      <Card className="w-96 shadow-lg">
+        <CardHeader color="blue" className="h-24 w-96 mx-0 rounded-none">
           <Image
             src={props.event.image}
             alt="img-blur-shadow"
-            className={"h-full w-60 rounded-t-lg pb-2" + gray}
+            className={"h-full w-60 rounded-t-lg" + gray}
             fill
           />
         </CardHeader>
-        <CardBody className="p-0">
+        <CardBody className="p-0 pt-2">
           <Typography
             variant="h2"
             className="mb-2 text-bold text-left pl-3 text-sm"
