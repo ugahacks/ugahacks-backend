@@ -62,7 +62,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
   });
 
   const selectedStyles =
-    "hover:text-red-500 underline underline-offset-[5px] transition";
+    "hover:text-red-500 underline underline-offset-2 transition";
   const nonSelectedStyles = "hover:text-red-500 transition";
 
   return (
