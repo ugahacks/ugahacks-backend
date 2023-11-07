@@ -67,7 +67,7 @@ function openEventsRegistered(allRegisteredEvents: string[]) {
 }
 
 const DashboardPage = () => {
-  const { userInfo, setUserInformation } = useAuth();
+  const { user, userInfo } = useAuth();
   const registeredEvents: EventRegistered = userInfo.registered;
   const registeredEventKeys = Object.keys(registeredEvents);
 
@@ -93,9 +93,9 @@ const DashboardPage = () => {
                 <QRCodeCanvas
                   id="qrCode"
                   size={200}
-                  value={userInfo.uid}
+                  value={user.uid}
                   level={"H"}
-                  className="rounded-md"
+                  // className="rounded-md"
                 />
               </div>
             </div>
