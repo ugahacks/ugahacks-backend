@@ -153,28 +153,16 @@ const DashboardPage = () => {
           </div>
         </div>
         <div
-          className="fixed -bottom-72 -right-10 overflow-hidden"
+          className="fixed -bottom-72 -right-10 hidden lg:block overflow-hidden"
           style={{ width: "500px", height: "500px" }}
         >
-          <Image
-            src="/red_circle.png"
-            alt="circle"
-            width={500}
-            height={500}
-            className="hidden lg:block"
-          />
+          <Image src="/red_circle.png" alt="circle" width={500} height={500} />
         </div>
         <div
-          className="fixed -bottom-32 -right-72 overflow-hidden"
+          className="fixed -bottom-32 -right-72 hidden lg:block overflow-hidden"
           style={{ width: "500px", height: "500px" }}
         >
-          <Image
-            src="/red_circle.png"
-            alt="circle"
-            width={500}
-            height={500}
-            className="hidden lg:block"
-          />
+          <Image src="/red_circle.png" alt="circle" width={500} height={500} />
         </div>
       </div>
     </ProtectedRoute>

@@ -12,7 +12,7 @@ export default function RegistrationSuccess() {
       </div>
 
       <div className="absolute inset-0 flex pt-16 overflow-hidden font-mono">
-        <div className="sign-up-form container mx-auto max-w-min mt-12 bg-white rounded-md">
+        <div className="sign-up-form container mx-auto max-w-min mt-12 rounded-md">
           <div className="flex flex-col items-center">
             <Image
               src="/byte soaring.png"
