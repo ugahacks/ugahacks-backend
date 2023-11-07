@@ -10,9 +10,9 @@ const Hacks9: EventDetail = {
   key: Events.hacks9,
   page: "/register",
   image: "/uh9_banner.png",
-  startDate: new Date("02/03/2024"),
-  endDate: new Date("02/05/2024"),
-  deadline: new Date("02/04/2024"),
+  startDate: new Date("02/09/2024"),
+  endDate: new Date("02/11/2024"),
+  deadline: new Date("01/26/2024"),
   // Add in person attribute
 };
 
