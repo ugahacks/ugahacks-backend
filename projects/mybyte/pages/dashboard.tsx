@@ -95,7 +95,7 @@ const DashboardPage = () => {
                   size={200}
                   value={user.uid}
                   level={"H"}
-                  // className="rounded-md"
+                  className="rounded-md"
                 />
               </div>
             </div>

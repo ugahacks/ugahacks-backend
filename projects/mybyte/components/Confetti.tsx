@@ -4,7 +4,6 @@ import React, { useCallback } from "react";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import { Engine } from "tsparticles-engine";
-// import styles from "../../styles/Bubbles.module.css";
 
 const ConfettiAnimation = () => {
   const init = useCallback(async (engine: Engine) => {
@@ -13,7 +12,6 @@ const ConfettiAnimation = () => {
 
   return (
     <Particles
-      //   className={styles.body}
       init={init}
       options={{
         autoPlay: true,
