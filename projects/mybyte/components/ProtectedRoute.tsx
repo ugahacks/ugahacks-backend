@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = ({
   children,
-  className = "",
+  className = "container",
 }: {
   children: React.ReactNode;
   className?: string;
