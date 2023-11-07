@@ -6,6 +6,7 @@ import ProtectedRoute from "../../components/ProtectedRoute";
 import { Card } from "@material-tailwind/react";
 import { ESportsRegisterForm } from "../../interfaces/eSportsRegisterForm";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ESportsRegister() {
   const router = useRouter();
@@ -25,13 +26,24 @@ export default function ESportsRegister() {
   };
 
   return (
-    <div>
-      <ProtectedRoute>
+    <div className="overflow-y-hidden">
+      <ProtectedRoute className="">
         <Card >
-          <div className="min-h-screen pt-2 inter mb-8">
-            <div className="container mx-auto">
-              <div className="inputs w-full max-w-sm mx-auto">
-                <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex overflow-y-hidden">
+              <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
+                <div className="flex flex-col flex-wrap h-full justify-center">
+                  <div className="relative min-w-0 w-full h-[600px] shrink grow-0 ml-auto">
+                    <Image
+                      src="/two_circles_left.png"
+                      alt="two circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
+                  </div>
+                </div>
+              </div>
+              <div className="mx-auto flex flex-column justify-between inputs w-full max-w-sm mx-auto">
+                <form className="font-inter" onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="personal w-full pt-2">
                       <h1 className="text-center font-weight-700 font-bold text-2xl ">
@@ -124,24 +136,32 @@ export default function ESportsRegister() {
                                 tourney?
                                 <span className="text-red-600">*</span>
                               </label>
-                              <label>
-                                Yes{" "}
+                              <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
-                                  className="mr-10"
+                                  type="checkbox"
                                   id="grid-text-1"
-                                  type="radio"
-                                  onChange={() => onChange(true)}
-                                  checked={value === true}
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                    let span =
+                                      document.getElementById(
+                                        "grid-text-1-span"
+                                      );
+                                    if (span === null) return;
+                                    let text = span.innerText;
+                                    span.innerText = text.includes("No")
+                                      ? "Yes"
+                                      : "No";
+                                  }}
+                                  checked={value}
                                 />
-                              </label>
-                              <label>
-                                No{" "}
-                                <input
-                                  id="grid-text-1"
-                                  type="radio"
-                                  onChange={() => onChange(false)}
-                                  checked={value === false}
-                                />
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                                <span
+                                  className="ml-3 text-sm"
+                                  id="grid-text-1-span"
+                                >
+                                  No
+                                </span>
                               </label>
                             </>
                           )}
@@ -164,7 +184,7 @@ export default function ESportsRegister() {
                             <>
                               <label
                                 className="block uppercase tracking-wide text-black-700 text-[11px] font-bold mb-2"
-                                htmlFor="grid-text-1"
+                                htmlFor="grid-text-2"
                               >
                                 I understand that if I am more than 10 min late
                                 to my time to play, I will be automatically
@@ -172,15 +192,33 @@ export default function ESportsRegister() {
                                 tournament runs smoothly.
                                 <span className="text-red-600">*</span>
                               </label>
-                              <label>
-                                Yes{" "}
+                              <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                 <input
-                                  className="mr-10"
-                                  id="grid-text-1"
-                                  type="radio"
-                                  onChange={() => onChange(true)}
-                                  checked={value === true}
+                                  type="checkbox"
+                                  value=""
+                                  id="grid-text-2"
+                                  className="sr-only peer"
+                                  onChange={() => {
+                                    onChange(!value);
+                                    let span =
+                                      document.getElementById(
+                                        "grid-text-2-span"
+                                      );
+                                    if (span === null) return;
+                                    let text = span.innerText;
+                                    span.innerText = text.includes("No")
+                                      ? "Yes"
+                                      : "No";
+                                  }}
+                                  checked={value}
                                 />
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                                <span
+                                  className="ml-3 text-sm"
+                                  id="grid-text-2-span"
+                                >
+                                  No
+                                </span>
                               </label>
                             </>
                           )}
@@ -202,9 +240,28 @@ export default function ESportsRegister() {
                     </div>
                   </div>
                 </form>
+                </div>
+              <div className="min-w-0 w-1/4 shrink grow-0 collapse md:visible">
+                <div className="flex flex-col flex-wrap h-full justify-between">
+                  <div className="relative min-w-0 w-full h-[250px] shrink grow-0 ml-auto">
+                    <Image
+                      src="/three_circles.png"
+                      alt="three circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
+                  </div>
+                  <div className="relative min-w-0 w-full h-[250px] shrink grow-0 ml-auto">
+                    <Image
+                      src="/two_circles_right.png"
+                      alt="two circles"
+                      fill
+                      className="object-contain"
+                    ></Image>
+                    </div>
+                </div>
               </div>
-            </div>
-          </div>
+              </div>
         </Card>
       </ProtectedRoute>
     </div>
