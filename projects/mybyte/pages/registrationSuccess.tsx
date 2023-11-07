@@ -7,11 +7,8 @@ import ConfettiAnimation from "../components/Confetti";
 export default function RegistrationSuccess() {
   return (
     <div>
-      <div className="relative">
-        <ConfettiAnimation />
-      </div>
-
-      <div className="absolute inset-0 flex pt-16 overflow-hidden font-mono">
+      <ConfettiAnimation />
+      <div className="inset-0 flex overflow-hidden font-mono">
         <div className="sign-up-form container mx-auto max-w-min mt-12 rounded-md">
           <div className="flex flex-col items-center">
             <Image
