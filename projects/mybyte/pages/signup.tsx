@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/router";
@@ -20,6 +20,7 @@ interface SignupType {
 const SignupPage = () => {
   const { signUp, logInWithGoogle } = useAuth();
   const router = useRouter();
+  const [so, setSO] = useState([{ value: "other", label: "Other" }]);
 
   const methods = useForm<SignupType>({ mode: "onBlur" });
 
@@ -29,19 +30,92 @@ const SignupPage = () => {
     formState: { errors },
   } = methods;
 
-  const schoolOptions = [
-    { value: "uga", label: "University of Georgia" },
-    { value: "gt", label: "Georgia Tech" },
-    { value: "georgia-state", label: "Georgia State" },
-    { value: "georgia-college", label: "Georgia College" },
-    { value: "ucf", label: "University of Central Florida" },
-    { value: "stanford", label: "Stanford University" },
-    { value: "other", label: "Other" },
-  ];
+  // ref: http://stackoverflow.com/a/1293163/2343
+  // This will parse a delimited string into an array of
+  // arrays. The default delimiter is the comma, but this
+  // can be overriden in the second argument.
+  function CSVToArray(strData: string, strDelimiter: string) {
+    // Check to see if the delimiter is defined. If not,
+    // then default to comma.
+    strDelimiter = strDelimiter || ",";
+
+    // Create a regular expression to parse the CSV values.
+    let objPattern = new RegExp(
+      // Delimiters.
+      "(\\" +
+        strDelimiter +
+        "|\\r?\\n|\\r|^)" +
+        // Quoted fields.
+        '(?:"([^"]*(?:""[^"]*)*)"|' +
+        // Standard fields.
+        '([^"\\' +
+        strDelimiter +
+        "\\r\\n]*))",
+      "gi"
+    );
+
+    // Create an array to hold our data. Give the array
+    // a default empty first row.
+    let arrData: string[][] = [[]];
+
+    // Create an array to hold our individual pattern
+    // matching groups.
+    let arrMatches = null;
+
+    // Keep looping over the regular expression matches
+    // until we can no longer find a match.
+    while ((arrMatches = objPattern.exec(strData))) {
+      // Get the delimiter that was found.
+      let strMatchedDelimiter = arrMatches[1];
+
+      // Check to see if the given delimiter has a length
+      // (is not the start of string) and if it matches
+      // field delimiter. If id does not, then we know
+      // that this delimiter is a row delimiter.
+      if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
+        // Since we have reached a new row of data,
+        // add an empty row to our data array.
+        arrData.push([]);
+      }
+
+      let strMatchedValue;
+
+      // Now that we have our delimiter out of the way,
+      // let's check to see which kind of value we
+      // captured (quoted or unquoted).
+      if (arrMatches[2]) {
+        // We found a quoted value. When we capture
+        // this value, unescape any double quotes.
+        strMatchedValue = arrMatches[2].replace(new RegExp('""', "g"), '"');
+      } else {
+        // We found a non-quoted value.
+        strMatchedValue = arrMatches[3];
+      }
+
+      // Now that we have our value string, let's add
+      // it to the data array.
+      arrData[arrData.length - 1].push(strMatchedValue);
+    }
+
+    // Return the parsed data.
+    return arrData;
+  }
+  useEffect( () => {
+    fetch("/schools.csv")
+    .then((resp) => resp.text())
+    .then((text) => {
+      CSVToArray(text, ",").forEach((row, index) => {
+        if (index != 0) {
+          so.push({ value: row[0], label: row[0] });
+        }
+      });
+    });
+    setSO(so);
+  }, [setSO, CSVToArray, fetch, so]);
 
   const onSubmit = async (data: SignupType) => {
     try {
-      let schOpt = schoolOptions.find((item) => {return item.label === data.school});
+      let schOpt = so.find((item) => {return item.label === data.school});
       let school = (schOpt === undefined || schOpt === null) ? data.school : schOpt.value;
       await signUp(data.first_name, data.last_name, data.email, data.password, school);
       router.push("/emailVerification");
@@ -202,12 +276,12 @@ const SignupPage = () => {
                 className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
               />
               <datalist id="data">
-                {schoolOptions.map((item, key) =>
+                {so.map((item, key) =>
                   <option key={key} data-value={item.value} label={item.label}>{item.label}</option>
                 )}
               </datalist>
-              {errors.last_name && (
-                <p className="text-red-500">{errors.last_name.message}</p>
+              {errors.school && (
+                <p className="text-red-500">{errors.school.message}</p>
               )}
             </div>
             <div className="mt-8">
