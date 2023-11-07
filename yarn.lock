@@ -6171,6 +6171,7 @@ __metadata:
   resolution: "ugahacks-backend@workspace:."
   dependencies:
     husky: "npm:^8.0.0"
+    react: "npm:^18.2.0"
     react-tsparticles: "npm:^2.12.2"
     tsparticles: "npm:^2.12.0"
   languageName: unknown
