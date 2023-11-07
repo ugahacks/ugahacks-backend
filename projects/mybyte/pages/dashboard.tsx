@@ -74,7 +74,7 @@ const DashboardPage = () => {
   return (
     <ProtectedRoute>
       <div className="flex py-2 mx-auto flex-initial w-full">
-        <div className="text-gray-800 px-3 py-3 mt-4 mx-3 inter">
+        <div className="text-gray-800 px-16 py-3 mt-4 mx-3 inter">
           <h2 className="text-3xl font-semibold">
             Welcome, {userInfo.first_name + " " + userInfo.last_name}
           </h2>
