@@ -18,9 +18,6 @@ const ConfettiAnimation = () => {
       options={{
         autoPlay: true,
         background: {
-          color: {
-            value: "#ffffff",
-          },
           image: "",
           position: "",
           repeat: "",
