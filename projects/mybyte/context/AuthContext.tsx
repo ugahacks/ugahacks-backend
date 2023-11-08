@@ -228,6 +228,7 @@ export const AuthContextProvider = ({
     // Set the user status to registered for hacks9 & updates school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
       "registered.HACKS9": true,
+      "checkedIn.HACKS9": false,
       school: data.school,
       "checkedIn.HACKS9": false,
     });
