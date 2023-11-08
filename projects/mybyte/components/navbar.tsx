@@ -134,9 +134,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     })
                   ) : (
                     <>
-                      <li>
-                        {userInfo.first_name != null &&
-                        userInfo.first_name != "" ? (
+                      {userInfo.first_name != null &&
+                      userInfo.first_name != "" ? (
+                        <li>
                           <Link href="/dashboard">
                             <span
                               className={
@@ -148,11 +148,12 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                               Dashboard
                             </span>
                           </Link>
-                        ) : null}
-                      </li>
-                      <li>
-                        {userInfo.first_name != null &&
-                        userInfo.first_name != "" ? (
+                        </li>
+                      ) : null}
+
+                      {userInfo.first_name != null &&
+                      userInfo.first_name != "" ? (
+                        <li>
                           <Link href="/team">
                             <span
                               className={
@@ -164,15 +165,16 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                               Team
                             </span>
                           </Link>
-                        ) : null}
-                      </li>
-                      <li>
-                        {/* TODO: Why are we doing the first_name check */}
-                        {userInfo.first_name != null &&
-                        userInfo.first_name != "" &&
-                        user_type !== null &&
-                        user_type !== undefined &&
-                        user_type == "service_writer" ? (
+                        </li>
+                      ) : null}
+
+                      {/* TODO: Why are we doing the first_name check */}
+                      {userInfo.first_name != null &&
+                      userInfo.first_name != "" &&
+                      user_type !== null &&
+                      user_type !== undefined &&
+                      user_type == "service_writer" ? (
+                        <li>
                           <Link href="/qrRead">
                             <span
                               className={
@@ -184,12 +186,13 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                               Scanner
                             </span>
                           </Link>
-                        ) : null}
-                      </li>
-                      <li>
-                        {/* TODO: why are we checking first_name? */}
-                        {userInfo.first_name != null &&
-                        userInfo.first_name != "" ? (
+                        </li>
+                      ) : null}
+
+                      {/* TODO: why are we checking first_name? */}
+                      {userInfo.first_name != null &&
+                      userInfo.first_name != "" ? (
+                        <li>
                           <Link href="/insertDevPost">
                             <span
                               className={
@@ -201,8 +204,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                               Submit Devpost Link
                             </span>
                           </Link>
-                        ) : null}
-                      </li>
+                        </li>
+                      ) : null}
+
                       <li>
                         <a onClick={handleLogout} className={nonSelectedStyles}>
                           Logout
