@@ -52,6 +52,8 @@ export interface EventRegistered {
   HACKS9: boolean | null;
 }
 
+export interface EventCheckedIn extends EventRegistered {}
+
 export interface UserInfoType {
   first_name: string | null;
   last_name: string | null;
@@ -59,6 +61,7 @@ export interface UserInfoType {
   tid: string | null;
   school: string | null;
   registered: EventRegistered;
+  checkedIn: EventCheckedIn;
   //user_type: Users | null;
 }
 
@@ -84,6 +87,10 @@ export const AuthContextProvider = ({
     tid: null,
     school: null,
     registered: {
+      HACKS8: null,
+      HACKS9: null,
+    },
+    checkedIn: {
       HACKS8: null,
       HACKS9: null,
     },
@@ -210,6 +217,7 @@ export const AuthContextProvider = ({
             school: data.school,
             inputSchool: data.inputSchool,
             elCreditInterest: data.elCreditInterest,
+            accepted: null,
             resumeLink: downloadURL,
             submitted_time: serverTimestamp(),
           });
@@ -221,6 +229,7 @@ export const AuthContextProvider = ({
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
       "registered.HACKS8": false,
       "registered.HACKS9": true,
+      "checkedIn.HACKS9": false,
     });
 
     // Update userInfo
@@ -345,6 +354,7 @@ export const AuthContextProvider = ({
         email: email,
         points: 0,
         registered: {},
+        checkedIn: {},
         school: school,
         added_time: serverTimestamp(),
       });
@@ -396,12 +406,67 @@ export const AuthContextProvider = ({
           email: google_user.email,
           points: 0,
           registered: {},
+          checkedIn: {},
           added_time: serverTimestamp(),
         });
       }
       setUserInformation(google_user.uid);
     } catch (err: any) {
       console.error(err);
+    }
+  };
+
+  /**
+   * checks in a user by userid
+   * @param userid uuid of the user
+   */
+  const checkinUser = async (
+    userid: string
+  ) => {
+    try {
+      const docRef = doc(userRef, userid);
+      await updateDoc(docRef, {
+        "checkedIn.HACKS9": true
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Accepts a user by userid.
+   * @param userid uuid of a user
+   */
+  const acceptUser = async (
+    userid: string
+  ) => {
+    try {
+      const docRef = doc(registerRef, userid);
+      await updateDoc(docRef, {
+        accepted: true
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Denies a user by userid.
+   * @param userid uuid of a user
+   */
+  const denyUser = async (
+    userid: string
+  ) => {
+    try {
+      const docRef = doc(registerRef, userid);
+      await updateDoc(docRef, {
+        accepted: false
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
     }
   };
 
@@ -630,6 +695,7 @@ export const AuthContextProvider = ({
       tid: docSnap.data().tid,
       school: docSnap.data().school,
       registered: docSnap.data().registered,
+      checkedIn: docSnap.data().checkedIn,
     });
     setType(docSnap.data().user_type);
   };
