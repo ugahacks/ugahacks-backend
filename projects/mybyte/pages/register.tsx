@@ -229,8 +229,8 @@ export default function Register() {
           </h1>
           <div className="pl-1 text-md w-4/5">
             <p className="pb-3">
-              We're excited that you are participating in UGAHacks 9! We would
-              love to see you at the event!
+              We&apos;re excited that you are participating in UGAHacks 9! We
+              would love to see you at the event!
             </p>
             <p className="text-md">
               If you have any questions, please send us an email at{" "}
