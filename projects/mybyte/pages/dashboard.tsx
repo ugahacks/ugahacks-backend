@@ -5,6 +5,7 @@ import { useAuth, EventRegistered } from "../context/AuthContext";
 import EventRect, { EventDetail } from "../components/EventRect";
 import { Events } from "../enums/events";
 import { QRCodeCanvas } from "qrcode.react";
+import Circle from "../components/Circle";
 
 const Hacks9: EventDetail = {
   key: Events.hacks9,
@@ -152,18 +153,8 @@ const DashboardPage = () => {
             </div>
           </div>
         </div>
-        <div
-          className="fixed -bottom-72 -right-10 hidden lg:block overflow-hidden"
-          style={{ width: "500px", height: "500px" }}
-        >
-          <Image src="/red_circle.png" alt="circle" width={500} height={500} />
-        </div>
-        <div
-          className="fixed -bottom-32 -right-72 hidden lg:block overflow-hidden"
-          style={{ width: "500px", height: "500px" }}
-        >
-          <Image src="/red_circle.png" alt="circle" width={500} height={500} />
-        </div>
+        <Circle className="fixed -bottom-72 -right-10 hidden lg:block overflow-hidden rounded-full h-[500px] w-[520px] bg-red-500 opacity-90" />
+        <Circle className="fixed -bottom-32 -right-72 hidden lg:block overflow-hidden rounded-full h-[500px] w-[520px] bg-red-500 opacity-90" />
       </div>
     </ProtectedRoute>
   );
