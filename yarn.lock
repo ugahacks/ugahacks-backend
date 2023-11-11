@@ -4777,6 +4777,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"performance-now@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "performance-now@npm:2.1.0"
+  checksum: 534e641aa8f7cba160f0afec0599b6cecefbb516a2e837b512be0adbe6c1da5550e89c78059c7fabc5c9ffdf6627edabe23eb7c518c4500067a898fa65c2b550
+  languageName: node
+  linkType: hard
+
 "picocolors@npm:^1.0.0":
   version: 1.0.0
   resolution: "picocolors@npm:1.0.0"
@@ -5061,6 +5068,22 @@ __metadata:
   version: 1.2.3
   resolution: "queue-microtask@npm:1.2.3"
   checksum: 72900df0616e473e824202113c3df6abae59150dfb73ed13273503127235320e9c8ca4aaaaccfd58cf417c6ca92a6e68ee9a5c3182886ae949a768639b388a7b
+  languageName: node
+  linkType: hard
+
+"quick-lru@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "quick-lru@npm:5.1.1"
+  checksum: a516faa25574be7947969883e6068dbe4aa19e8ef8e8e0fd96cddd6d36485e9106d85c0041a27153286b0770b381328f4072aa40d3b18a19f5f7d2b78b94b5ed
+  languageName: node
+  linkType: hard
+
+"raf@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "raf@npm:3.4.1"
+  dependencies:
+    performance-now: "npm:^2.1.0"
+  checksum: 4c4b4c826b09d2aec6ca809f1a3c3c12136e7ec8d13fbb91f495dd2c99cd43345240e003da3bfd16036a432e635049fc6d9f69f9187f5f22ea88bb146ec75881
   languageName: node
   linkType: hard
 
@@ -6505,6 +6528,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typewriter-effect@npm:^2.21.0":
+  version: 2.21.0
+  resolution: "typewriter-effect@npm:2.21.0"
+  dependencies:
+    prop-types: "npm:^15.8.1"
+    raf: "npm:^3.4.1"
+  peerDependencies:
+    react: ^17.x || ^18.x
+    react-dom: ^17.x || ^18.x
+  checksum: eaefe01da5ecfc866a1031efa34ad365f4f52fc57be9acf67d4877e01361844a2798f1aba035845fc9f60edaa56bdbb6f7597341ae8e4015793795e1d7b6763d
+  languageName: node
+  linkType: hard
+
 "ugahacks-backend@workspace:.":
   version: 0.0.0-use.local
   resolution: "ugahacks-backend@workspace:."
@@ -6513,6 +6549,7 @@ __metadata:
     react: "npm:^18.2.0"
     react-tsparticles: "npm:^2.12.2"
     tsparticles: "npm:^2.12.0"
+    typewriter-effect: "npm:^2.21.0"
   languageName: unknown
   linkType: soft
 

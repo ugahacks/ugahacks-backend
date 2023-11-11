@@ -73,10 +73,15 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div>
-      <div className="overflow-y-auto h-screen font-inter">
-        <nav className="bg-white border-gray-200 shadow-lg">
+      <div
+        className={
+          (router.asPath !== "/register" ? "h-screen" : "") +
+          " overflow-y-auto font-inter "
+        }
+      >
+        <nav className="bg-white border-gray-200 shadow-md">
           <div className="flex flex-wrap items-center justify-between mx-auto py-6">
-            <Link href={!user.id ? "/" : "/dashboard"}>
+            <Link href={!user.uid ? "/" : "/dashboard"}>
               <span className="font-semibold uppercase text-xl tracking-5px px-5 hover:text-red-500 transition">
                 UGAHacks
               </span>
