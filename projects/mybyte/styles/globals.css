@@ -9,3 +9,53 @@
 body {
   overflow: hidden;
 }
+
+.wiggle {
+  animation: animate 4s linear infinite;
+  transition: all 5s ease-in-out;
+}
+
+.wiggle2 {
+  animation: animate 5s linear infinite;
+  transition: all 3s ease-in-out;
+}
+
+@keyframes animate {
+  0%,
+  100% {
+    transform: translateY(0); /* Initial and final position, no translation */
+  }
+  50% {
+    transform: translateY(-15px); /* Move up */
+  }
+}
+
+.blinking-cursor {
+  display: inline-block;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.moving-gradient {
+  width: 100%;
+  background: linear-gradient(45deg, #ff3232, #e14e4e, #e96868);
+  background-size: 200% 200%;
+  animation: gradientMove 5s linear infinite;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
