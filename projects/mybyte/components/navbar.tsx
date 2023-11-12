@@ -72,11 +72,11 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <div>
+    <div className="shadow-md">
       <div
         className={
           (router.asPath !== "/register" ? "h-screen" : "") +
-          " overflow-y-auto font-inter "
+          " overflow-y-auto font-inter"
         }
       >
         <nav className="bg-white border-gray-200 shadow-md">
@@ -139,9 +139,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                     })
                   ) : (
                     <>
-                      <li>
-                        {userInfo.first_name != null &&
-                        userInfo.first_name != "" ? (
+                      {userInfo.first_name != null &&
+                      userInfo.first_name != "" ? (
+                        <li>
                           <Link href="/dashboard">
                             <span
                               className={
@@ -153,11 +153,12 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                               Dashboard
                             </span>
                           </Link>
-                        ) : null}
-                      </li>
-                      <li>
-                        {userInfo.first_name != null &&
-                        userInfo.first_name != "" ? (
+                        </li>
+                      ) : null}
+
+                      {userInfo.first_name != null &&
+                      userInfo.first_name != "" ? (
+                        <li>
                           <Link href="/team">
                             <span
                               className={
@@ -169,15 +170,17 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                               Team
                             </span>
                           </Link>
-                        ) : null}
-                      </li>
-                      <li>
-                        {/* TODO: Why are we doing the first_name check */}
-                        {userInfo.first_name != null &&
-                        userInfo.first_name != "" &&
-                        user_type !== null &&
-                        user_type !== undefined &&
-                        user_type == "service_writer" ? (
+                        </li>
+                      ) : null}
+
+                      {/* TODO: Why are we doing the first_name check */}
+
+                      {userInfo.first_name != null &&
+                      userInfo.first_name != "" &&
+                      user_type !== null &&
+                      user_type !== undefined &&
+                      user_type == "service_writer" ? (
+                        <li>
                           <Link href="/qrRead">
                             <span
                               className={
@@ -189,12 +192,13 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                               Scanner
                             </span>
                           </Link>
-                        ) : null}
-                      </li>
-                      <li>
-                        {/* TODO: why are we checking first_name? */}
-                        {userInfo.first_name != null &&
-                        userInfo.first_name != "" ? (
+                        </li>
+                      ) : null}
+
+                      {/* TODO: why are we checking first_name? */}
+                      {userInfo.first_name != null &&
+                      userInfo.first_name != "" ? (
+                        <li>
                           <Link href="/insertDevPost">
                             <span
                               className={
@@ -206,8 +210,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                               Submit Devpost Link
                             </span>
                           </Link>
-                        ) : null}
-                      </li>
+                        </li>
+                      ) : null}
+
                       <li>
                         <a onClick={handleLogout} className={nonSelectedStyles}>
                           Logout
@@ -220,8 +225,16 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
             </div>
           </div>
         </nav>
-        <div className="font-inter h-[calc(100%-168px)] md:h-[calc(100%-76px)]">
-          <div id="acdweafadaefd">{children}</div>
+        <div
+          className={
+            router.asPath === "/register"
+              ? "fixed"
+              : "font-inter h-[calc(100%-168px)] md:h-[calc(100%-76px)]"
+          }
+        >
+          <div id={router.asPath !== "/register" ? "acdweafadaefd" : ""}>
+            {children}
+          </div>
         </div>
       </div>
     </div>

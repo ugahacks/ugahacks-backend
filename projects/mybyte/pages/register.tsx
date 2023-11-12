@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import Image from "next/image";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
@@ -206,50 +206,48 @@ export default function Register() {
 
   //   const uploadTask = uploadBytesResumable(storageRef, file)
 
+  const errorStyles = "text-red-500 font-mono text-xs m-1";
+
   return (
-    <ProtectedRoute className="min-w-full">
+    <ProtectedRoute className="w-screen">
       <div className="flex overflow-hidden">
-        <div className="w-[50vw] flex-1 pl-8 pt-12 font-mono overflow-hidden">
-          <h1 className="text-5xl mb-8 w-4/5">
-            <Typewriter
-              onInit={(typewriter) => {
-                typewriter
-                  .typeString("Register for ")
-                  // .typeString("fun")
-                  // .pauseFor(1000)
-                  // .deleteChars(3)
-                  // .typeString("tech")
-                  // .pauseFor(2000)
-                  // .deleteChars(4)
-                  .typeString("UGAHacks 9")
-                  .start();
-              }}
-            />
-            {/* <span className="blinking-cursor">|</span> */}
-          </h1>
-          <div className="pl-1 text-md w-4/5">
-            <p className="pb-3">
-              We&apos;re excited that you are participating in UGAHacks 9! We
-              would love to see you at the event!
-            </p>
-            <p className="text-md">
-              If you have any questions, please send us an email at{" "}
-              <Link
-                className="font-semibold underline underline-offset-2"
-                href="mailto:hello@ugahacks.com"
-              >
-                hello@ugahacks.com
-              </Link>
-              !
-            </p>
-            <Circle className="fixed bottom-[-375px] left-12 hidden lg:block overflow-hidden rounded-full h-[600px] w-[600px] bg-red-500 opacity-90" />
-            <Circle className="fixed -bottom-48 -left-24 hidden lg:block overflow-hidden rounded-full h-[500px] w-[520px] bg-red-500 opacity-90" />
+        <div className="moving-gradient w-[50vw] flex-1 pl-8 pt-12 font-mono overflow-hidden text-white">
+          <div className="pl-12 pt-10">
+            <h1 className="text-6xl mb-8 w-4/5 leading-[80px]">
+              <Typewriter
+                onInit={(typewriter) => {
+                  typewriter
+                    .typeString("Register for ")
+                    .typeString("UGAHacks 9")
+                    .start();
+                }}
+              />
+            </h1>
+            <div className="pl-1 text-md w-4/5">
+              <p className="pb-3">
+                We&apos;re excited that you are participating in UGAHacks 9! We
+                would love to see you at the event!
+              </p>
+              <p className="text-md">
+                If you have any questions, please send us an email at{" "}
+                <Link
+                  className="font-semibold underline underline-offset-2"
+                  href="mailto:hello@ugahacks.com"
+                >
+                  hello@ugahacks.com
+                </Link>
+                !
+              </p>
+            </div>
+
+            <Circle className="fixed bottom-[-375px] left-12 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#f9ff87] opacity-90" />
+            <Circle className="fixed -bottom-[300px] -left-24 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#f9ff87] opacity-90" />
           </div>
         </div>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="overflow-y-auto h-screen">
+        <div className="flex-1 flex items-center justify-center overflow-y-auto">
+          <div className="h-screen">
             {/* Your Form component goes here */}
-            <Card className="bg-opacity-0">
+            <Card className="bg-opacity-0 shadow-none">
               <div className="min-h-screen font-inter my-4">
                 <div className="mx-auto flex flex-column justify-between">
                   <div className="inputs max-w-[45vw] px-6 mx-auto shrink-0 grow">
@@ -281,12 +279,12 @@ export default function Register() {
                               {errors.firstName ? (
                                 <>
                                   {errors.firstName.type === "required" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.firstName.message}
                                     </p>
                                   )}
                                   {errors.firstName.type === "pattern" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.firstName.message}
                                     </p>
                                   )}
@@ -314,12 +312,12 @@ export default function Register() {
                               {errors.lastName ? (
                                 <>
                                   {errors.lastName.type === "required" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.lastName.message}
                                     </p>
                                   )}
                                   {errors.lastName.type === "pattern" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.lastName.message}
                                     </p>
                                   )}
@@ -353,12 +351,12 @@ export default function Register() {
                             {errors.email ? (
                               <>
                                 {errors.email.type === "required" && (
-                                  <p className="text-red-500">
+                                  <p className={errorStyles}>
                                     {errors.email.message}
                                   </p>
                                 )}
                                 {errors.email.type === "pattern" && (
-                                  <p className="text-red-500">
+                                  <p className={errorStyles}>
                                     {errors.email.message}
                                   </p>
                                 )}
@@ -393,7 +391,7 @@ export default function Register() {
                                 </svg>
                               </div>
                               {errors.gender && (
-                                <p className="text-red-400">
+                                <p className={errorStyles}>
                                   {errors.gender.message}
                                 </p>
                               )}
@@ -423,7 +421,7 @@ export default function Register() {
                               control={control}
                             />
                             {errors.age && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.age.message}
                               </p>
                             )}
@@ -452,7 +450,7 @@ export default function Register() {
                               control={control}
                             />
                             {errors.countryResidence && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.countryResidence.message}
                               </p>
                             )}
@@ -484,12 +482,12 @@ export default function Register() {
                               {errors.phoneNumber ? (
                                 <>
                                   {errors.phoneNumber.type === "required" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.phoneNumber.message}
                                     </p>
                                   )}
                                   {errors.phoneNumber.type === "validate" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.phoneNumber.message}
                                     </p>
                                   )}
@@ -532,7 +530,7 @@ export default function Register() {
                                 </svg>
                               </div>
                               {errors.levelsOfStudy && (
-                                <p className="text-red-400">
+                                <p className={errorStyles}>
                                   {errors.levelsOfStudy.message}
                                 </p>
                               )}
@@ -561,7 +559,7 @@ export default function Register() {
                               control={control}
                             />
                             {errors.school && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.school.message}
                               </p>
                             )}
@@ -583,12 +581,12 @@ export default function Register() {
                             {errors.inputSchool ? (
                               <>
                                 {errors.inputSchool.type === "required" && (
-                                  <p className="text-red-500">
+                                  <p className={errorStyles}>
                                     {errors.inputSchool.message}
                                   </p>
                                 )}
                                 {errors.inputSchool.type === "pattern" && (
-                                  <p className="text-red-500">
+                                  <p className={errorStyles}>
                                     {errors.inputSchool.message}
                                   </p>
                                 )}
@@ -627,7 +625,7 @@ export default function Register() {
                                 </svg>
                               </div>
                               {errors.year && (
-                                <p className="text-red-400">
+                                <p className={errorStyles}>
                                   {errors.year.message}
                                 </p>
                               )}
@@ -652,7 +650,7 @@ export default function Register() {
                               type="file"
                             />
                             {errors.resume && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.resume.message}
                               </p>
                             )}
@@ -701,19 +699,19 @@ export default function Register() {
                                 </svg>
                               </div>
                               {errors.major && (
-                                <p className="text-red-400">
+                                <p className={errorStyles}>
                                   {errors.major.message}
                                 </p>
                               )}
                               {errors.inputMajor ? (
                                 <>
                                   {errors.inputMajor.type === "required" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.inputMajor.message}
                                     </p>
                                   )}
                                   {errors.inputMajor.type === "pattern" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.inputMajor.message}
                                     </p>
                                   )}
@@ -738,7 +736,7 @@ export default function Register() {
                               placeholder="Type your minor here"
                             />
                             {errors.minor && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.minor.message}
                               </p>
                             )}
@@ -796,7 +794,7 @@ export default function Register() {
                               )}
                             />
                             {errors.participated && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.participated.message}
                               </p>
                             )}
@@ -855,7 +853,7 @@ export default function Register() {
                               )}
                             />
                             {errors.elCreditInterest && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.elCreditInterest.message}
                               </p>
                             )}
@@ -878,7 +876,7 @@ export default function Register() {
                             ></textarea>
                             <p>{textCount}/250</p>
                             {errors.hopeToSee && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.hopeToSee.message}
                               </p>
                             )}
@@ -936,7 +934,7 @@ export default function Register() {
                                 </svg>
                               </div>
                               {errors.dietaryRestrictions && (
-                                <p className="text-red-400">
+                                <p className={errorStyles}>
                                   {errors.dietaryRestrictions.message}
                                 </p>
                               )}
@@ -944,13 +942,13 @@ export default function Register() {
                                 <>
                                   {errors.inputDietaryRestrictions.type ===
                                     "required" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.inputDietaryRestrictions.message}
                                     </p>
                                   )}
                                   {errors.inputDietaryRestrictions.type ===
                                     "pattern" && (
-                                    <p className="text-red-500">
+                                    <p className={errorStyles}>
                                       {errors.inputDietaryRestrictions.message}
                                     </p>
                                   )}
@@ -988,7 +986,7 @@ export default function Register() {
                                 </svg>
                               </div>
                               {errors.shirtSize && (
-                                <p className="text-red-400">
+                                <p className={errorStyles}>
                                   {errors.shirtSize.message}
                                 </p>
                               )}
@@ -1037,7 +1035,7 @@ export default function Register() {
                               )}
                             />
                             {errors.codeOfConduct && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.codeOfConduct.message}
                               </p>
                             )}
@@ -1104,7 +1102,7 @@ export default function Register() {
                               )}
                             />
                             {errors.eventLogisticsInfo && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.eventLogisticsInfo.message}
                               </p>
                             )}
@@ -1147,7 +1145,7 @@ export default function Register() {
                               )}
                             />
                             {errors.mlhCommunication && (
-                              <p className="text-red-400">
+                              <p className={errorStyles}>
                                 {errors.mlhCommunication.message}
                               </p>
                             )}
