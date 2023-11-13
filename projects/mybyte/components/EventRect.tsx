@@ -44,7 +44,7 @@ export default function EventRect(props: {
     month: "long",
     day: "numeric",
   };
-  const gray = props.disabled ? "grayscale-[20%] pb-2" : "";
+  const gray = props.disabled ? "grayscale-[20%] rounded-t-md" : "";
   return (
     <div
       onClick={!props.disabled ? handleClick : () => {}}
