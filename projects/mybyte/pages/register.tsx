@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
@@ -208,49 +208,74 @@ export default function Register() {
 
   const errorStyles = "text-red-500 font-mono text-xs m-1";
 
+  const [shouldRender, setShouldRender] = useState(true);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // Adjust the threshold as needed
+      const isSmallScreen = window.innerWidth <= 825; // Adjust the width as needed
+
+      // Update the state based on the window width
+      setShouldRender(!isSmallScreen);
+    };
+
+    // Attach the event listener
+    window.addEventListener("resize", handleResize);
+
+    // Initial check on mount
+    handleResize();
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <ProtectedRoute className="w-screen">
       <div className="flex overflow-hidden">
-        <div className="moving-gradient w-[50vw] flex-1 pl-8 pt-12 font-mono overflow-hidden text-white">
-          <div className="pl-12 pt-10">
-            <h1 className="text-6xl mb-8 w-4/5 leading-[80px]">
-              <Typewriter
-                onInit={(typewriter) => {
-                  typewriter
-                    .typeString("Register for ")
-                    .typeString("UGAHacks 9")
-                    .start();
-                }}
-              />
-            </h1>
-            <div className="pl-1 text-md w-4/5">
-              <p className="pb-3">
-                We&apos;re excited that you are participating in UGAHacks 9! We
-                would love to see you at the event!
-              </p>
-              <p className="text-md">
-                If you have any questions, please send us an email at{" "}
-                <Link
-                  className="font-semibold underline underline-offset-2"
-                  href="mailto:hello@ugahacks.com"
-                >
-                  hello@ugahacks.com
-                </Link>
-                !
-              </p>
-            </div>
+        {shouldRender ? (
+          <div className="moving-gradient w-[50vw] flex-1 pl-8 pt-12 font-mono overflow-hidden text-white">
+            <div className="pl-12 pt-10">
+              <h1 className="text-6xl mb-8 w-4/5 leading-[80px]">
+                <Typewriter
+                  onInit={(typewriter) => {
+                    typewriter
+                      .typeString("Register for ")
+                      .typeString("UGAHacks 9")
+                      .start();
+                  }}
+                />
+              </h1>
+              <div className="pl-1 text-md w-4/5">
+                <p className="pb-3">
+                  We&apos;re excited that you are participating in UGAHacks 9!
+                  We would love to see you at the event!
+                </p>
+                <p className="text-md">
+                  If you have any questions, please send us an email at{" "}
+                  <Link
+                    className="font-semibold underline underline-offset-2"
+                    href="mailto:hello@ugahacks.com"
+                  >
+                    hello@ugahacks.com
+                  </Link>
+                  !
+                </p>
+              </div>
 
-            <Circle className="fixed bottom-[-375px] left-12 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#f9ff87] opacity-90" />
-            <Circle className="fixed -bottom-[300px] -left-24 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#f9ff87] opacity-90" />
+              <Circle className="fixed bottom-[-375px] left-12 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#f9ff87] opacity-90" />
+              <Circle className="fixed -bottom-[300px] -left-24 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#f9ff87] opacity-90" />
+            </div>
           </div>
-        </div>
+        ) : null}
         <div className="flex-1 flex items-center justify-center overflow-y-auto">
           <div className="h-screen">
             {/* Your Form component goes here */}
             <Card className="bg-opacity-0 shadow-none">
               <div className="min-h-screen font-inter my-4">
                 <div className="mx-auto flex flex-column justify-between">
-                  <div className="inputs max-w-[45vw] px-6 mx-auto shrink-0 grow">
+                  <div className="inputs max-w-[90%] px-6 mx-auto shrink-0 grow">
                     <form
                       className="mt-3 pt-4"
                       onSubmit={handleSubmit(onSubmit)}
