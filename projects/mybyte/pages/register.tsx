@@ -883,7 +883,7 @@ export default function Register() {
 
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                              What do you expect out of UGA Hacks?
+                              What do you expect out of UGAHacks?
                               <span className="text-red-600">*</span>
                             </label>
                             <textarea

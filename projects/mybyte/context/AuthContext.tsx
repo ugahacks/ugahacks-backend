@@ -53,7 +53,8 @@ export interface EventRegistered {
   HACKS9: boolean | null;
 }
 
-export interface EventCheckedIn extends EventRegistered {}
+export interface EventCheckIn extends EventRegistered {}
+export interface EventCheckOut extends EventRegistered {}
 
 export interface UserInfoType {
   first_name: string | null;
@@ -62,7 +63,8 @@ export interface UserInfoType {
   tid: string | null;
   school: string | null;
   registered: EventRegistered;
-  checkedIn: EventCheckedIn;
+  checkedIn: EventCheckIn;
+  checkedOut: EventCheckOut;
   user_type: Users | null;
 }
 
@@ -92,6 +94,10 @@ export const AuthContextProvider = ({
       HACKS9: null,
     },
     checkedIn: {
+      HACKS8: null,
+      HACKS9: null,
+    },
+    checkedOut: {
       HACKS8: null,
       HACKS9: null,
     },
@@ -229,6 +235,7 @@ export const AuthContextProvider = ({
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
       "registered.HACKS9": true,
       "checkedIn.HACKS9": false,
+      "checkedOut.HACKS9": false,
       school: data.school,
       user_type: Users.hacker,
     });
@@ -356,6 +363,7 @@ export const AuthContextProvider = ({
         points: 0,
         registered: {},
         checkedIn: {},
+        checkedOut: {},
         school: school,
         user_type: null,
         added_time: serverTimestamp(),
@@ -409,6 +417,7 @@ export const AuthContextProvider = ({
           points: 0,
           registered: {},
           checkedIn: {},
+          checkedOut: {},
           user_type: null,
           added_time: serverTimestamp(),
         });
@@ -428,6 +437,22 @@ export const AuthContextProvider = ({
       const docRef = doc(userRef, userid);
       await updateDoc(docRef, {
         "checkedIn.HACKS9": true,
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * checks out a user by userid
+   * @param userid uuid of the user
+   */
+  const checkoutUser = async (userid: string) => {
+    try {
+      const docRef = doc(userRef, userid);
+      await updateDoc(docRef, {
+        "checkedOut.HACKS9": true,
       });
       setUserInformation(userid);
     } catch (err: any) {
@@ -693,6 +718,7 @@ export const AuthContextProvider = ({
       school: docSnap.data().school,
       registered: docSnap.data().registered,
       checkedIn: docSnap.data().checkedIn,
+      checkedOut: docSnap.data().checkedIn,
       user_type: docSnap.data().user_type,
     });
     setType(docSnap.data().user_type);
@@ -828,6 +854,7 @@ export const AuthContextProvider = ({
         validateEmails,
         giveTeamPoints,
         checkinUser,
+        checkoutUser,
       }}
     >
       {loading ? null : children}
