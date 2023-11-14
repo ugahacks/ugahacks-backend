@@ -73,6 +73,20 @@ const DashboardPage = () => {
   const registeredEvents: EventRegistered = userInfo.registered;
   const registeredEventKeys = Object.keys(registeredEvents);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 520);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <ProtectedRoute>
       {isMobile ? (
