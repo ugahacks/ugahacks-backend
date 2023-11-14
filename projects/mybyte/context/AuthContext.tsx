@@ -230,7 +230,6 @@ export const AuthContextProvider = ({
       "registered.HACKS9": true,
       "checkedIn.HACKS9": false,
       school: data.school,
-      "checkedIn.HACKS9": false,
     });
 
     // Update userInfo
@@ -808,6 +807,7 @@ export const AuthContextProvider = ({
         storeUserRegistrationInformation,
         setUserInformation,
         currEvent,
+        checkinUser,
         setCurrEvent,
         storeESportsRegistrationInformation,
         storeWorkshopRegistrationInformation,
