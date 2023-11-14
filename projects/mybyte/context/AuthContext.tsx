@@ -41,6 +41,7 @@ import { ESportsRegisterForm } from "../interfaces/eSportsRegisterForm";
 import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { FirebaseError } from "firebase/app";
 import Router from "next/router";
+import { Users } from "../enums/userType";
 
 export interface UserType {
   email: string | null;
@@ -52,6 +53,8 @@ export interface EventRegistered {
   HACKS9: boolean | null;
 }
 
+export interface EventCheckedIn extends EventRegistered {}
+
 export interface UserInfoType {
   first_name: string | null;
   last_name: string | null;
@@ -59,7 +62,8 @@ export interface UserInfoType {
   tid: string | null;
   school: string | null;
   registered: EventRegistered;
-  //user_type: Users | null;
+  checkedIn: EventCheckedIn;
+  user_type: Users | null;
 }
 
 export interface TeamType {
@@ -87,8 +91,11 @@ export const AuthContextProvider = ({
       HACKS8: null,
       HACKS9: null,
     },
-
-    //user_type: null
+    checkedIn: {
+      HACKS8: null,
+      HACKS9: null,
+    },
+    user_type: null,
   });
   const [user_type, setType] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -210,6 +217,7 @@ export const AuthContextProvider = ({
             school: data.school,
             inputSchool: data.inputSchool,
             elCreditInterest: data.elCreditInterest,
+            accepted: null,
             resumeLink: downloadURL,
             submitted_time: serverTimestamp(),
           });
@@ -220,7 +228,9 @@ export const AuthContextProvider = ({
     // Set the user status to registered for hacks9 & updates school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
       "registered.HACKS9": true,
+      "checkedIn.HACKS9": false,
       school: data.school,
+      user_type: Users.hacker,
     });
 
     // Update userInfo
@@ -345,7 +355,9 @@ export const AuthContextProvider = ({
         email: email,
         points: 0,
         registered: {},
+        checkedIn: {},
         school: school,
+        user_type: null,
         added_time: serverTimestamp(),
       });
       sendEmailVerification(user);
@@ -396,12 +408,62 @@ export const AuthContextProvider = ({
           email: google_user.email,
           points: 0,
           registered: {},
+          checkedIn: {},
+          user_type: null,
           added_time: serverTimestamp(),
         });
       }
       setUserInformation(google_user.uid);
     } catch (err: any) {
       console.error(err);
+    }
+  };
+
+  /**
+   * checks in a user by userid
+   * @param userid uuid of the user
+   */
+  const checkinUser = async (userid: string) => {
+    try {
+      const docRef = doc(userRef, userid);
+      await updateDoc(docRef, {
+        "checkedIn.HACKS9": true,
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Accepts a user by userid.
+   * @param userid uuid of a user
+   */
+  const acceptUser = async (userid: string) => {
+    try {
+      const docRef = doc(registerRef, userid);
+      await updateDoc(docRef, {
+        accepted: true,
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Denies a user by userid.
+   * @param userid uuid of a user
+   */
+  const denyUser = async (userid: string) => {
+    try {
+      const docRef = doc(registerRef, userid);
+      await updateDoc(docRef, {
+        accepted: false,
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
     }
   };
 
@@ -630,6 +692,8 @@ export const AuthContextProvider = ({
       tid: docSnap.data().tid,
       school: docSnap.data().school,
       registered: docSnap.data().registered,
+      checkedIn: docSnap.data().checkedIn,
+      user_type: docSnap.data().user_type,
     });
     setType(docSnap.data().user_type);
   };
@@ -763,6 +827,7 @@ export const AuthContextProvider = ({
         confirmedOnTeam,
         validateEmails,
         giveTeamPoints,
+        checkinUser,
       }}
     >
       {loading ? null : children}
