@@ -361,16 +361,18 @@ export default function Register() {
                             <input
                               className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
                               {...register("email", {
-                                required: "Please enter your school email",
+                                required:
+                                  "Please enter your school email (.edu)",
                                 pattern: {
                                   value:
                                     /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu)/,
-                                  message: "Needs to be a valid school email",
+                                  message:
+                                    "Needs to be a valid school email (.edu)",
                                 },
                               })}
                               id="grid-text-1"
                               type="text"
-                              placeholder="byte@ugahacks.com"
+                              placeholder="byte@uga.edu"
                               maxLength={100}
                             />
                             {errors.email ? (
@@ -660,11 +662,12 @@ export default function Register() {
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                               Resume<span className="text-red-600">*</span>
                             </label>
-                            <p>
-                              NOTE: Resume will be sent to our hackathon
-                              sponsors; it WILL NOT be used for hackathon
-                              acceptance decisions
-                            </p>
+                            <span className="block pt-[1px] pb-[10px] text-xs font-normal">
+                              <span className="italic underline">NOTE:</span>{" "}
+                              Resume will be sent to our hackathon sponsors; it{" "}
+                              <span className="underline">WILL NOT</span> be
+                              used for hackathon acceptance decisions
+                            </span>
                             <input
                               className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
                               {...register("resume", {
@@ -844,7 +847,24 @@ export default function Register() {
                                     className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
                                     htmlFor="grid-text-2"
                                   >
-                                    Interested in EL Credit? (UGA students ONLY)
+                                    Interested in EL Credit (For UGA students
+                                    ONLY)?
+                                    <span className=" block pt-[4px] text-2xs font-normal">
+                                      <span className="italic underline">
+                                        NOTE:
+                                      </span>{" "}
+                                      If you fail to check this field, and are
+                                      looking for EL Credit. Your application
+                                      may be processed with delay. For more
+                                      information, visit{" "}
+                                      <Link
+                                        href={"http://el.ugahacks.com/"}
+                                        target="_blank"
+                                        className="underline underline-offset-2 text-gray-600 hover:text-red-500"
+                                      >
+                                        https://el.ugahacks.com/
+                                      </Link>
+                                    </span>
                                   </label>
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                     <input

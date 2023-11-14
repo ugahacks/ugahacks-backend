@@ -217,10 +217,10 @@ export const AuthContextProvider = ({
       }
     );
 
-    // Set the user status to registered for hacks8
+    // Set the user status to registered for hacks9 & updates school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKS8": false,
       "registered.HACKS9": true,
+      school: data.school,
     });
 
     // Update userInfo
