@@ -30,11 +30,11 @@ const Home: NextPage = () => {
             Log in
           </Link>
         </div>
-        <Circle className="fixed -bottom-72 -right-16 hidden lg:block overflow-hidden wiggle rounded-full h-[500px] w-[500px] bg-red-500 opacity-90" />
-        <Circle className="fixed -bottom-48 -right-48 hidden lg:block overflow-hidden wiggle2 rounded-full h-[500px] w-[500px] bg-red-500 opacity-90" />
+        {/* <Circle className="fixed -bottom-72 -right-16 hidden lg:block overflow-hidden wiggle rounded-full h-[500px] w-[500px] bg-red-500 opacity-90" /> */}
+        {/* <Circle className="fixed -bottom-48 -right-48 hidden lg:block overflow-hidden wiggle2 rounded-full h-[500px] w-[500px] bg-red-500 opacity-90" /> */}
 
-        <Circle className="fixed -z-10 -top-72 -left-16 hidden lg:block overflow-hidden wiggle rounded-full h-[550px] w-[550px] bg-red-500 opacity-90" />
-        <Circle className="fixed -z-10 -top-48 -left-48 hidden lg:block overflow-hidden wiggle2 rounded-full h-[550px] w-[550px] bg-red-500 opacity-90" />
+        {/* <Circle className="fixed -z-10 -top-72 -left-16 hidden lg:block overflow-hidden wiggle rounded-full h-[550px] w-[550px] bg-red-500 opacity-90" /> */}
+        {/* <Circle className="fixed -z-10 -top-48 -left-48 hidden lg:block overflow-hidden wiggle2 rounded-full h-[550px] w-[550px] bg-red-500 opacity-90" /> */}
       </main>
     </>
   );

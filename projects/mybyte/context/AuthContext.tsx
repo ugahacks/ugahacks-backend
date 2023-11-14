@@ -225,10 +225,10 @@ export const AuthContextProvider = ({
       }
     );
 
-    // Set the user status to registered for hacks8
+    // Set the user status to registered for hacks9 & updates school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKS8": false,
       "registered.HACKS9": true,
+      school: data.school,
       "checkedIn.HACKS9": false,
     });
 
@@ -420,13 +420,11 @@ export const AuthContextProvider = ({
    * checks in a user by userid
    * @param userid uuid of the user
    */
-  const checkinUser = async (
-    userid: string
-  ) => {
+  const checkinUser = async (userid: string) => {
     try {
       const docRef = doc(userRef, userid);
       await updateDoc(docRef, {
-        "checkedIn.HACKS9": true
+        "checkedIn.HACKS9": true,
       });
       setUserInformation(userid);
     } catch (err: any) {
@@ -438,13 +436,11 @@ export const AuthContextProvider = ({
    * Accepts a user by userid.
    * @param userid uuid of a user
    */
-  const acceptUser = async (
-    userid: string
-  ) => {
+  const acceptUser = async (userid: string) => {
     try {
       const docRef = doc(registerRef, userid);
       await updateDoc(docRef, {
-        accepted: true
+        accepted: true,
       });
       setUserInformation(userid);
     } catch (err: any) {
@@ -456,13 +452,11 @@ export const AuthContextProvider = ({
    * Denies a user by userid.
    * @param userid uuid of a user
    */
-  const denyUser = async (
-    userid: string
-  ) => {
+  const denyUser = async (userid: string) => {
     try {
       const docRef = doc(registerRef, userid);
       await updateDoc(docRef, {
-        accepted: false
+        accepted: false,
       });
       setUserInformation(userid);
     } catch (err: any) {
