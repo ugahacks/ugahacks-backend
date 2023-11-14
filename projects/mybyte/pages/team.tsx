@@ -208,7 +208,7 @@ export default function Team() {
             </div>
         </div>);
   return (
-    <ProtectedRoute>
+    <ProtectedRoute className="">
           { (team != null && team.members != null && team.members.length != 0 && team.members[0] === "") ? (
     noTeam
   ) : (

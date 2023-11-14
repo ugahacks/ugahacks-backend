@@ -41,23 +41,29 @@ import { ESportsRegisterForm } from "../interfaces/eSportsRegisterForm";
 import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { FirebaseError } from "firebase/app";
 import Router from "next/router";
+import { Users } from "../enums/userType";
 
 export interface UserType {
   email: string | null;
   uid: string | null;
 }
 
-interface EventRegistered {
+export interface EventRegistered {
   HACKS8: boolean | null;
+  HACKS9: boolean | null;
 }
+
+export interface EventCheckedIn extends EventRegistered {}
 
 export interface UserInfoType {
   first_name: string | null;
   last_name: string | null;
   points: number;
   tid: string | null;
+  school: string | null;
   registered: EventRegistered;
-  //user_type: Users | null;
+  checkedIn: EventCheckedIn;
+  user_type: Users | null;
 }
 
 export interface TeamType {
@@ -80,10 +86,16 @@ export const AuthContextProvider = ({
     last_name: null,
     points: 0,
     tid: null,
+    school: null,
     registered: {
       HACKS8: null,
+      HACKS9: null,
     },
-    //user_type: null
+    checkedIn: {
+      HACKS8: null,
+      HACKS9: null,
+    },
+    user_type: null,
   });
   const [user_type, setType] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -182,8 +194,6 @@ export const AuthContextProvider = ({
         await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setDoc(doc(registerRef, user.uid ? user.uid : ""), {
             uid: user.uid,
-            firstName: data.firstName,
-            lastName: data.lastName,
             gender: data.gender,
             phoneNumber: data.phoneNumber,
             countryResidence: data.countryResidence.label,
@@ -191,16 +201,23 @@ export const AuthContextProvider = ({
             major: data.major,
             inputMajor: data.inputMajor,
             minor: data.minor,
-            school: data.school.value,
-            inputSchool: data.inputSchool,
             email: data.email,
             participated: data.participated,
             hopeToSee: data.hopeToSee,
             dietaryRestrictions: data.dietaryRestrictions,
+            inputDietaryRestrictions: data.inputDietaryRestrictions,
             shirtSize: data.shirtSize,
             codeOfConduct: data.codeOfConduct,
             eventLogisticsInfo: data.eventLogisticsInfo,
             mlhCommunication: data.mlhCommunication,
+            age: data.age,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            levelOfStudy: data.levelsOfStudy,
+            school: data.school,
+            inputSchool: data.inputSchool,
+            elCreditInterest: data.elCreditInterest,
+            accepted: null,
             resumeLink: downloadURL,
             submitted_time: serverTimestamp(),
           });
@@ -208,9 +225,12 @@ export const AuthContextProvider = ({
       }
     );
 
-    // Set the user status to registered for hacks8
+    // Set the user status to registered for hacks9 & updates school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKS8": true,
+      "registered.HACKS9": true,
+      "checkedIn.HACKS9": false,
+      school: data.school,
+      user_type: Users.hacker,
     });
 
     // Update userInfo
@@ -230,7 +250,8 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks8
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.ESPORTS8": true,
+      "registered.ESPORTS8": false,
+      "registered.ESPORTS9": true,
     });
 
     // Update userInfo
@@ -316,7 +337,8 @@ export const AuthContextProvider = ({
     first_name: string,
     last_name: string,
     email: string,
-    password: string
+    password: string,
+    school: string | undefined
   ) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -333,6 +355,9 @@ export const AuthContextProvider = ({
         email: email,
         points: 0,
         registered: {},
+        checkedIn: {},
+        school: school,
+        user_type: null,
         added_time: serverTimestamp(),
       });
       sendEmailVerification(user);
@@ -383,12 +408,62 @@ export const AuthContextProvider = ({
           email: google_user.email,
           points: 0,
           registered: {},
+          checkedIn: {},
+          user_type: null,
           added_time: serverTimestamp(),
         });
       }
       setUserInformation(google_user.uid);
     } catch (err: any) {
       console.error(err);
+    }
+  };
+
+  /**
+   * checks in a user by userid
+   * @param userid uuid of the user
+   */
+  const checkinUser = async (userid: string) => {
+    try {
+      const docRef = doc(userRef, userid);
+      await updateDoc(docRef, {
+        "checkedIn.HACKS9": true,
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Accepts a user by userid.
+   * @param userid uuid of a user
+   */
+  const acceptUser = async (userid: string) => {
+    try {
+      const docRef = doc(registerRef, userid);
+      await updateDoc(docRef, {
+        accepted: true,
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Denies a user by userid.
+   * @param userid uuid of a user
+   */
+  const denyUser = async (userid: string) => {
+    try {
+      const docRef = doc(registerRef, userid);
+      await updateDoc(docRef, {
+        accepted: false,
+      });
+      setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
     }
   };
 
@@ -615,84 +690,103 @@ export const AuthContextProvider = ({
       last_name: docSnap.data().last_name,
       points: docSnap.data().points,
       tid: docSnap.data().tid,
+      school: docSnap.data().school,
       registered: docSnap.data().registered,
+      checkedIn: docSnap.data().checkedIn,
+      user_type: docSnap.data().user_type,
     });
     setType(docSnap.data().user_type);
   };
 
   /**
- * Confirms whether they are valid emails in the database.
- * @param emails the emails to validate against.
- * @param strict whether to also check if they signed up to a different team.
- * @returns Promise<boolean[]>, a boolean array in the order of the `emails` array.
- */
-  const confirmEmails: (emails: string[], strict?: boolean) => Promise<boolean[]>
-    = async (emails: string[], strict: boolean = true) => {
-      let returned: boolean[] = [];
-      for (let times: number = 0; times < emails.length; times++) returned.push(false);
-      const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
-      const results: QuerySnapshot<DocumentData> = await getDocs(q);
-      results.forEach((elem) => {
-        emails.forEach((email, index) => {
-          if (email === elem.data().email && (!strict || elem.data().tid == undefined)) returned[index] = true;
-        });
+   * Confirms whether they are valid emails in the database.
+   * @param emails the emails to validate against.
+   * @param strict whether to also check if they signed up to a different team.
+   * @returns Promise<boolean[]>, a boolean array in the order of the `emails` array.
+   */
+  const confirmEmails: (
+    emails: string[],
+    strict?: boolean
+  ) => Promise<boolean[]> = async (
+    emails: string[],
+    strict: boolean = true
+  ) => {
+    let returned: boolean[] = [];
+    for (let times: number = 0; times < emails.length; times++)
+      returned.push(false);
+    const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
+    const results: QuerySnapshot<DocumentData> = await getDocs(q);
+    results.forEach((elem) => {
+      emails.forEach((email, index) => {
+        if (
+          email === elem.data().email &&
+          (!strict || elem.data().tid == undefined)
+        )
+          returned[index] = true;
       });
-      return returned;
-    }
+    });
+    return returned;
+  };
 
   /**
-  * Checks if `emails` is in the given team.
-  * @param emails the emails to validate against.
-  * @param tid the team to validate against.
-  * @returns Promise<boolean[]>, a boolean array in the order of the `emails` array.
-  */
-  const confirmedOnTeam: (emails: string[], tid: string) => Promise<boolean[]>
-    = async (emails: string[], tid: string) => {
-      let returned: boolean[] = [];
-      for (let times: number = 0; times < emails.length; times++) returned.push(false);
-      const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
-      const results: QuerySnapshot<DocumentData> = await getDocs(q);
-      if (results.empty) return returned;
-      results.forEach((elem) => {
-        const index = emails.indexOf(elem.data().email)
-        if (index <= 0) return;
-        returned[index] = (tid === elem.data().tid);
-      });
+   * Checks if `emails` is in the given team.
+   * @param emails the emails to validate against.
+   * @param tid the team to validate against.
+   * @returns Promise<boolean[]>, a boolean array in the order of the `emails` array.
+   */
+  const confirmedOnTeam: (
+    emails: string[],
+    tid: string
+  ) => Promise<boolean[]> = async (emails: string[], tid: string) => {
+    let returned: boolean[] = [];
+    for (let times: number = 0; times < emails.length; times++)
+      returned.push(false);
+    const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
+    const results: QuerySnapshot<DocumentData> = await getDocs(q);
+    if (results.empty) return returned;
+    results.forEach((elem) => {
+      const index = emails.indexOf(elem.data().email);
+      if (index <= 0) return;
+      returned[index] = tid === elem.data().tid;
+    });
 
-      return returned;
-    }
+    return returned;
+  };
 
-    const validateEmails = async (emails: string[]) => {
-      const truth = await confirmEmails(emails);
-      let data: {member: {email: string, confirmed: boolean}[]} = {
-          member: [],
-      };
-      if (emails.length !== truth.length) {
-          throw new Error("Should not happen");
-      } // I don't know how this can happen, but it shouldn't
-      for (let times: number = 0; times < emails.length; times++) {
-          data.member.push({
-              email: emails[times],
-              confirmed: truth[times],
-          });
-      } // for every email, push whether it has been confirmed in user
-      return data;
-    }
-
-    const giveTeamPoints = async () => {
-      if (userInfo == undefined || userInfo.tid == undefined) return;
-      const team: TeamType | null = await getTeam();
-      if (team?.submitted == true) return;
-      const q: Query<DocumentData> = query(userRef, where("tid", "==", userInfo.tid));
-      const results: QuerySnapshot<DocumentData> = await getDocs(q);
-      results.forEach(async (elem) => {
-          await updateDoc(elem.ref, {
-            points: increment(2500),
-          });
-      });
-      const docRef = doc(teamRef, userInfo.tid ? userInfo.tid : "0");
-      await updateDoc(docRef, {submitted: true});
+  const validateEmails = async (emails: string[]) => {
+    const truth = await confirmEmails(emails);
+    let data: { member: { email: string; confirmed: boolean }[] } = {
+      member: [],
     };
+    if (emails.length !== truth.length) {
+      throw new Error("Should not happen");
+    } // I don't know how this can happen, but it shouldn't
+    for (let times: number = 0; times < emails.length; times++) {
+      data.member.push({
+        email: emails[times],
+        confirmed: truth[times],
+      });
+    } // for every email, push whether it has been confirmed in user
+    return data;
+  };
+
+  const giveTeamPoints = async () => {
+    if (userInfo == undefined || userInfo.tid == undefined) return;
+    const team: TeamType | null = await getTeam();
+    if (team?.submitted == true) return;
+    const q: Query<DocumentData> = query(
+      userRef,
+      where("tid", "==", userInfo.tid)
+    );
+    const results: QuerySnapshot<DocumentData> = await getDocs(q);
+    results.forEach(async (elem) => {
+      await updateDoc(elem.ref, {
+        points: increment(2500),
+      });
+    });
+    const docRef = doc(teamRef, userInfo.tid ? userInfo.tid : "0");
+    await updateDoc(docRef, { submitted: true });
+  };
 
   const logOut = async () => {
     setUser({ email: null, uid: null });
@@ -733,6 +827,7 @@ export const AuthContextProvider = ({
         confirmedOnTeam,
         validateEmails,
         giveTeamPoints,
+        checkinUser,
       }}
     >
       {loading ? null : children}
