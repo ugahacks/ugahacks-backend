@@ -660,11 +660,12 @@ export default function Register() {
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                               Resume<span className="text-red-600">*</span>
                             </label>
-                            <p>
-                              NOTE: Resume will be sent to our hackathon
-                              sponsors; it WILL NOT be used for hackathon
-                              acceptance decisions
-                            </p>
+                            <span className="block pt-[1px] pb-[10px] text-xs font-normal">
+                              <span className="italic underline">NOTE:</span>{" "}
+                              Resume will be sent to our hackathon sponsors; it{" "}
+                              <span className="underline">WILL NOT</span> be
+                              used for hackathon acceptance decisions
+                            </span>
                             <input
                               className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
                               {...register("resume", {
