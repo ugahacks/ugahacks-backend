@@ -23,10 +23,10 @@
     "react-select": "^5.7.0",
     "react-select-country-list": "^2.2.3",
     "react-tsparticles": "^2.12.2",
+    "react-typewritter": "1.0.3",
     "sharp": "^0.31.3",
     "tsparticles": "latest",
     "tsparticles-engine": "^2.12.0",
-    "react-typewritter": "1.0.3",
     "typescript": "4.9.4",
     "yarn": "^1.22.19"
   },
