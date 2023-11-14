@@ -4332,6 +4332,7 @@ __metadata:
     react-select: "npm:^5.7.0"
     react-select-country-list: "npm:^2.2.3"
     react-tsparticles: "npm:^2.12.2"
+    react-typewritter: "npm:1.0.3"
     sharp: "npm:^0.31.3"
     tailwindcss: "npm:^3.2.4"
     tsparticles: "npm:latest"
@@ -5122,6 +5123,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-intersection-observer@npm:^9.4.1":
+  version: 9.5.3
+  resolution: "react-intersection-observer@npm:9.5.3"
+  peerDependencies:
+    react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: 4a54c9e004568fbfee070b0e8beac50379dd8222caa15fcf7923f6fd575ca4988a88b3b0eee4108606f41ee87cd2fd7e8a537523ff5886d14b08c391aedf0c5a
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -5195,6 +5205,18 @@ __metadata:
   peerDependencies:
     react: ">=16"
   checksum: 209c3c1f0d1b46e51ab4c052e0c053a2beeeb5a92d5d2a416b909be141f91389a86d270a09a2259feff6afa8e59107c95fc3c95c555b8f35892df16015794cd4
+  languageName: node
+  linkType: hard
+
+"react-typewritter@npm:1.0.3":
+  version: 1.0.3
+  resolution: "react-typewritter@npm:1.0.3"
+  dependencies:
+    react-intersection-observer: "npm:^9.4.1"
+  peerDependencies:
+    react: 17 - 18
+    react-dom: 17 - 18
+  checksum: 1c340f1948a07451c0f9c84f91b42204a3b8b6c2ae7ed367bac3daa36b0745bc4e1d04d31751c2f13d33ccd5e36f4d8c1fce81d2913d8bd228db10e432e2511d
   languageName: node
   linkType: hard
 
