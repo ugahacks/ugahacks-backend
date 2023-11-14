@@ -361,16 +361,18 @@ export default function Register() {
                             <input
                               className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
                               {...register("email", {
-                                required: "Please enter your school email",
+                                required:
+                                  "Please enter your school email (.edu)",
                                 pattern: {
                                   value:
                                     /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu)/,
-                                  message: "Needs to be a valid school email",
+                                  message:
+                                    "Needs to be a valid school email (.edu)",
                                 },
                               })}
                               id="grid-text-1"
                               type="text"
-                              placeholder="byte@ugahacks.com"
+                              placeholder="byte@uga.edu"
                               maxLength={100}
                             />
                             {errors.email ? (
