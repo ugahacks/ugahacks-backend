@@ -264,8 +264,8 @@ export default function Register() {
                 </p>
               </div>
 
-              <Circle className="fixed bottom-[-375px] left-12 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#f9ff87] opacity-90" />
-              <Circle className="fixed -bottom-[300px] -left-24 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#f9ff87] opacity-90" />
+              <Circle className="fixed bottom-[-375px] left-12 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#F6D8AE] opacity-90" />
+              <Circle className="fixed -bottom-[300px] -left-24 hidden lg:block overflow-hidden rounded-full h-[500px] w-[500px] bg-[#F6D8AE] opacity-90" />
             </div>
           </div>
         ) : null}
