@@ -844,7 +844,24 @@ export default function Register() {
                                     className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
                                     htmlFor="grid-text-2"
                                   >
-                                    Interested in EL Credit? (UGA students ONLY)
+                                    Interested in EL Credit (For UGA students
+                                    ONLY)?
+                                    <span className=" block pt-[4px] text-2xs font-normal">
+                                      <span className="italic underline">
+                                        NOTE:
+                                      </span>{" "}
+                                      If you fail to check this field, and are
+                                      looking for EL Credit. Your application
+                                      may be processed with delay. For more
+                                      information, visit{" "}
+                                      <Link
+                                        href={"http://el.ugahacks.com/"}
+                                        target="_blank"
+                                        className="underline underline-offset-2 text-gray-600 hover:text-red-500"
+                                      >
+                                        https://el.ugahacks.com/
+                                      </Link>
+                                    </span>
                                   </label>
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                     <input
