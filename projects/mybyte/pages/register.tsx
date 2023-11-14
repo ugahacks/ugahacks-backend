@@ -19,6 +19,7 @@ import {
   ShirtSizes,
   LevelsOfStudy,
   DietaryRestrictions,
+  ELInterest,
 } from "../enums/registerEnums";
 
 import {
@@ -50,7 +51,7 @@ export default function Register() {
       inputSchool: "",
       inputDietaryRestrictions: "",
       participated: false,
-      elCreditInterest: false,
+      elCreditInterest: undefined,
     },
   });
 
@@ -829,79 +830,55 @@ export default function Register() {
                           </div>
 
                           <div className="w-full md:w-full px-3 mb-6">
-                            <Controller
-                              control={control}
-                              name="elCreditInterest"
-                              rules={{
-                                validate: (value) => {
-                                  if (value == null) {
-                                    return "Please select an option";
-                                  }
-
-                                  return true;
-                                },
-                              }}
-                              render={({ field: { onChange, value } }) => (
-                                <>
-                                  <label
-                                    className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
-                                    htmlFor="grid-text-2"
-                                  >
-                                    Interested in EL Credit (For UGA students
-                                    ONLY)?
-                                    <span className=" block pt-[4px] text-2xs font-normal">
-                                      <span className="italic underline">
-                                        NOTE:
-                                      </span>{" "}
-                                      If you fail to check this field, and are
-                                      looking for EL Credit. Your application
-                                      may be processed with delay. For more
-                                      information, visit{" "}
-                                      <Link
-                                        href={"http://el.ugahacks.com/"}
-                                        target="_blank"
-                                        className="underline underline-offset-2 text-gray-600 hover:text-red-500"
-                                      >
-                                        https://el.ugahacks.com/
-                                      </Link>
-                                    </span>
-                                  </label>
-                                  <label className="relative inline-flex items-center mb-4 cursor-pointer">
-                                    <input
-                                      type="checkbox"
-                                      value=""
-                                      id="grid-text-2"
-                                      className="sr-only peer"
-                                      onChange={() => {
-                                        onChange(!value);
-                                        let span =
-                                          document.getElementById(
-                                            "grid-text-2-span"
-                                          );
-                                        if (span === null) return;
-                                        let text = span.innerText;
-                                        span.innerText = text.includes("No")
-                                          ? "Yes"
-                                          : "No";
-                                      }}
-                                      checked={value}
-                                    />
-                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
-                                    <span
-                                      className="ml-3 text-sm"
-                                      id="grid-text-2-span"
-                                    >
-                                      No
-                                    </span>
-                                  </label>
-                                </>
+                            <label
+                              className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
+                              htmlFor="grid-text-2"
+                            >
+                              Interested in EL Credit (For UGA students ONLY)?
+                              <span className=" block pt-[4px] text-2xs font-normal">
+                                <span className="italic underline">NOTE:</span>{" "}
+                                If you fail to check this field and are looking
+                                for EL Credit, your application may be processed
+                                with delay. For more information, visit{" "}
+                                <Link
+                                  href={"http://el.ugahacks.com/"}
+                                  target="_blank"
+                                  className="underline underline-offset-2 text-gray-600 hover:text-red-500"
+                                >
+                                  https://el.ugahacks.com/
+                                </Link>
+                              </span>
+                            </label>
+                            <div className="flex-shrink w-full inline-block relative">
+                              <select
+                                className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                {...register("elCreditInterest", {
+                                  required:
+                                    "Please select whether you're interested",
+                                })}
+                              >
+                                <option value="">Select EL interest</option>
+                                {Object.keys(ELInterest).map((key) => (
+                                  <option key={key} value={key}>
+                                    {ELInterest[key as keyof typeof ELInterest]}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                                <svg
+                                  className="fill-current h-4 w-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                              </div>
+                              {errors.elCreditInterest && (
+                                <p className={errorStyles}>
+                                  {errors.elCreditInterest.message}
+                                </p>
                               )}
-                            />
-                            {errors.elCreditInterest && (
-                              <p className={errorStyles}>
-                                {errors.elCreditInterest.message}
-                              </p>
-                            )}
+                            </div>
                           </div>
 
                           <div className="w-full md:w-full px-3 mb-6">

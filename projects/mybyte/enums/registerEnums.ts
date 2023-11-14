@@ -60,3 +60,8 @@ export enum DietaryRestrictions {
   none = "None",
   other = "Other",
 }
+
+export enum ELInterest {
+  Yes = "Yes",
+  No = "No",
+}
