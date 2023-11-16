@@ -94,7 +94,7 @@ export default function ResetPassword() {
   useEffect(() => {
     animateText();
     return () => clearInterval(id);
-  }, []);
+  });
 
   return (
     <div className="flex font-inter items-center justify-center mb-[80px]">
