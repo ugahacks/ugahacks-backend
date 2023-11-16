@@ -388,9 +388,33 @@ export const AuthContextProvider = ({
     return true;
   };
 
+  /**
+   * Sends a password reset email to a user if they exist
+   * @param email email of a user
+   */
   const resetPassword = async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      throw error;
+    }
   };
+
+  /**
+   * Returns whether a specified email exists in the users collection in firestore
+   * @param email email of a user
+   */
+  // const isEmailInUse = async (email: string): Promise<boolean> => {
+  //   try {
+  //     const q = query(userRef, where("email", "==", email));
+  //     const querySnapshot = await getDocs(q);
+
+  //     return !querySnapshot.empty;
+  //   } catch (error) {
+  //     console.error("Error checking if email exists:", error);
+  //     return false;
+  //   }
+  // };
 
   const logInWithGoogle = async () => {
     try {
@@ -855,6 +879,7 @@ export const AuthContextProvider = ({
         giveTeamPoints,
         checkinUser,
         checkoutUser,
+        // isEmailInUse
       }}
     >
       {loading ? null : children}
