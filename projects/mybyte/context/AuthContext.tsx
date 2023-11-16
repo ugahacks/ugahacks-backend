@@ -400,22 +400,6 @@ export const AuthContextProvider = ({
     }
   };
 
-  /**
-   * Returns whether a specified email exists in the users collection in firestore
-   * @param email email of a user
-   */
-  // const isEmailInUse = async (email: string): Promise<boolean> => {
-  //   try {
-  //     const q = query(userRef, where("email", "==", email));
-  //     const querySnapshot = await getDocs(q);
-
-  //     return !querySnapshot.empty;
-  //   } catch (error) {
-  //     console.error("Error checking if email exists:", error);
-  //     return false;
-  //   }
-  // };
-
   const logInWithGoogle = async () => {
     try {
       const res = await signInWithPopup(auth, googleProvider);
@@ -879,7 +863,6 @@ export const AuthContextProvider = ({
         giveTeamPoints,
         checkinUser,
         checkoutUser,
-        // isEmailInUse
       }}
     >
       {loading ? null : children}
