@@ -388,8 +388,16 @@ export const AuthContextProvider = ({
     return true;
   };
 
+  /**
+   * Sends a password reset email to a user if they exist
+   * @param email email of a user
+   */
   const resetPassword = async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logInWithGoogle = async () => {

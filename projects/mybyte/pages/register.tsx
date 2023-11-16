@@ -272,7 +272,6 @@ export default function Register() {
         ) : null}
         <div className="flex-1 flex items-center justify-center overflow-y-auto">
           <div className="h-screen">
-            {/* Your Form component goes here */}
             <Card className="bg-opacity-0 shadow-none">
               <div className="min-h-screen font-inter my-4">
                 <div className="mx-auto flex flex-column justify-between">
