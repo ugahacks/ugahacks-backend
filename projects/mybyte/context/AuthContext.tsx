@@ -63,8 +63,6 @@ export interface UserInfoType {
   tid: string | null;
   school: string | null;
   registered: EventRegistered;
-  checkedIn: EventCheckIn;
-  checkedOut: EventCheckOut;
   user_type: Users | null;
 }
 
@@ -93,14 +91,6 @@ export const AuthContextProvider = ({
       HACKS8: null,
       HACKS9: null,
     },
-    checkedIn: {
-      HACKS8: null,
-      HACKS9: null,
-    },
-    checkedOut: {
-      HACKS8: null,
-      HACKS9: null,
-    },
     user_type: null,
   });
   const [user_type, setType] = useState<string | null>(null);
@@ -116,10 +106,16 @@ export const AuthContextProvider = ({
 
   // Prod Environment
   const userRef = collection(db, "users");
-  const eSportsRef = collection(db, "user-e-sports-details");
-  const registerRef = collection(db, "user-registration-details");
-  const workshopRef = collection(db, "user-workshop-details");
   const teamRef = collection(db, "team");
+
+  // Current Event (Hacks 9):
+  const eSportsRef = collection(db, "UH9-user-e-sports-details");
+  const registerRef = collection(db, "UH9-user-registration-details");
+
+  // Hacks 8:
+  const eSportsRef_UH8 = collection(db, "user-e-sports-details");
+  const registerRef_UH8 = collection(db, "user-registration-details");
+  const workshopRef = collection(db, "user-workshop-details");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (curr_user) => {
@@ -224,6 +220,8 @@ export const AuthContextProvider = ({
             inputSchool: data.inputSchool,
             elCreditInterest: data.elCreditInterest,
             accepted: null,
+            checkedIn: false,
+            checkedOut: false,
             resumeLink: downloadURL,
             submitted_time: serverTimestamp(),
           });
@@ -234,8 +232,6 @@ export const AuthContextProvider = ({
     // Set the user status to registered for hacks9 & updates school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
       "registered.HACKS9": true,
-      "checkedIn.HACKS9": false,
-      "checkedOut.HACKS9": false,
       school: data.school,
       user_type: Users.hacker,
     });
@@ -362,8 +358,6 @@ export const AuthContextProvider = ({
         email: email,
         points: 0,
         registered: {},
-        checkedIn: {},
-        checkedOut: {},
         school: school,
         user_type: null,
         added_time: serverTimestamp(),
@@ -424,8 +418,6 @@ export const AuthContextProvider = ({
           email: google_user.email,
           points: 0,
           registered: {},
-          checkedIn: {},
-          checkedOut: {},
           user_type: null,
           added_time: serverTimestamp(),
         });
@@ -442,9 +434,9 @@ export const AuthContextProvider = ({
    */
   const checkinUser = async (userid: string) => {
     try {
-      const docRef = doc(userRef, userid);
+      const docRef = doc(registerRef, userid);
       await updateDoc(docRef, {
-        "checkedIn.HACKS9": true,
+        checkedIn: true,
       });
       setUserInformation(userid);
     } catch (err: any) {
@@ -458,9 +450,9 @@ export const AuthContextProvider = ({
    */
   const checkoutUser = async (userid: string) => {
     try {
-      const docRef = doc(userRef, userid);
+      const docRef = doc(registerRef, userid);
       await updateDoc(docRef, {
-        "checkedOut.HACKS9": true,
+        checkedOut: true,
       });
       setUserInformation(userid);
     } catch (err: any) {
@@ -478,7 +470,7 @@ export const AuthContextProvider = ({
       await updateDoc(docRef, {
         accepted: true,
       });
-      setUserInformation(userid);
+      // setUserInformation(userid);
     } catch (err: any) {
       console.log(err);
     }
@@ -494,7 +486,7 @@ export const AuthContextProvider = ({
       await updateDoc(docRef, {
         accepted: false,
       });
-      setUserInformation(userid);
+      // setUserInformation(userid);
     } catch (err: any) {
       console.log(err);
     }
@@ -725,8 +717,6 @@ export const AuthContextProvider = ({
       tid: docSnap.data().tid,
       school: docSnap.data().school,
       registered: docSnap.data().registered,
-      checkedIn: docSnap.data().checkedIn,
-      checkedOut: docSnap.data().checkedIn,
       user_type: docSnap.data().user_type,
     });
     setType(docSnap.data().user_type);
