@@ -35,8 +35,12 @@ import Circle from "../components/Circle";
 
 export default function Register() {
   const router = useRouter();
-  const { storeUserRegistrationInformation, getRegisteredEvents, userInfo } =
-    useAuth();
+  const {
+    storeUserRegistrationInformation,
+    getRegisteredEvents,
+    userInfo,
+    triggerRegistrationEmail,
+  } = useAuth();
   const {
     control,
     resetField,
@@ -57,6 +61,7 @@ export default function Register() {
 
   const onSubmit: SubmitHandler<RegisterForm> = (data) => {
     storeUserRegistrationInformation(data);
+    triggerRegistrationEmail();
     router.push("/registrationSuccess");
   };
   //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);

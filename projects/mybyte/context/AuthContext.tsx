@@ -97,25 +97,29 @@ export const AuthContextProvider = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [currEvent, setCurrEvent] = useState<Events>();
 
-  // Stage Environment
+  /****** Stage Environment ******/
   const userRefStage = collection(db, "users-stage");
   const eSportsRefStage = collection(db, "user-e-sports-details-stage");
   const registerRefStage = collection(db, "user-registration-details-stage");
   const workshopRefStage = collection(db, "user-workshop-details-stage");
   const teamRefStage = collection(db, "team-stage");
 
-  // Prod Environment
+  /****** Prod Environment ******/
   const userRef = collection(db, "users");
   const teamRef = collection(db, "team");
 
   // Current Event (Hacks 9):
   const eSportsRef = collection(db, "UH9-user-e-sports-details");
   const registerRef = collection(db, "UH9-user-registration-details");
+  const registerMail = collection(db, "UH9-registrationMail");
 
   // Hacks 8:
   const eSportsRef_UH8 = collection(db, "user-e-sports-details");
   const registerRef_UH8 = collection(db, "user-registration-details");
   const workshopRef = collection(db, "user-workshop-details");
+
+  /****** Auth Providers ******/
+  const googleProvider = new GoogleAuthProvider();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (curr_user) => {
@@ -135,16 +139,17 @@ export const AuthContextProvider = ({
     return () => unsubscribe();
   }, []);
 
-  const googleProvider = new GoogleAuthProvider();
-
   const validUser = () => {
     if (user) {
       return true;
     }
-
     return false;
   };
 
+  /**
+   * Creates a team for the user in the team collection
+   * @throws FirebaseError -
+   */
   const userCreateTeam: () => Promise<TeamType> = async () => {
     if (userInfo.tid !== null && userInfo.tid !== undefined)
       throw new Error("Already created");
@@ -175,6 +180,10 @@ export const AuthContextProvider = ({
     }
   };
 
+  /**
+   * Stores registration details in firestore.
+   * @param data data from form fields on /register page
+   */
   const storeUserRegistrationInformation = async (data: RegisterForm) => {
     const storage = getStorage();
     const file = data.resume[0];
@@ -240,6 +249,24 @@ export const AuthContextProvider = ({
     setUserInformation(user.uid);
   };
 
+  /**
+   * Stores a mail document, which triggers an email to the user.
+   */
+  const triggerRegistrationEmail = async (data: ESportsRegisterForm) => {
+    await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
+      to: user.email,
+      message: {
+        subject: "Thank you for registering for UGAHacks 9",
+        text: "Registration received :)",
+        html: "This is the <code>HTML</code> section of the email body.",
+      },
+    });
+  };
+
+  /**
+   * Stores registration details for ESports in firestore.
+   * @param data data from form fields on esports form
+   */
   const storeESportsRegistrationInformation = async (
     data: ESportsRegisterForm
   ) => {
@@ -261,6 +288,10 @@ export const AuthContextProvider = ({
     setUserInformation(user.uid);
   };
 
+  /**
+   * Stores workshop (speaker) registration details in firestore. [NO LONGER IN USE]
+   * @param data data from form fields on speaker form
+   */
   const storeWorkshopRegistrationInformation = async (
     data: PresenterRegisterForm
   ) => {
@@ -322,6 +353,10 @@ export const AuthContextProvider = ({
     setUserInformation(user.uid);
   };
 
+  /**
+   * Parses their full name and splits it into two seperate strings, first_name and last_name
+   * @param full_name full name of google user
+   */
   function getFirstAndLastNameFromGoogleName(
     full_name: string | null
   ): [string, string] {
@@ -336,6 +371,14 @@ export const AuthContextProvider = ({
     return [first_name, last_name];
   }
 
+  /**
+   * Creates a user in the /users collection
+   * @param first_name user's first name specified in sign up form
+   * @param last_name user's last name specified in sign up form
+   * @param email user's email specified in sign up form
+   * @param password user's password specified in sign up form
+   * @param school user's school specified in sign up form
+   */
   const signUp = async (
     first_name: string,
     last_name: string,
@@ -369,6 +412,10 @@ export const AuthContextProvider = ({
     }
   };
 
+  /**
+   * Logs in users who don't rely on any SSO
+   * @param data data from form fields on /register page
+   */
   const logIn = async (email: string, password: string) => {
     const res = await signInWithEmailAndPassword(auth, email, password);
     const user = res.user;
@@ -394,6 +441,9 @@ export const AuthContextProvider = ({
     }
   };
 
+  /**
+   * Uses Google SSO to log-in user
+   */
   const logInWithGoogle = async () => {
     try {
       const res = await signInWithPopup(auth, googleProvider);
@@ -492,6 +542,11 @@ export const AuthContextProvider = ({
     }
   };
 
+  /**
+   * Updates/stores a user's first and last name
+   * @param first_name user's first_name
+   * @param last_name user's first_name
+   */
   const storeFirstAndLastName = async (
     first_name: string,
     last_name: string
@@ -509,6 +564,11 @@ export const AuthContextProvider = ({
     }
   };
 
+  /**
+   * Looks up if current user has a field for first_name and last_name in /users collection
+   * @param first_name user's first_name
+   * @param last_name user's first_name
+   */
   const hasFirstAndLastName = async () => {
     const docRef = doc(userRef, user.uid ? user.uid : "1");
     const docSnap = await getDoc(docRef);
@@ -523,6 +583,11 @@ export const AuthContextProvider = ({
     return true;
   };
 
+  /**
+   * Get's user's first_name from /user collection
+   * @param first_name user's first_name
+   * @returns a string of their first_name
+   */
   const getFirstName = async () => {
     const docRef = doc(userRef, user.uid ? user.uid : "0");
     const docSnap = await getDoc(docRef);
@@ -534,6 +599,11 @@ export const AuthContextProvider = ({
     return docSnap.data().first_name;
   };
 
+  /**
+   * Get's a user's registered events
+   * @param first_name user's first_name
+   * @returns an array of registered events
+   */
   const getRegisteredEvents = async () => {
     const docRef = doc(userRef, user.uid ? user.uid : "0");
     const docSnap = await getDoc(docRef);
@@ -545,6 +615,11 @@ export const AuthContextProvider = ({
     return docSnap.data().registered;
   };
 
+  /**
+   * Get's a user's registered events
+   * @param first_name user's first_name
+   * @returns a team
+   */
   const getTeam: () => Promise<TeamType | null> = async () => {
     if (userInfo.tid === null || userInfo.tid === undefined) return null;
     const docRef = doc(teamRef, userInfo.tid ? userInfo.tid : "0");
@@ -853,6 +928,7 @@ export const AuthContextProvider = ({
         giveTeamPoints,
         checkinUser,
         checkoutUser,
+        triggerRegistrationEmail,
       }}
     >
       {loading ? null : children}
