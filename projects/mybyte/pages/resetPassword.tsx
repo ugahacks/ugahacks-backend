@@ -97,25 +97,25 @@ export default function ResetPassword() {
   }, []);
 
   return (
-    <div className="flex font-inter items-center justify-center mb-[80px]">
-      <div className="w-[450px]">
-        <div className="mb-7">
-          <h1 className="text-7xl font-bold leading-[70px]">
+    <div className="flex font-inter items-center justify-center mb-[80px] flex-col md:flex-row">
+      <div className="w-[350px] md:w-[450px]">
+        <div className="mb-5">
+          <h1 className="text-6xl md:text-7xl font-bold leading-[70px] text-center md:text-left">
             Forgot your <span>{randomizedString}</span>
           </h1>
         </div>
-        <div>
-          <p className="font-mono text-md text-gray-500">
+        <div className="w-fit">
+          <p className="font-mono text-md md:text-md text-gray-500 text-center md:text-left">
             Enter the email address that you used to register. We&apos;ll send
             you an email with a link to reset your password.
           </p>
         </div>
       </div>
-      <div className="w-fit ml-10">
+      <div className="w-fit ml-0 md:ml-10">
         <FormProvider {...methods}>
           <form
             action=""
-            className="mx-5 w-96"
+            className="w-72 md:w-96"
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="mt-8">
