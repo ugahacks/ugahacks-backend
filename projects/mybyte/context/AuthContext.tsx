@@ -107,6 +107,7 @@ export const AuthContextProvider = ({
   /****** Prod Environment ******/
   const userRef = collection(db, "users");
   const teamRef = collection(db, "team");
+  const emailTemplates = collection(db, "email-templates");
 
   // Current Event (Hacks 9):
   const eSportsRef = collection(db, "UH9-user-e-sports-details");
@@ -253,14 +254,26 @@ export const AuthContextProvider = ({
    * Stores a mail document, which triggers an email to the user.
    */
   const triggerRegistrationEmail = async (data: ESportsRegisterForm) => {
-    await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
-      to: user.email,
-      message: {
-        subject: "Thank you for registering for UGAHacks 9",
-        text: "Registration received :)",
-        html: "This is the <code>HTML</code> section of the email body.",
-      },
-    });
+    const uh9RegistrationDoc = await getDoc(
+      doc(emailTemplates, "uh9-registration")
+    );
+
+    if (uh9RegistrationDoc.exists()) {
+      const emailHTML = uh9RegistrationDoc.data().html;
+
+      await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
+        to: user.email,
+        message: {
+          subject: "Thank you for registering for UGAHacks 9",
+          text: "",
+          html: emailHTML,
+        },
+      });
+    } else {
+      console.error(
+        'Document "uh9-registration" not found in the "email-templates" collection.'
+      );
+    }
   };
 
   /**
