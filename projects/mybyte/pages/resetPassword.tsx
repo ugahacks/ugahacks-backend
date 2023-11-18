@@ -17,6 +17,20 @@ export default function ResetPassword() {
 
   const methods = useForm<resetPasswordForm>({ mode: "onBlur" });
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 520);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -155,6 +169,7 @@ export default function ResetPassword() {
         alert_title="Reset Password"
         message={alert.message}
         color={alert.color}
+        isMobile={isMobile}
         onClose={() => setAlert({ show: false, message: "", color: "" })}
       />
     </div>

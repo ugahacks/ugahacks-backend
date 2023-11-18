@@ -81,7 +81,13 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
       >
         <nav className="bg-white border-gray-200 shadow-md">
           <div className="flex flex-wrap items-center justify-between mx-auto py-6">
-            <Link href={!user.uid ? "/" : "/dashboard"}>
+            <Link
+              href={
+                !user.uid || !userInfo.first_name || !userInfo.last_name
+                  ? "/"
+                  : "/dashboard"
+              }
+            >
               <span className="font-semibold uppercase text-xl tracking-5px px-5 hover:text-red-500 transition">
                 UGAHacks
               </span>

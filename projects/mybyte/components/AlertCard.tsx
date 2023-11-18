@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface AlertCardProps {
   show: boolean;
   alert_title: string;
   message: string;
   color: string;
+  isMobile: boolean;
   onClose: () => void;
 }
 
@@ -13,6 +14,7 @@ const AlertCard: React.FC<AlertCardProps> = ({
   alert_title,
   message,
   color,
+  isMobile,
   onClose,
 }) => {
   const cardColor = { backgroundColor: color };
@@ -20,7 +22,9 @@ const AlertCard: React.FC<AlertCardProps> = ({
     <div
       style={cardColor}
       className={
-        "fixed bottom-4 right-4 p-4 text-white rounded-md shadow-md w-[400px] transition-opacity animate-fade-in"
+        "fixed bottom-4 " +
+        (isMobile ? "right-2 w-[300px]" : "right-4 w-[400px]") +
+        " p-4 text-white rounded-md shadow-md transition-opacity animate-fade-in"
       }
     >
       <div className="flex justify-between items-center">

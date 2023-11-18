@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   GoogleAuthProvider,
+  GithubAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -93,6 +94,7 @@ export const AuthContextProvider = ({
     },
     user_type: null,
   });
+
   const [user_type, setType] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [currEvent, setCurrEvent] = useState<Events>();
@@ -121,6 +123,7 @@ export const AuthContextProvider = ({
 
   /****** Auth Providers ******/
   const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (curr_user) => {
@@ -484,11 +487,93 @@ export const AuthContextProvider = ({
           user_type: null,
           added_time: serverTimestamp(),
         });
+      } else {
+        if (!userInfo.first_name && !userInfo.last_name) {
+          // User already exists, update the information (they used another auth provider)
+          await updateDoc(docRef, {
+            first_name: first_name,
+            last_name: last_name,
+            name: google_user.displayName,
+            authProvider: "google",
+            email: google_user.email,
+          });
+        }
       }
       setUserInformation(google_user.uid);
     } catch (err: any) {
       console.error(err);
     }
+  };
+
+  /**
+   * Uses Github SSO to log-in user
+   */
+  const logInWithGithub = async () => {
+    try {
+      const res = await signInWithPopup(auth, githubProvider);
+      const github_user = res.user;
+
+      const docRef = doc(userRef, github_user.uid);
+      const docSnap = await getDoc(docRef);
+
+      const [first_name, last_name] = await getFirstAndLastNameFromGoogleName(
+        github_user.displayName
+      );
+
+      const additionalInfoNeeded = !first_name && !last_name;
+
+      if (!docSnap.exists()) {
+        await setDoc(doc(userRef, github_user.uid), {
+          uid: github_user.uid,
+          first_name: first_name,
+          last_name: last_name,
+          name: github_user.displayName,
+          authProvider: "github",
+          email: github_user.email,
+          points: 0,
+          registered: {},
+          user_type: null,
+          added_time: serverTimestamp(),
+        });
+      }
+
+      const userInfo: any = await setUserInformation(github_user.uid);
+
+      if (
+        additionalInfoNeeded &&
+        (!userInfo.first_name || !userInfo.last_name)
+      ) {
+        Router.push("/editProfile");
+      } else {
+        Router.push("/dashboard");
+      }
+    } catch (err: any) {
+      throw err;
+    }
+  };
+
+  const setUserInformation = async (uid: string | null) => {
+    const docRef = doc(userRef, uid ? uid : "");
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      return null;
+    }
+
+    const userInformation: UserInfoType = {
+      first_name: docSnap.data().first_name,
+      last_name: docSnap.data().last_name,
+      points: docSnap.data().points,
+      tid: docSnap.data().tid,
+      school: docSnap.data().school,
+      registered: docSnap.data().registered,
+      user_type: docSnap.data().user_type,
+    };
+
+    setUserInfo(userInformation);
+    setType(docSnap.data().user_type);
+
+    return userInformation;
   };
 
   /**
@@ -533,7 +618,7 @@ export const AuthContextProvider = ({
       await updateDoc(docRef, {
         accepted: true,
       });
-      // setUserInformation(userid);
+      setUserInformation(userid);
     } catch (err: any) {
       console.log(err);
     }
@@ -549,14 +634,14 @@ export const AuthContextProvider = ({
       await updateDoc(docRef, {
         accepted: false,
       });
-      // setUserInformation(userid);
+      setUserInformation(userid);
     } catch (err: any) {
       console.log(err);
     }
   };
 
   /**
-   * Updates/stores a user's first and last name
+   * Updates/stores a user's first, last name, and full_name
    * @param first_name user's first_name
    * @param last_name user's first_name
    */
@@ -570,6 +655,7 @@ export const AuthContextProvider = ({
       await updateDoc(docRef, {
         first_name: first_name,
         last_name: last_name,
+        name: first_name + " " + last_name,
       });
       setUserInformation(user.uid);
     } catch (err: any) {
@@ -790,26 +876,6 @@ export const AuthContextProvider = ({
     return false;
   };
 
-  const setUserInformation = async (uid: string | null) => {
-    const docRef = doc(userRef, uid ? uid : "");
-    const docSnap = await getDoc(docRef);
-
-    if (!docSnap.exists()) {
-      return null;
-    }
-
-    setUserInfo({
-      first_name: docSnap.data().first_name,
-      last_name: docSnap.data().last_name,
-      points: docSnap.data().points,
-      tid: docSnap.data().tid,
-      school: docSnap.data().school,
-      registered: docSnap.data().registered,
-      user_type: docSnap.data().user_type,
-    });
-    setType(docSnap.data().user_type);
-  };
-
   /**
    * Confirms whether they are valid emails in the database.
    * @param emails the emails to validate against.
@@ -902,6 +968,18 @@ export const AuthContextProvider = ({
 
   const logOut = async () => {
     setUser({ email: null, uid: null });
+    setUserInfo({
+      first_name: null,
+      last_name: null,
+      points: 0,
+      tid: null,
+      school: null,
+      registered: {
+        HACKS8: null,
+        HACKS9: null,
+      },
+      user_type: null,
+    });
     await signOut(auth);
   };
 
@@ -914,6 +992,7 @@ export const AuthContextProvider = ({
         logIn,
         resetPassword,
         logInWithGoogle,
+        logInWithGithub,
         logOut,
         storeFirstAndLastName,
         hasFirstAndLastName,
