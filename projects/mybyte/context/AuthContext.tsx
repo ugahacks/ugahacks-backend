@@ -242,7 +242,7 @@ export const AuthContextProvider = ({
     // Set the user status to registered for hacks9 & updates school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
       "registered.HACKS9": true,
-      school: data.school,
+      school: data.school.value,
       user_type: Users.hacker,
     });
 
@@ -396,8 +396,7 @@ export const AuthContextProvider = ({
     first_name: string,
     last_name: string,
     email: string,
-    password: string,
-    school: string | undefined
+    password: string
   ) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -414,7 +413,7 @@ export const AuthContextProvider = ({
         email: email,
         points: 0,
         registered: {},
-        school: school,
+        school: null,
         user_type: null,
         added_time: serverTimestamp(),
       });
@@ -480,6 +479,7 @@ export const AuthContextProvider = ({
           authProvider: "google",
           email: google_user.email,
           points: 0,
+          school: null,
           registered: {},
           user_type: null,
           added_time: serverTimestamp(),
