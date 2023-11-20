@@ -103,7 +103,7 @@ const SignupPage = () => {
         <FormProvider {...methods}>
           <form
             action=""
-            className="mx-auto mb-5"
+            className="mx-auto mb-5 pb-5"
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="mt-2">
