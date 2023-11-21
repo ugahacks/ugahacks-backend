@@ -12,7 +12,6 @@ interface SignupType {
   email: string;
   first_name: string;
   last_name: string;
-  school: string;
   password: string;
   password_confirm: string;
 }
@@ -29,21 +28,9 @@ const SignupPage = () => {
     formState: { errors },
   } = methods;
 
-  const schoolOptions = [
-    { value: "uga", label: "University of Georgia" },
-    { value: "gt", label: "Georgia Tech" },
-    { value: "georgia-state", label: "Georgia State" },
-    { value: "georgia-college", label: "Georgia College" },
-    { value: "ucf", label: "University of Central Florida" },
-    { value: "stanford", label: "Stanford University" },
-    { value: "other", label: "Other" },
-  ];
-
   const onSubmit = async (data: SignupType) => {
     try {
-      let schOpt = schoolOptions.find((item) => {return item.label === data.school});
-      let school = (schOpt === undefined || schOpt === null) ? data.school : schOpt.value;
-      await signUp(data.first_name, data.last_name, data.email, data.password, school);
+      await signUp(data.first_name, data.last_name, data.email, data.password);
       router.push("/emailVerification");
     } catch (err: any) {
       if (err instanceof FirebaseError) {
@@ -86,11 +73,7 @@ const SignupPage = () => {
               <span className="block w-max font-semibold tracking-wide text-gray-700 text-sm transition duration-300 group-hover:text-primary-600 sm:text-base">
                 Sign in with Google
               </span>
-              <Image
-                src={googleLogo}
-                className="w-5"
-                alt="google logo"
-              />
+              <Image src={googleLogo} className="w-5" alt="google logo" />
             </div>
           </button>
           {/* <button
@@ -120,15 +103,12 @@ const SignupPage = () => {
         <FormProvider {...methods}>
           <form
             action=""
-            className="mx-auto mb-5"
+            className="mx-auto mb-5 pb-5"
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="mt-2">
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor=""
-                  className="block mb-3 inter font-bold"
-                >
+                <label htmlFor="" className="block mb-3 inter font-bold">
                   Email
                 </label>
               </div>
@@ -144,10 +124,7 @@ const SignupPage = () => {
             </div>
             <div className="mt-8">
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor=""
-                  className="block mb-3 inter font-bold"
-                >
+                <label htmlFor="" className="block mb-3 inter font-bold">
                   First Name
                 </label>
               </div>
@@ -165,10 +142,7 @@ const SignupPage = () => {
             </div>
             <div className="mt-8">
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor=""
-                  className="block mb-3 inter font-bold"
-                >
+                <label htmlFor="" className="block mb-3 inter font-bold">
                   Last Name
                 </label>
               </div>
@@ -186,36 +160,7 @@ const SignupPage = () => {
             </div>
             <div className="mt-8">
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor=""
-                  className="block mb-3 inter font-bold"
-                >
-                  School
-                </label>
-              </div>
-
-              <input
-                type="text" list="data"
-                {...register("school", {
-                  required: "School is required",
-                })}
-                className={`border border-solid rounded-lg ring:0 focus:ring-0 focus:outline-none border-gray-400 text-gray-500 text-normal py-3 h-12 px-6 text-lg w-full flex items-center`}
-              />
-              <datalist id="data">
-                {schoolOptions.map((item, key) =>
-                  <option key={key} data-value={item.value} label={item.label}>{item.label}</option>
-                )}
-              </datalist>
-              {errors.last_name && (
-                <p className="text-red-500">{errors.last_name.message}</p>
-              )}
-            </div>
-            <div className="mt-8">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor=""
-                  className="block mb-3 inter font-bold"
-                >
+                <label htmlFor="" className="block mb-3 inter font-bold">
                   Password
                 </label>
               </div>
@@ -231,10 +176,7 @@ const SignupPage = () => {
             </div>
             <div className="mt-8">
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor=""
-                  className="block mb-3 inter font-bold"
-                >
+                <label htmlFor="" className="block mb-3 inter font-bold">
                   Confirm Password
                 </label>
               </div>
@@ -261,7 +203,7 @@ const SignupPage = () => {
               </button>
             </div>
             <div className="flex justify-between text-sm text-primary-500 mt-2">
-                <Link href="/login">Already have an account?</Link>
+              <Link href="/login">Already have an account?</Link>
             </div>
           </form>
         </FormProvider>

@@ -30,17 +30,6 @@ body {
   }
 }
 
-.blinking-cursor {
-  display: inline-block;
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
 .moving-gradient {
   width: 100%;
   background: linear-gradient(45deg, #ff3232, #e14e4e, #e96868);
@@ -57,5 +46,18 @@ body {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

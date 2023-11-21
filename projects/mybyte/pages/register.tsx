@@ -35,8 +35,12 @@ import Circle from "../components/Circle";
 
 export default function Register() {
   const router = useRouter();
-  const { storeUserRegistrationInformation, getRegisteredEvents, userInfo } =
-    useAuth();
+  const {
+    storeUserRegistrationInformation,
+    getRegisteredEvents,
+    userInfo,
+    triggerRegistrationEmail,
+  } = useAuth();
   const {
     control,
     resetField,
@@ -57,6 +61,7 @@ export default function Register() {
 
   const onSubmit: SubmitHandler<RegisterForm> = (data) => {
     storeUserRegistrationInformation(data);
+    triggerRegistrationEmail();
     router.push("/registrationSuccess");
   };
   //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);
@@ -272,7 +277,6 @@ export default function Register() {
         ) : null}
         <div className="flex-1 flex items-center justify-center overflow-y-auto">
           <div className="h-screen">
-            {/* Your Form component goes here */}
             <Card className="bg-opacity-0 shadow-none">
               <div className="min-h-screen font-inter my-4">
                 <div className="mx-auto flex flex-column justify-between">
@@ -883,7 +887,7 @@ export default function Register() {
 
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                              What do you expect out of UGA Hacks?
+                              What do you expect out of UGAHacks?
                               <span className="text-red-600">*</span>
                             </label>
                             <textarea
