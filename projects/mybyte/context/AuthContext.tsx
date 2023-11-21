@@ -226,7 +226,7 @@ export const AuthContextProvider = ({
             firstName: data.firstName,
             lastName: data.lastName,
             levelOfStudy: data.levelsOfStudy,
-            school: data.school,
+            school: data.school.value,
             inputSchool: data.inputSchool,
             elCreditInterest: data.elCreditInterest,
             accepted: null,
