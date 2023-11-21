@@ -19,12 +19,7 @@ export default function EmailVerification() {
         <Image src={greenEmailIcon} className="w-24" alt="google logo" />
       </div>
       <div className="text-6xl font-inter font-bold text-gray-700 mb-4 text-center">
-        <Typewriter
-          onInit={(typewriter) => {
-            typewriter.typeString("Verify your email").start();
-          }}
-          options={{ cursor: "" }}
-        />
+        <h1>Verify your email</h1>
       </div>
 
       <div className="font-mono mb-10">
