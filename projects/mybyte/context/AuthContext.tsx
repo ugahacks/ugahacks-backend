@@ -244,6 +244,7 @@ export const AuthContextProvider = ({
       "registered.HACKS9": true,
       school: data.school.value,
       user_type: Users.hacker,
+      points: 0, // resets user's points to 0 on registration for UH9
     });
 
     // Update userInfo
