@@ -6211,12 +6211,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"ugahacks-mobile@workspace:projects/ugahacks-mobile":
-  version: 0.0.0-use.local
-  resolution: "ugahacks-mobile@workspace:projects/ugahacks-mobile"
-  languageName: unknown
-  linkType: soft
-
 "unbox-primitive@npm:^1.0.2":
   version: 1.0.2
   resolution: "unbox-primitive@npm:1.0.2"
