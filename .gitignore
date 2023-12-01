@@ -119,3 +119,6 @@ firestore*
 
 # VS Code Configuration
 .vscode
+
+# Jetbrains Configuration
+.idea/
