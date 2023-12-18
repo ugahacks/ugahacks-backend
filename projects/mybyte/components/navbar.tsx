@@ -156,7 +156,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                         </li>
                       ) : null}
 
-                      {userInfo.first_name != null &&
+                      {/* {userInfo.first_name != null &&
                       userInfo.first_name != "" ? (
                         <li>
                           <Link href="/team">
@@ -171,7 +171,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                             </span>
                           </Link>
                         </li>
-                      ) : null}
+                      ) : null} */}
 
                       {/* TODO: Why are we doing the first_name check */}
 
@@ -196,7 +196,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                       ) : null}
 
                       {/* TODO: why are we checking first_name? */}
-                      {userInfo.first_name != null &&
+                      {/* {userInfo.first_name != null &&
                       userInfo.first_name != "" ? (
                         <li>
                           <Link href="/insertDevPost">
@@ -211,7 +211,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                             </span>
                           </Link>
                         </li>
-                      ) : null}
+                      ) : null} */}
 
                       <li>
                         <a onClick={handleLogout} className={nonSelectedStyles}>
