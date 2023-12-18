@@ -31,8 +31,12 @@ export default function Event(props: EventDetail) {
 
   return (
     <div onClick={handleClick}>
-      <Card className="w-96 shadow-[#DC4141]">
-        <CardHeader color="blue" className="relative h-56">
+      <Card placeholder={undefined} className="w-96 shadow-[#DC4141]">
+        <CardHeader
+          placeholder={undefined}
+          color="blue"
+          className="relative h-56"
+        >
           <Image
             src={props.image}
             alt="img-blur-shadow"
@@ -40,7 +44,7 @@ export default function Event(props: EventDetail) {
             className="h-full w-full object-contain"
           />
         </CardHeader>
-        <CardBody className="text-center">
+        <CardBody placeholder={undefined} className="text-center">
           <Typography variant="h5" className="mb-2">
             {props.eventName}
           </Typography>
