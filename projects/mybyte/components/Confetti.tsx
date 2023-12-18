@@ -6,7 +6,7 @@ import { loadFull } from "tsparticles";
 import { Engine } from "tsparticles-engine";
 
 const ConfettiAnimation = () => {
-  const init = useCallback(async (engine: any) => {
+  const init = useCallback(async (engine: Engine) => {
     await loadFull(engine);
   }, []);
 
