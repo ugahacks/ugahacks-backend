@@ -1311,7 +1311,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.2.42":
+"@types/react@npm:^18.2.19":
   version: 18.2.45
   resolution: "@types/react@npm:18.2.45"
   dependencies:
@@ -4128,7 +4128,7 @@ __metadata:
     "@material-tailwind/react": "npm:^1.2.5"
     "@next/font": "npm:13.1.1"
     "@types/node": "npm:^18.11.18"
-    "@types/react": "npm:^18.2.42"
+    "@types/react": "npm:^18.2.19"
     "@types/react-dom": "npm:^18.0.10"
     "@types/react-select-country-list": "npm:^2.2.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.48.0"
