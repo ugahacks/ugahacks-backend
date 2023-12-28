@@ -1471,6 +1471,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tsparticles/react@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@tsparticles/react@npm:3.0.0"
+  peerDependencies:
+    "@tsparticles/engine": ^3.0.2
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: c3764d472e8f2798dceda16ed7ebffbc8bbadeb8096dcba6729be476b84076079e9aed258f19bc5cb2c3aa8f648396e8658f5f7722b3e2be4e477f16ab994df3
+  languageName: node
+  linkType: hard
+
 "@tsparticles/shape-circle@npm:^3.0.3":
   version: 3.0.3
   resolution: "@tsparticles/shape-circle@npm:3.0.3"
@@ -6260,8 +6271,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ugahacks-backend@workspace:."
   dependencies:
+    "@tsparticles/engine": "npm:^3.0.3"
+    "@tsparticles/react": "npm:^3.0.0"
     husky: "npm:^8.0.0"
     react: "npm:^18.2.0"
+    tsparticles-engine: "npm:^2.12.0"
     typewriter-effect: "npm:^2.21.0"
   languageName: unknown
   linkType: soft
