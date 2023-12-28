@@ -20,7 +20,7 @@ const ConfettiAnimation = () => {
           position: "",
           repeat: "",
           size: "",
-          opacity: 1,
+          opacity: 0.5,
         },
         backgroundMask: {
           composite: "destination-out",
