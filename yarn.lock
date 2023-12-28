@@ -5398,6 +5398,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-particles@npm:^2.12.2":
+  version: 2.12.2
+  resolution: "react-particles@npm:2.12.2"
+  dependencies:
+    tsparticles-engine: "npm:^2.12.0"
+  peerDependencies:
+    react: ">=16"
+  checksum: e3a45230b6b21828003dbb669a9768d82ac9a480ba7b0702d7782c6c1ca286fef6390f094ecb7beaa69cb29badb5c12ee6ed2cc055c9727e269f02d772b738b6
+  languageName: node
+  linkType: hard
+
 "react-phone-number-input@npm:^3.2.15":
   version: 3.2.16
   resolution: "react-phone-number-input@npm:3.2.16"
@@ -6275,6 +6286,7 @@ __metadata:
     "@tsparticles/react": "npm:^3.0.0"
     husky: "npm:^8.0.0"
     react: "npm:^18.2.0"
+    react-particles: "npm:^2.12.2"
     tsparticles-engine: "npm:^2.12.0"
     typewriter-effect: "npm:^2.21.0"
   languageName: unknown
