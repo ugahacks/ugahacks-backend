@@ -1258,6 +1258,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tsparticles/engine@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@tsparticles/engine@npm:3.0.3"
+  checksum: cbd09e7b4e4b65a24ef5153ed42154bade1058219186c82accefcbac3e3084f6a1bf272abac66be0b5a6dd66b3df6cef1e875eac6a3a607dbb32ed84ae295a07
+  languageName: node
+  linkType: hard
+
+"@tsparticles/react@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@tsparticles/react@npm:3.0.0"
+  peerDependencies:
+    "@tsparticles/engine": ^3.0.2
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: c3764d472e8f2798dceda16ed7ebffbc8bbadeb8096dcba6729be476b84076079e9aed258f19bc5cb2c3aa8f648396e8658f5f7722b3e2be4e477f16ab994df3
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:^7.0.9":
   version: 7.0.11
   resolution: "@types/json-schema@npm:7.0.11"
@@ -6232,6 +6250,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ugahacks-backend@workspace:."
   dependencies:
+    "@tsparticles/engine": "npm:^3.0.3"
+    "@tsparticles/react": "npm:^3.0.0"
     husky: "npm:^8.0.0"
     react: "npm:^18.2.0"
     react-tsparticles: "npm:^2.12.2"
