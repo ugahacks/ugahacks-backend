@@ -17,6 +17,8 @@
     "postinstall": "husky install"
   },
   "dependencies": {
+    "@tsparticles/engine": "^3.0.3",
+    "@tsparticles/react": "^3.0.0",
     "react": "^18.2.0",
     "react-tsparticles": "^2.12.2",
     "tsparticles": "^2.12.0",
