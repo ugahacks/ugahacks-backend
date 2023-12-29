@@ -4596,6 +4596,8 @@ __metadata:
   dependencies:
     "@material-tailwind/react": "npm:^2.1.8"
     "@next/font": "npm:13.1.1"
+    "@tsparticles/engine": "npm:^3.0.3"
+    "@tsparticles/react": "npm:^3.0.0"
     "@types/node": "npm:^18.11.18"
     "@types/react": "npm:18.2.18"
     "@types/react-dom": "npm:^18.0.10"
@@ -4617,7 +4619,6 @@ __metadata:
     react-phone-number-input: "npm:^3.2.15"
     react-select: "npm:^5.7.0"
     react-select-country-list: "npm:^2.2.3"
-    react-tsparticles: "npm:^2.12.2"
     sharp: "npm:^0.31.3"
     tailwindcss: "npm:^3.2.4"
     tsparticles: "npm:^3.0.3"
@@ -5456,17 +5457,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-tsparticles@npm:^2.12.2":
-  version: 2.12.2
-  resolution: "react-tsparticles@npm:2.12.2"
-  dependencies:
-    tsparticles-engine: "npm:^2.12.0"
-  peerDependencies:
-    react: ">=16"
-  checksum: 209c3c1f0d1b46e51ab4c052e0c053a2beeeb5a92d5d2a416b909be141f91389a86d270a09a2259feff6afa8e59107c95fc3c95c555b8f35892df16015794cd4
-  languageName: node
-  linkType: hard
-
 "react@npm:18.2.0, react@npm:^18.2.0":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
@@ -6159,13 +6149,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsparticles-engine@npm:^2.12.0":
-  version: 2.12.0
-  resolution: "tsparticles-engine@npm:2.12.0"
-  checksum: c991f1cf7c249722d88fd5f512b36e52a8e77dc87001a074c890257d5e72caab2b1ba4ae2023f9dab6da619fe9401ea9b1326330475f0a4c0989187937b355e4
-  languageName: node
-  linkType: hard
-
 "tsparticles@npm:^3.0.3":
   version: 3.0.3
   resolution: "tsparticles@npm:3.0.3"
@@ -6254,7 +6237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typewriter-effect@npm:2.21.0, typewriter-effect@npm:^2.21.0":
+"typewriter-effect@npm:2.21.0":
   version: 2.21.0
   resolution: "typewriter-effect@npm:2.21.0"
   dependencies:
@@ -6271,12 +6254,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ugahacks-backend@workspace:."
   dependencies:
-    "@tsparticles/engine": "npm:^3.0.3"
-    "@tsparticles/react": "npm:^3.0.0"
     husky: "npm:^8.0.0"
     react: "npm:^18.2.0"
-    tsparticles-engine: "npm:^2.12.0"
-    typewriter-effect: "npm:^2.21.0"
   languageName: unknown
   linkType: soft
 
