@@ -1309,7 +1309,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.0.10":
+"@types/react-dom@npm:^18.0.0":
   version: 18.2.18
   resolution: "@types/react-dom@npm:18.2.18"
   dependencies:
@@ -1342,6 +1342,17 @@ __metadata:
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
   checksum: 2c20b70468511f3393a60c39d2633d554c5f8a85b48ec7beff396fc01b4bfdb655a277a8d1d9c3bf6e944f8573bc693d8c95973f379c9534a4368bb8d430b0d1
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:18.2.18":
+  version: 18.2.18
+  resolution: "@types/react@npm:18.2.18"
+  dependencies:
+    "@types/prop-types": "npm:*"
+    "@types/scheduler": "npm:*"
+    csstype: "npm:^3.0.2"
+  checksum: 0e40d17aaf4df5e8a97eda3a09625bc261e56fb2c6268ed693416d628700ac21b381fe2b86bd91ff562902389516b9919506453beacb9cbf64be16f37b3a58bb
   languageName: node
   linkType: hard
 
@@ -4158,7 +4169,8 @@ __metadata:
     "@material-tailwind/react": "npm:^1.2.5"
     "@next/font": "npm:13.1.1"
     "@types/node": "npm:^18.11.18"
-    "@types/react-dom": "npm:^18.0.10"
+    "@types/react": "npm:18.2.18"
+    "@types/react-dom": "npm:^18.0.0"
     "@types/react-select-country-list": "npm:^2.2.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.48.0"
     "@typescript-eslint/parser": "npm:^5.48.0"
@@ -4171,8 +4183,8 @@ __metadata:
     postcss: "npm:^8.4.21"
     qrcode: "npm:^1.5.1"
     qrcode.react: "npm:^3.1.0"
-    react: "npm:^18.2.0"
-    react-dom: "npm:18.2.0"
+    react: "npm:^18.0.0"
+    react-dom: "npm:^18.2.0"
     react-hook-form: "npm:^7.41.5"
     react-phone-number-input: "npm:^3.2.15"
     react-select: "npm:^5.7.0"
@@ -4931,7 +4943,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:18.2.0, react-dom@npm:^18.2.0":
+"react-dom@npm:^18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
   dependencies:
@@ -5028,7 +5040,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.2.0":
+"react@npm:^18.0.0, react@npm:^18.2.0":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
   dependencies:
