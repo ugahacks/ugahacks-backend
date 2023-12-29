@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   //  } else if (hasGrayClasses() && !gray_bg_routes.includes(page)) {
   //    document.body.classList.remove("bg-[#e3e3e3]");
   //  }
-//
+  //
   //  // eslint-disable-next-line react-hooks/exhaustive-deps
   //});
 
