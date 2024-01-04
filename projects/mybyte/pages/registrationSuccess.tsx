@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-// import ConfettiAnimation from "../components/Confetti";
+import ConfettiAnimation from "../components/Confetti";
 
 // TODO: Go back and make this section responsive for smaller widths
 export default function RegistrationSuccess() {
@@ -21,7 +21,7 @@ export default function RegistrationSuccess() {
 
   return (
     <div>
-      {/* <ConfettiAnimation /> */}
+      <ConfettiAnimation />
       {isMobile ? (
         <div className="inset-0 flex overflow-hidden font-mono">
           <div className="container mx-auto mt-12 rounded-md">
