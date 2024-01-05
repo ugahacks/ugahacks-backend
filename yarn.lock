@@ -1376,14 +1376,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.0.26":
-  version: 18.2.46
-  resolution: "@types/react@npm:18.2.46"
+"@types/react@npm:18.2.18":
+  version: 18.2.18
+  resolution: "@types/react@npm:18.2.18"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10fb28a5b8504106512ce3b154c45d1ac045c31633786773a29f003b3079b434060368bb56f95ef6c39510835ceec4fb8fdc271d6ca2b9cdd979379cf53f126b
+  checksum: 0e40d17aaf4df5e8a97eda3a09625bc261e56fb2c6268ed693416d628700ac21b381fe2b86bd91ff562902389516b9919506453beacb9cbf64be16f37b3a58bb
   languageName: node
   linkType: hard
 
@@ -4621,7 +4621,7 @@ __metadata:
     "@material-tailwind/react": "npm:^1.2.5"
     "@next/font": "npm:13.1.1"
     "@types/node": "npm:^18.11.18"
-    "@types/react": "npm:^18.0.26"
+    "@types/react": "npm:18.2.18"
     "@types/react-dom": "npm:^18.0.10"
     "@types/react-select-country-list": "npm:^2.2.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.48.0"
