@@ -10,6 +10,9 @@ RUN yarn set version stable
 
 COPY --chown=node:node package.json /home/node
 
+RUN yarn cache clean
+RUN rm -rf node_modules
+
 RUN yarn install 
 #RUN yarn bootstrap
 
