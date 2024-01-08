@@ -22,10 +22,10 @@
     "react-phone-number-input": "^3.2.15",
     "react-select": "^5.7.0",
     "react-select-country-list": "^2.2.3",
-    "react-tsparticles": "^2.12.2",
+    "react-tsparticles": "2",
     "sharp": "^0.31.3",
-    "tsparticles": "latest",
-    "tsparticles-engine": "^2.12.0",
+    "tsparticles": "2",
+    "tsparticles-engine": "2",
     "typescript": "4.9.4",
     "typewriter-effect": "2.21.0",
     "yarn": "^1.22.19"
