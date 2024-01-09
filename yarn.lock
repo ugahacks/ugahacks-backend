@@ -6535,7 +6535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typewriter-effect@npm:2.21.0, typewriter-effect@npm:^2.21.0":
+"typewriter-effect@npm:2.21.0":
   version: 2.21.0
   resolution: "typewriter-effect@npm:2.21.0"
   dependencies:
@@ -6554,7 +6554,6 @@ __metadata:
   dependencies:
     husky: "npm:^8.0.0"
     react: "npm:^18.2.0"
-    typewriter-effect: "npm:^2.21.0"
   languageName: unknown
   linkType: soft
 
