@@ -22,12 +22,6 @@ import {
   ELInterest,
 } from "../enums/registerEnums";
 
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
 import "react-phone-number-input/style.css";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { Card } from "@material-tailwind/react";
@@ -891,7 +885,7 @@ export default function Register() {
                               <span className="text-red-600">*</span>
                             </label>
                             <textarea
-                              className="bg-gray-100 rounded-md border leading-normal resize-none w-full h-20 py-2 px-3 shadow-inner border border-gray-400 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
+                              className="bg-gray-100 rounded-md leading-normal resize-none w-full h-20 py-2 px-3 shadow-inner border border-gray-400 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
                               {...register("hopeToSee", {
                                 required: "Please enter a response",
                               })}
@@ -1176,7 +1170,7 @@ export default function Register() {
                               </p>
                             )}
                           </div>
-                          <div className="pb-16">
+                          <div className={!shouldRender ? "pb-56" : "pb-20"}>
                             <button
                               className="border rounded w-full border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors p-2"
                               type="submit"

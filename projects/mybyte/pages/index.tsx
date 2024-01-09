@@ -16,11 +16,11 @@ const Home: NextPage = () => {
 
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center pt-28 smh:pt-0 inter">
         <div className="flex flex-col items-start justify-start space-y-4">
-          <h1 className="text-6xl font-bold text-left">MyByte</h1>
-          <h1 className="text-6xl font-bold text-left">
+          <h1 className="text-5xl font-bold text-left sm:text-6xl">MyByte</h1>
+          <h1 className="text-2xl font-bold text-left sm:text-6xl">
             It&apos;s time to create.
           </h1>
-          <p className="text-xl pt-4 font-bold text-left text-gray-500">
+          <p className="text-lg font-bold text-left text-gray-500 sm:">
             Join your fellow hackers. Let&apos;s build the future, together.
           </p>
           <Link
