@@ -30,7 +30,7 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
   }
 
   return (
-    <div className="flex py-2 flex-initial w-full text-center">
+    <div className="flex py-2 flex-initial w-full text-center pb-48">
       <div className="text-gray-800 mt-4 inter">
         <h2 className="text-2xl font-semibold">
           Welcome, {userInfo.first_name + " " + userInfo.last_name}
