@@ -20,10 +20,10 @@ const Hacks9: EventDetail = {
 
 const ESports: EventDetail = {
   key: Events.e_sports_9,
-  page: "/events/ESportsRegister",
-  image: "/ESportsByte.jpeg",
-  startDate: new Date("02/03/2024"),
-  endDate: new Date("02/05/2024"),
+  page: "/esports",
+  image: "/esports_banner.png",
+  startDate: new Date("02/09/2024"),
+  endDate: new Date("02/11/2024"),
   deadline: new Date("02/04/2024"),
   // Add in person attribute
 };
@@ -42,14 +42,14 @@ const events = [
   },
   {
     event: (re: any) => {
-      if (true) {
-        return <EventRect disabled={false} event={ESports} />;
-      } else {
+      if (!re.HACKS9 || !re || re.ESPORTS9) {
         return <EventRect disabled={true} event={ESports} />;
+      } else {
+        return <EventRect disabled={false} event={ESports} />;
       }
     },
     id: (re: EventRegistered) => {
-      return false;
+      return true;
     },
   },
 ];
@@ -62,9 +62,10 @@ eventMap.set("ESPORTS9", "eSports 9");
 function openEventsRegistered(allRegisteredEvents: string[]) {
   let events = "";
   allRegisteredEvents.forEach((e: string) => {
-    if (eventMap.has(e)) events += eventMap.get(e) + " ";
+    if (eventMap.has(e)) events += eventMap.get(e) + ", ";
   });
 
+  events = events.substring(0, events.length - 2);
   return events;
 }
 
@@ -160,7 +161,7 @@ const DashboardPage = () => {
               <h3 className="font-semibold text-lg text-black">
                 Register for events
               </h3>
-              <div className="flex container gap-10">
+              <div className="flex flex-wrap gap-10">
                 {events.map((data) => {
                   if (data.id(registeredEvents)) {
                     let ev = data.event(registeredEvents);

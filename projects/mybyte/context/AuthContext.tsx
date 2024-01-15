@@ -37,7 +37,7 @@ import {
 } from "firebase/storage";
 
 import { RegisterForm } from "../interfaces/registerForm";
-import { ESportsRegisterForm } from "../interfaces/eSportsRegisterForm";
+import { eSportsForm } from "../interfaces/eSportsForm";
 import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { FirebaseError } from "firebase/app";
 import Router from "next/router";
@@ -254,7 +254,7 @@ export const AuthContextProvider = ({
   /**
    * Stores a mail document, which triggers an email to the user.
    */
-  const triggerRegistrationEmail = async (data: ESportsRegisterForm) => {
+  const triggerRegistrationEmail = async (data: RegisterForm) => {
     const uh9RegistrationDoc = await getDoc(
       doc(emailTemplates, "uh9-registration")
     );
@@ -278,23 +278,51 @@ export const AuthContextProvider = ({
   };
 
   /**
+   * Stores a mail document, which triggers an email to the user (ESPORTS).
+   */
+  const triggerESportsRegistrationEmail = async (data: eSportsForm) => {
+    const uh9RegistrationDoc = await getDoc(
+      doc(emailTemplates, "eSports9Registration")
+    );
+
+    if (uh9RegistrationDoc.exists()) {
+      const emailHTML = uh9RegistrationDoc.data().html;
+
+      await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
+        to: user.email,
+        message: {
+          subject: "Thank you for registering for eSports 9",
+          text: "",
+          html: emailHTML,
+        },
+      });
+    } else {
+      console.error(
+        'Document "eSports9Registration" not found in the "email-templates" collection.'
+      );
+    }
+  };
+
+  /**
    * Stores registration details for ESports in firestore.
    * @param data data from form fields on esports form
    */
-  const storeESportsRegistrationInformation = async (
-    data: ESportsRegisterForm
-  ) => {
+  const storeESportsRegistrationInformation = async (data: eSportsForm) => {
     await setDoc(doc(eSportsRef, user.uid ? user.uid : ""), {
-      skill_level: data.skillLevel,
-      can_bring_controller: data.canBringController,
-      preferred_name: data.preferredName,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      gamerTag: data.gamerTag,
+      phoneNumber: data.phoneNumber,
+      selectedGame: data.selectedGame,
+      skillLevelDescription: data.skillLevelDescription,
+      setUpDescription: data.setUpDescription,
+      keyBindingsDescription: data.keyBindingsDescription,
       tardy_agreement: data.tardyAgreement,
       submitted_time: serverTimestamp(),
     });
 
     // Set the user status to registered for hacks8
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.ESPORTS8": false,
       "registered.ESPORTS9": true,
     });
 
@@ -943,6 +971,7 @@ export const AuthContextProvider = ({
         checkinUser,
         checkoutUser,
         triggerRegistrationEmail,
+        triggerESportsRegistrationEmail,
       }}
     >
       {loading ? null : children}

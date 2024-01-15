@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ConfettiAnimation from "../components/Confetti";
 
-// TODO: Go back and make this section responsive for smaller widths
 export default function RegistrationSuccess() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 

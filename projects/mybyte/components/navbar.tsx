@@ -227,7 +227,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
         </nav>
         <div
           className={
-            router.asPath === "/register"
+            router.asPath === "/register" || router.asPath === "/esports"
               ? "fixed"
               : "font-inter h-[calc(100%-168px)] md:h-[calc(100%-76px)]"
           }
