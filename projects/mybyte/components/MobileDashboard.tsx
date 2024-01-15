@@ -63,7 +63,7 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
           <h2>
             School:{" "}
             <span className="font-bold">
-              {userInfo.school != null ? userInfo.school.value : "N/A"}
+              {userInfo.school != null ? userInfo.school : "N/A"}
             </span>
           </h2>
           <h2>
@@ -86,7 +86,7 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
           <h3 className="font-semibold text-lg text-black">
             Register for events
           </h3>
-          <div className="flex items-center justify-center h-full">
+          <div className="items-center justify-center h-full flex flex-wrap gap-10">
             {events.map((data) => {
               if (data.id(registeredEvents)) {
                 let ev = data.event(registeredEvents);

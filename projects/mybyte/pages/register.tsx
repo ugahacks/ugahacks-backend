@@ -235,7 +235,7 @@ export default function Register() {
     <ProtectedRoute className="w-screen">
       <div className="flex overflow-hidden">
         {shouldRender ? (
-          <div className="moving-gradient w-[50vw] flex-1 pl-8 pt-12 font-mono overflow-hidden text-white">
+          <div className="moving-gradient-register w-[50vw] flex-1 pl-8 pt-12 font-mono overflow-hidden text-white">
             <div className="pl-12 pt-10">
               <h1 className="text-6xl mb-8 w-4/5 leading-[80px]">
                 <Typewriter
@@ -255,7 +255,7 @@ export default function Register() {
                 <p className="text-md">
                   If you have any questions, please send us an email at{" "}
                   <Link
-                    className="font-semibold underline underline-offset-2"
+                    className="font-semibold underline underline-offset-2 hover:opacity-80 transition-opacity duration-200"
                     href="mailto:hello@ugahacks.com"
                   >
                     hello@ugahacks.com

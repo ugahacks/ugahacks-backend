@@ -65,3 +65,8 @@ export enum ELInterest {
   Yes = "Yes",
   No = "No",
 }
+
+export enum Games {
+  SuperSmashBrosUltimate = "Super Smash Bros. Ultimate",
+  MarioKart8 = "Mario Kart 8",
+}

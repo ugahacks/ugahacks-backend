@@ -30,9 +30,16 @@ body {
   }
 }
 
-.moving-gradient {
+.moving-gradient-register {
   width: 100%;
   background: linear-gradient(45deg, #ff3232, #e14e4e, #e96868);
+  background-size: 200% 200%;
+  animation: gradientMove 5s linear infinite;
+}
+
+.moving-gradient-esports {
+  width: 100%;
+  background: linear-gradient(45deg, #5940cb, #664bdd, rgb(109, 92, 185));
   background-size: 200% 200%;
   animation: gradientMove 5s linear infinite;
 }
