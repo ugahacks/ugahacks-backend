@@ -110,7 +110,7 @@ export const AuthContextProvider = ({
   const emailTemplates = collection(db, "email-templates");
 
   // Current Event (Hacks 9):
-  const eSportsRef = collection(db, "UH9-user-e-sports-details");
+  const eSportsRef = collection(db, "eSports9-user-registration-details");
   const registerRef = collection(db, "UH9-user-registration-details");
   const registerMail = collection(db, "UH9-registrationMail");
 

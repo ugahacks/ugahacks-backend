@@ -63,7 +63,7 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
           <h2>
             School:{" "}
             <span className="font-bold">
-              {userInfo.school != null ? userInfo.school.value : "N/A"}
+              {userInfo.school != null ? userInfo.school : "N/A"}
             </span>
           </h2>
           <h2>
