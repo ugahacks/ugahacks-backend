@@ -403,9 +403,10 @@ export default function ESportsRegister() {
                                     htmlFor="grid-text-1"
                                   >
                                     <em>Tardy Agreement: </em>“I understand that
-                                    if I am more than 10 minutes late to my time
+                                    if I am more than 5 minutes late to my time
                                     to play, I will be automatically
-                                    eliminated.”
+                                    eliminated.” (When it is your turn to play,
+                                    you will be notified via Slack.)
                                     <span className="text-red-600">*</span>
                                   </label>
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
