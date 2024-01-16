@@ -21,7 +21,7 @@ const Hacks9: EventDetail = {
 const ESports: EventDetail = {
   key: Events.e_sports_9,
   page: "/esports",
-  image: "/esports_banner.png",
+  image: "/eSports9_banner.png",
   startDate: new Date("02/09/2024"),
   endDate: new Date("02/11/2024"),
   deadline: new Date("02/04/2024"),
