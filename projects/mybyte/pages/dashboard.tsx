@@ -179,8 +179,8 @@ const DashboardPage = () => {
               </div>
             </div>
           </div>
-          <Circle className="fixed -bottom-72 -right-10 hidden lg:block overflow-hidden wiggle rounded-full h-[500px] w-[520px] bg-red-500 opacity-90" />
-          <Circle className="fixed -bottom-32 -right-72 hidden lg:block overflow-hidden wiggle2 rounded-full h-[500px] w-[520px] bg-red-500 opacity-90" />
+          <Circle className="fixed -bottom-72 -right-10 hidden lg:block overflow-hidden wiggle rounded-full h-[500px] w-[520px] bg-red-500 opacity-90 -z-10" />
+          <Circle className="fixed -bottom-32 -right-72 hidden lg:block overflow-hidden wiggle2 rounded-full h-[500px] w-[520px] bg-red-500 opacity-90 -z-10" />
         </div>
       )}
     </ProtectedRoute>
