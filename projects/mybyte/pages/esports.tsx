@@ -318,9 +318,9 @@ export default function ESportsRegister() {
 
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                              Select the first choice of the game you’d like to
-                              compete in a tournament for (you can only play in
-                              one):
+                              Select the second choice of the game you’d like to
+                              compete in a tournament for (leave blank if you
+                              only want to play your first choice):
                             </label>
                             <div className="flex-shrink w-full inline-block relative">
                               <select
