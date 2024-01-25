@@ -48,7 +48,8 @@ export default function ESportsRegister() {
       lastName: "",
       gamerTag: "",
       phoneNumber: "",
-      selectedGame: "",
+      selectedGameOne: "",
+      selectedGameTwo: "",
       skillLevelDescription: "",
       setUpDescription: "",
       keyBindingsDescription: "",
@@ -277,18 +278,21 @@ export default function ESportsRegister() {
 
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                              Select which games you’d like to compete in a
-                              tournament for (you can only play in one):
+                              Select the first choice of the game you’d like to
+                              compete in a tournament for (you can only play in
+                              one):
                               <span className="text-red-600">*</span>
                             </label>
                             <div className="flex-shrink w-full inline-block relative">
                               <select
                                 className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                {...register("selectedGame", {
+                                {...register("selectedGameOne", {
                                   required: "Select a game",
                                 })}
                               >
-                                <option value="">Select a game</option>
+                                <option value="">
+                                  Select your first choice
+                                </option>
                                 {Object.keys(Games).map((key) => (
                                   <option key={key} value={key}>
                                     {Games[key as keyof typeof Games]}
@@ -304,13 +308,84 @@ export default function ESportsRegister() {
                                   <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                                 </svg>
                               </div>
-                              {errors.selectedGame && (
+                              {errors.selectedGameOne && (
                                 <p className={errorStyles}>
-                                  {errors.selectedGame.message}
+                                  {errors.selectedGameOne.message}
                                 </p>
                               )}
                             </div>
                           </div>
+
+                          <div className="w-full md:w-full px-3 mb-6">
+                            <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                              Select the first choice of the game you’d like to
+                              compete in a tournament for (you can only play in
+                              one):
+                            </label>
+                            <div className="flex-shrink w-full inline-block relative">
+                              <select
+                                className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                {...register("selectedGameTwo", {})}
+                              >
+                                <option value="">
+                                  Select your second choice
+                                </option>
+                                {Object.keys(Games).map((key) => (
+                                  <option key={key} value={key}>
+                                    {Games[key as keyof typeof Games]}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                                <svg
+                                  className="fill-current h-4 w-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* <div className="w-full md:w-full px-3 mb-6">
+                            <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                              Select the second choice of the game you’d like to
+                              compete in a tournament for (if you only want your
+                              first choice leave this blank):
+                            </label>
+                            <div className="flex-shrink w-full inline-block relative">
+                              <select
+                                className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                {...register("selectedGameTwo", {
+                                  required: false,
+                                })}
+                              >
+                                <option value="Place your second choice">
+                                  Select your second choice
+                                </option>
+                                {Object.keys(Games).map((key) => (
+                                  <option key={key} value={key}>
+                                    {Games[key as keyof typeof Games]}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                                <svg
+                                  className="fill-current h-4 w-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                              </div>
+                              {errors.selectedGameTwo && (
+                                <p className={errorStyles}>
+                                  {errors.selectedGameTwo.message}
+                                </p>
+                              )}
+                            </div>
+                          </div> */}
 
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
