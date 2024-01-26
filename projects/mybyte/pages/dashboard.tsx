@@ -14,7 +14,7 @@ const Hacks9: EventDetail = {
   image: "/uh9_banner.png",
   startDate: new Date("02/09/2024"),
   endDate: new Date("02/11/2024"),
-  deadline: new Date("01/26/2024"),
+  deadline: new Date("02/02/2024"),
   // Add in person attribute
 };
 
