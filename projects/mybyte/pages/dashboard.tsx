@@ -7,6 +7,7 @@ import { Events } from "../enums/events";
 import { QRCodeCanvas } from "qrcode.react";
 import Circle from "../components/Circle";
 import MobileDashboard from "../components/MobileDashboard";
+import AlertCard from "../components/AlertCard";
 
 const Hacks9: EventDetail = {
   key: Events.hacks9,
@@ -27,6 +28,7 @@ const ESports: EventDetail = {
   deadline: new Date("02/04/2024"),
   // Add in person attribute
 };
+
 const events = [
   {
     event: (re: EventRegistered) => {
@@ -87,6 +89,37 @@ const DashboardPage = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const [alert, setAlert] = useState({ show: false, message: "", color: "" });
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const registrationCheck = (ev: EventDetail) => {
+    if (ev.key === Events.e_sports_9 && !registeredEvents.HACKS9) {
+      setAlert({
+        show: true,
+        message:
+          "Please register for UGAHacks 9 before registering for eSports 9",
+        color: "bg-[#212121]",
+      });
+    } else if (ev.key in registeredEvents) {
+      setAlert({
+        show: true,
+        message: "You are already registered for this event",
+        color: "bg-[#50C878]",
+      });
+    } else if (ev.deadline < new Date()) {
+      setAlert({
+        show: true,
+        message: "Registration for this event has closed.",
+        color: "bg-[#FF3131]",
+      });
+    }
+
+    let element = document.getElementById("alert-card");
+    element?.classList.remove("animate-fade-in-out");
+    void element?.offsetWidth;
+    element?.classList.add("animate-fade-in-out");
+  };
 
   return (
     <ProtectedRoute>
@@ -167,6 +200,7 @@ const DashboardPage = () => {
                     let ev = data.event(registeredEvents);
                     return (
                       <button
+                        onClick={() => registrationCheck(ev.props.event)}
                         className="pt-2 transform hover:scale-95 duration-300"
                         key={ev.key}
                       >
@@ -181,6 +215,15 @@ const DashboardPage = () => {
           </div>
           <Circle className="fixed -bottom-72 -right-10 hidden lg:block overflow-hidden wiggle rounded-full h-[500px] w-[520px] bg-red-500 opacity-90 -z-10" />
           <Circle className="fixed -bottom-32 -right-72 hidden lg:block overflow-hidden wiggle2 rounded-full h-[500px] w-[520px] bg-red-500 opacity-90 -z-10" />
+          {alert.show ? (
+            <AlertCard
+              show={alert.show}
+              message={alert.message}
+              color={alert.color}
+              onClose={() => setAlert({ show: false, message: "", color: "" })}
+              position="top-middle"
+            />
+          ) : null}
         </div>
       )}
     </ProtectedRoute>

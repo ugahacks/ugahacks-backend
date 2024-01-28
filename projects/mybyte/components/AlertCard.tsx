@@ -1,38 +1,56 @@
-import React from "react";
+import React, { use, useEffect } from "react";
+import { set } from "react-hook-form";
 
 interface AlertCardProps {
   show: boolean;
-  alert_title: string;
   message: string;
   color: string;
   onClose: () => void;
+  position: string;
+  className?: string;
 }
 
 const AlertCard: React.FC<AlertCardProps> = ({
+  className,
   show,
-  alert_title,
   message,
   color,
   onClose,
+  position,
 }) => {
-  const cardColor = { backgroundColor: color };
+  switch (position) {
+    case "top-middle":
+      position = "fixed top-3 left-1/2 transform -translate-x-1/2";
+      break;
+    case "bottom-right":
+      position = "fixed bottom-4 right-4";
+      break;
+    default:
+      position = "fixed top-5 right-5";
+      break;
+  }
+
   return !show ? null : (
     <div
-      style={cardColor}
+      id="alert-card"
       className={
-        "fixed bottom-4 right-4 p-4 text-white rounded-md shadow-md w-[400px] transition-opacity animate-fade-in"
+        position +
+        " p-4 text-white rounded-md shadow-md w-[350px] md:w-[500px] animate-fade-in-out " +
+        color +
+        " " +
+        className
       }
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <svg
-            className="w-5 h-5 mr-2 fill-current text-white"
+            className="w-5 h-5 mr-4 fill-current text-white"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
           >
             <path d="M10 2C5.582 2 2 5.582 2 10s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm0 14c-3.313 0-6-2.687-6-6s2.687-6 6-6 6 2.687 6 6-2.687 6-6 6zm-1-9h2v4h-2zm0 5h2v2h-2z" />
           </svg>
-          <h1>{alert_title}</h1>
+          <h1 className="text-sm leading-tighter">{message}</h1>
         </div>
         <button onClick={onClose} className="text-white focus:outline-none">
           <svg
@@ -44,8 +62,6 @@ const AlertCard: React.FC<AlertCardProps> = ({
           </svg>
         </button>
       </div>
-
-      <p className="pt-3 text-sm leading-tighter">{message}</p>
     </div>
   );
 };
