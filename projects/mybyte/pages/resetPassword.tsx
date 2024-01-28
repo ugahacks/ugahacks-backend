@@ -30,7 +30,7 @@ export default function ResetPassword() {
       setAlert({
         show: true,
         message: `An email was sent to ${data.email} to allow you to reset your password.`,
-        color: "#50C878",
+        color: "bg-[#50C878]",
       });
     } catch (error: any) {
       let errorMessage = "";
@@ -42,7 +42,7 @@ export default function ResetPassword() {
       setAlert({
         show: true,
         message: errorMessage,
-        color: "#FF3131",
+        color: "bg-[#FF3131]",
       });
     } finally {
       setTimeout(() => {
@@ -151,11 +151,12 @@ export default function ResetPassword() {
         </FormProvider>
       </div>
       <AlertCard
+        className="text-left"
         show={alert.show}
-        alert_title="Reset Password"
         message={alert.message}
         color={alert.color}
         onClose={() => setAlert({ show: false, message: "", color: "" })}
+        position="bottom-right"
       />
     </div>
   );

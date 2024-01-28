@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { QRCodeCanvas } from "qrcode.react";
 import { EventRegistered, useAuth } from "../context/AuthContext";
+import AlertCard from "./AlertCard";
+import EventRect, { EventDetail } from "../components/EventRect";
+import { Events } from "../enums/events";
 
 interface MobileDashboardProps {
   user: any; // Define the type for 'user' based on your application
@@ -28,6 +31,37 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
 
     return events;
   }
+
+  const [alert, setAlert] = useState({ show: false, message: "", color: "" });
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const registrationCheck = (ev: EventDetail) => {
+    if (ev.key === Events.e_sports_9 && !registeredEvents.HACKS9) {
+      setAlert({
+        show: true,
+        message:
+          "Please register for UGAHacks 9 before registering for eSports 9",
+        color: "bg-[#212121]",
+      });
+    } else if (ev.key in registeredEvents) {
+      setAlert({
+        show: true,
+        message: "You are already registered for this event",
+        color: "bg-[#50C878]",
+      });
+    } else if (ev.deadline < new Date()) {
+      setAlert({
+        show: true,
+        message: "Registration for this event has closed.",
+        color: "bg-[#FF3131]",
+      });
+    }
+
+    let element = document.getElementById("alert-card");
+    element?.classList.remove("animate-fade-in-out");
+    void element?.offsetWidth;
+    element?.classList.add("animate-fade-in-out");
+  };
 
   return (
     <div className="flex py-2 flex-initial w-full text-center pb-48">
@@ -92,6 +126,7 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
                 let ev = data.event(registeredEvents);
                 return (
                   <button
+                    onClick={() => registrationCheck(ev.props.event)}
                     className="py-2 transform hover:scale-95 duration-300"
                     key={ev.key}
                   >
@@ -104,6 +139,15 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
           </div>
         </div>
       </div>
+      {alert.show ? (
+        <AlertCard
+          show={alert.show}
+          message={alert.message}
+          color={alert.color}
+          onClose={() => setAlert({ show: false, message: "", color: "" })}
+          position="top-middle"
+        />
+      ) : null}
     </div>
   );
 };
