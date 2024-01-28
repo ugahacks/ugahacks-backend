@@ -56,15 +56,22 @@ body {
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-in-out;
+.animate-fade-in-out {
+  animation: fadeInOut 10.5s ease-in-out forwards;
+  opacity: 0;
 }
 
-@keyframes fadeIn {
-  from {
+@keyframes fadeInOut {
+  0% {
     opacity: 0;
   }
-  to {
+  5% {
     opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
