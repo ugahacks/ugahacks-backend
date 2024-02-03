@@ -33,8 +33,8 @@ export default function EventRect(props: {
   }
   let statusName: string = "open";
   let statusClass: string = "border-green-800 text-green-700";
-  let dup = new Date(props.event.endDate);
-  dup.setDate(props.event.endDate.getDate() + 1);
+  let dup = new Date(props.event.deadline);
+  dup.setDate(props.event.deadline.getDate() + 1);
   if (new Date() > dup) {
     statusName = "closed";
     statusClass = "border-primary-500 text-primary-500";
