@@ -16,7 +16,6 @@ const Hacks9: EventDetail = {
   startDate: new Date("02/09/2024"),
   endDate: new Date("02/11/2024"),
   deadline: new Date("02/02/2024"),
-  // Add in person attribute
 };
 
 const ESports: EventDetail = {
@@ -25,14 +24,15 @@ const ESports: EventDetail = {
   image: "/eSports9_banner.png",
   startDate: new Date("02/09/2024"),
   endDate: new Date("02/11/2024"),
-  deadline: new Date("02/04/2024"),
-  // Add in person attribute
+  deadline: new Date("02/09/2024"),
 };
 
 const events = [
   {
     event: (re: EventRegistered) => {
-      if (!re.HACKS9) {
+      if (Hacks9.deadline < new Date()) {
+        return <EventRect disabled={true} event={Hacks9} />;
+      } else if (!re.HACKS9) {
         return <EventRect disabled={false} event={Hacks9} />;
       } else {
         return <EventRect disabled={true} event={Hacks9} />;
@@ -44,7 +44,9 @@ const events = [
   },
   {
     event: (re: any) => {
-      if (!re.HACKS9 || !re || re.ESPORTS9) {
+      if (ESports.deadline < new Date()) {
+        return <EventRect disabled={true} event={ESports} />;
+      } else if (!re.HACKS9 || !re || re.ESPORTS9) {
         return <EventRect disabled={true} event={ESports} />;
       } else {
         return <EventRect disabled={false} event={ESports} />;
