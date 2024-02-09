@@ -527,8 +527,7 @@ export const AuthContextProvider = ({
    */
   const checkinUser = async (userid: string) => {
     try {
-      const docRef = doc(registerRef, userid);
-      await updateDoc(docRef, {
+      await updateDoc(doc(registerRef, user.uid ? user.uid : ""), {
         checkedIn: true,
       });
       setUserInformation(userid);
