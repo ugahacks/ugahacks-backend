@@ -563,8 +563,7 @@ export const AuthContextProvider = ({
       const docRef = doc(registerRef, userid);
       const docSnap = await getDoc(docRef);
 
-      return docSnap.exists() && docSnap.data().checkedIn
-
+      return docSnap.exists() && docSnap.data().checkedIn;
     } catch (err: any) {
       console.log(err);
     }
@@ -826,15 +825,15 @@ export const AuthContextProvider = ({
     const docRef = doc(userRef, uid);
     const docSnap = await getDoc(docRef);
 
-    if (!docSnap.exists()) throw new Error("User does not exist")
-    const points = docSnap.data().points
+    if (!docSnap.exists()) throw new Error("User does not exist");
+    const points = docSnap.data().points;
     if (!points || points < number) {
-      throw new Error("User does not have enough points!")
+      throw new Error("User does not have enough points!");
     }
 
     try {
       updateDoc(docRef, {
-        points: points - number,
+        points: increment(-1 * number),
       });
       return true;
     } catch (error) {
