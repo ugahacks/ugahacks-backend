@@ -854,7 +854,7 @@ export const AuthContextProvider = ({
     const docRef = doc(userRef, uid);
     try {
       updateDoc(docRef, {
-        checkIn: true,
+        checkedIn: true,
       });
       return true;
     } catch (error) {
