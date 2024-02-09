@@ -554,6 +554,23 @@ export const AuthContextProvider = ({
   };
 
   /**
+   * checks if a user is checked in
+   * @param userid uuid of the user
+   * @return boolean true if the user is checked in
+   */
+  const isUserCheckedIn = async (userid: string) => {
+    try {
+      const docRef = doc(registerRef, userid);
+      const docSnap = await getDoc(docRef);
+
+      return docSnap.exists() && docSnap.data().checkedIn
+
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
    * Accepts a user by userid.
    * @param userid uuid of a user
    */
@@ -799,6 +816,35 @@ export const AuthContextProvider = ({
     return false;
   };
 
+  const removePoints = async (uid: string, number: 1 | 2 | 3) => {
+    if (
+      user_type == null ||
+      user_type == undefined ||
+      user_type != "service_writer"
+    )
+      throw new Error("Unauthorized");
+    const docRef = doc(userRef, uid);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) throw new Error("User does not exist")
+    const points = docSnap.data().points
+    if (!points || points < number) {
+      throw new Error("User does not have enough points!")
+    }
+
+    try {
+      updateDoc(docRef, {
+        points: points - number,
+      });
+      return true;
+    } catch (error) {
+      if (error instanceof FirebaseError) handleError(error);
+      if (error instanceof Error) throw error;
+      if (typeof error === "string") throw new Error(error);
+    }
+    return false;
+  };
+
   const checkIn = async (uid: string) => {
     if (
       user_type == null ||
@@ -950,6 +996,7 @@ export const AuthContextProvider = ({
         validUser,
         getFirstName,
         getRegisteredEvents,
+        isUserCheckedIn,
         storeUserRegistrationInformation,
         setUserInformation,
         currEvent,
@@ -964,6 +1011,7 @@ export const AuthContextProvider = ({
         denyTeams,
         user_type,
         givePoints,
+        removePoints,
         checkIn,
         confirmEmails,
         confirmedOnTeam,
