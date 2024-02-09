@@ -171,6 +171,7 @@ export default function QrRead(props: any) {
         disableFlip={false}
         qrCodeSuccessCallback={async (decodedText: string, decodedResult: any) => {
           if (ref.current == null || ref.current?.html5QrcodeScanner == null) return
+          if (data === decodedText) return;
           pauseScanner()
           if (decodedText.includes("/")) {
             window.alert("Not valid User QR-Code");
