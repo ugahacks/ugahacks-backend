@@ -52,10 +52,10 @@ export default function QrRead(props: any) {
     try {
       switch (val) {
         case "checkin-first-day":
-          if (await isUserCheckedIn(uid)) {
-            setStatus("User is already checked in!");
-            return;
-          }
+          // if (await isUserCheckedIn(uid)) {
+          //   setStatus("User is already checked in!");
+          //   return;
+          // }
 
           await checkinUser(uid);
           givePoints(uid, 100).then(callback);
@@ -95,22 +95,22 @@ export default function QrRead(props: any) {
           givePoints(uid, 500);
           break;
         case "remove-250":
-          await removePoints(uid, 250);
+          givePoints(uid, -250);
           break;
         case "remove-500":
-          await removePoints(uid, 500);
+          givePoints(uid, -500);
           break;
         case "remove-1000":
-          await removePoints(uid, 1000);
+          givePoints(uid, -1000);
           break;
         case "remove-2000":
-          await removePoints(uid, 2000);
+          givePoints(uid, -2000);
           break;
         case "remove-4000":
-          await removePoints(uid, 4000);
+          givePoints(uid, -4000);
           break;
         case "remove-10000":
-          await removePoints(uid, 10000);
+          givePoints(uid, -10000);
           break;
         default:
           givePoints(uid, 0);
