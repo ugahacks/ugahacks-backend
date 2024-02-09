@@ -52,13 +52,13 @@ export default function QrRead(props: any) {
     try {
       switch (val) {
         case "checkin-first-day":
-          // if (await isUserCheckedIn(uid)) {
-          //   setStatus("User is already checked in!");
-          //   return;
-          // }
+          if (await isUserCheckedIn(uid)) {
+            setStatus("User is already checked in!")
+            return;
+          }
 
           await checkinUser(uid);
-          givePoints(uid, 100).then(callback);
+          givePoints(uid, 100);
           break;
         case "checkin-other":
           if (await isUserCheckedIn(uid)) {
@@ -95,22 +95,22 @@ export default function QrRead(props: any) {
           givePoints(uid, 500);
           break;
         case "remove-250":
-          givePoints(uid, -250);
+          await removePoints(uid, 250);
           break;
         case "remove-500":
-          givePoints(uid, -500);
+          await removePoints(uid, 500);
           break;
         case "remove-1000":
-          givePoints(uid, -1000);
+          await removePoints(uid, 1000);
           break;
         case "remove-2000":
-          givePoints(uid, -2000);
+          await removePoints(uid, 2000);
           break;
         case "remove-4000":
-          givePoints(uid, -4000);
+          await removePoints(uid, 4000);
           break;
         case "remove-10000":
-          givePoints(uid, -10000);
+          await removePoints(uid, 10000);
           break;
         default:
           givePoints(uid, 0);
@@ -131,7 +131,7 @@ export default function QrRead(props: any) {
         fps={10}
         qrbox={250}
         disableFlip={false}
-        qrCodeSuccessCallback={(decodedText: string, decodedResult: any) => {
+        qrCodeSuccessCallback={async (decodedText: string, decodedResult: any) => {
           if (data === decodedText) return;
           if (decodedText.includes("/")) {
             setStatus("Not valid User QR-Code");
@@ -139,7 +139,7 @@ export default function QrRead(props: any) {
           } // https://stackoverflow.com/questions/52850099/what-is-the-reg-expression-for-firestore-constraints-on-document-ids
           setData(decodedText);
           try {
-            determineAction(decodedText);
+            await determineAction(decodedText);
           } catch (error) {
             console.log(`Something happened: ${error}`);
           }
