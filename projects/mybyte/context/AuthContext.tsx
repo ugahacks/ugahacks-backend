@@ -530,7 +530,6 @@ export const AuthContextProvider = ({
       await updateDoc(doc(registerRef, user.uid ? user.uid : ""), {
         checkedIn: true,
       });
-      setUserInformation(userid);
     } catch (err: any) {
       console.log(err);
     }
