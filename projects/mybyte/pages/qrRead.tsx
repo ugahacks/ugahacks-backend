@@ -46,9 +46,10 @@ export default function QrRead(props: any) {
       if (ref != null && ref != undefined) {
         setTimeout(() => {
           ref.current?.html5QrcodeScanner?.pause();
-          window.alert("Success! Click to unpause.");
-          ref.current?.html5QrcodeScanner?.resume();
         }, 5000);
+
+        window.alert("Success! Click to unpause.");
+        ref.current?.html5QrcodeScanner?.resume();
       }
     };
     try {
