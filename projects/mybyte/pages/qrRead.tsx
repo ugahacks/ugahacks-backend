@@ -159,9 +159,7 @@ export default function QrRead(props: any) {
       }
     } finally {
       setStatus(outcomeMessage);
-      pauseScanner()
       window.alert(outcomeMessage);
-      resumeScanner()
     }
   };
   return (
@@ -178,8 +176,12 @@ export default function QrRead(props: any) {
             window.alert("Not valid User QR-Code");
             return;
           } // https://stackoverflow.com/questions/52850099/what-is-the-reg-expression-for-firestore-constraints-on-document-ids
+          pauseScanner()
           setData(decodedText);
-          await determineAction(decodedText);
+          if (ref.current?.html5QrcodeScanner?.getState() === Html5QrcodeScannerState.PAUSED) {
+            await determineAction(decodedText);
+            resumeScanner()
+          }
         }}
       />
       <span>Status: {status} </span>
