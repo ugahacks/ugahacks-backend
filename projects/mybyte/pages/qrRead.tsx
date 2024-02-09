@@ -4,7 +4,13 @@ import OrganizerRoute from "../components/OrganizerRoute";
 import { useAuth } from "../context/AuthContext";
 
 export default function QrRead(props: any) {
-  const {isUserCheckedIn, checkoutUser, checkinUser, removePoints, givePoints } = useAuth();
+  const {
+    isUserCheckedIn,
+    checkoutUser,
+    checkinUser,
+    removePoints,
+    givePoints,
+  } = useAuth();
   const [data, setData] = useState("No result");
   const [status, setStatus] = useState("Waiting for scan");
   const ref = React.useRef<Html5QrcodePlugin | null>(null);
@@ -47,22 +53,22 @@ export default function QrRead(props: any) {
       switch (val) {
         case "checkin-first-day":
           if (await isUserCheckedIn(uid)) {
-            setStatus("User is already checked in!")
+            setStatus("User is already checked in!");
             return;
           }
 
-          await checkinUser(uid)
-          givePoints(uid, 100).then(callback)
+          await checkinUser(uid);
+          givePoints(uid, 100).then(callback);
           break;
         case "checkin-other":
           if (await isUserCheckedIn(uid)) {
-            setStatus("User is already checked in!")
+            setStatus("User is already checked in!");
             return;
           }
-          checkinUser(uid)
+          checkinUser(uid);
           break;
         case "checkout":
-          checkoutUser(uid)
+          checkoutUser(uid);
           break;
         case "side-event":
           givePoints(uid, 250);
@@ -110,13 +116,13 @@ export default function QrRead(props: any) {
           givePoints(uid, 0);
           break;
       }
-      setStatus("Successfully completed " + val)
+      setStatus("Successfully completed " + val);
     } catch (error) {
       if (error instanceof Error) {
-        setStatus(error.message)
+        setStatus(error.message);
       }
     }
-    callback()
+    callback();
   };
   return (
     <OrganizerRoute>
