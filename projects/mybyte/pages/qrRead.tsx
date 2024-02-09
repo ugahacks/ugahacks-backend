@@ -44,9 +44,11 @@ export default function QrRead(props: any) {
       .namedItem("what-for")?.value;
     const callback = () => {
       if (ref != null && ref != undefined) {
-        ref.current?.html5QrcodeScanner?.pause();
-        window.alert("Success! Click to unpause.");
-        ref.current?.html5QrcodeScanner?.resume();
+        setTimeout(() => {
+          ref.current?.html5QrcodeScanner?.pause();
+          window.alert("Success! Click to unpause.");
+          ref.current?.html5QrcodeScanner?.resume();
+        }, 5000);
       }
     };
     try {
