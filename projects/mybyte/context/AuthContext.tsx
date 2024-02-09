@@ -815,7 +815,7 @@ export const AuthContextProvider = ({
     return false;
   };
 
-  const removePoints = async (uid: string, number: 1 | 2 | 3) => {
+  const removePoints = async (uid: string, number: number) => {
     if (
       user_type == null ||
       user_type == undefined ||
