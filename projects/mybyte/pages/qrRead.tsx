@@ -178,7 +178,7 @@ export default function QrRead(props: any) {
             setScannedUID(result.getText())
           }}
         />
-        <div className={"flex flex-col space-y-2"}>
+        <div className={"flex flex-row space-x-10"}>
           <div>
             Scanned UID: {scannedUID} <br/> <br/>
             <line></line>
