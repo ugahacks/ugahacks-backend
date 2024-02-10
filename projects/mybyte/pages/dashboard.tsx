@@ -33,7 +33,7 @@ const events = [
       if (Hacks9.deadline < new Date()) {
         return <EventRect disabled={true} event={Hacks9} />;
       } else if (!re.HACKS9) {
-        return <EventRect disabled={true} event={Hacks9} />;  // Manually disable hacks9 now that deadline has passed
+        return <EventRect disabled={true} event={Hacks9} />; // Manually disable hacks9 now that deadline has passed
       } else {
         return <EventRect disabled={true} event={Hacks9} />;
       }
@@ -44,9 +44,7 @@ const events = [
   },
   {
     event: (re: any) => {
-      if (ESports.deadline < new Date()) {
-        return <EventRect disabled={true} event={ESports} />;
-      } else if (!re.HACKS9 || !re || re.ESPORTS9) {
+      if (!re.HACKS9 || !re || re.ESPORTS9) {
         return <EventRect disabled={true} event={ESports} />;
       } else {
         return <EventRect disabled={false} event={ESports} />;
@@ -109,7 +107,8 @@ const DashboardPage = () => {
         message: "You are already registered for this event",
         color: "bg-[#50C878]",
       });
-    } else if (ev.deadline < new Date() || ev.key === Events.hacks9) {    // Manually disable hacks9 now that deadline has passed
+    } else if (ev.deadline < new Date() || ev.key === Events.hacks9) {
+      // Manually disable hacks9 now that deadline has passed
       setAlert({
         show: true,
         message: "Registration for this event has closed.",
