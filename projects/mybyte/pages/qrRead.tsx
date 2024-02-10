@@ -171,7 +171,7 @@ export default function QrRead(props: any) {
         <QrReader
           className={"w-1/3 h-full"}
           videoStyle={{"height": "100%", "width" : "100%"}}
-          constraints={{facingMode: 'rear'}}
+          constraints={{facingMode: 'back'}}
           scanDelay={0}
           onResult={async (result, _) => {
             if (!result) return;
