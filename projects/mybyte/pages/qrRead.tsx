@@ -163,16 +163,15 @@ export default function QrRead(props: any) {
     } finally {
       setStatus(outcomeMessage);
       setScannedUID("")
-      window.alert(outcomeMessage);
     }
   };
   return (
     <OrganizerRoute>
-      <div className={"flex flex-row justify-center items-center space-x-10"}>
+      <div className={"flex flex-col justify-center items-center space-y-2"}>
         <QrReader
           className={"w-1/3 h-full"}
           videoStyle={{"height": "100%", "width" : "100%"}}
-          constraints={{facingMode: 'back'}}
+          constraints={{facingMode: 'rear'}}
           scanDelay={0}
           onResult={async (result, _) => {
             if (!result) return;
