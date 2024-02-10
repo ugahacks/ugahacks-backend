@@ -167,7 +167,7 @@ export default function QrRead(props: any) {
   };
   return (
     <OrganizerRoute>
-      <div className={"flex flex-col justify-center items-center space-y-2"}>
+      <div className={"flex flex-row justify-center items-center space-x-10"}>
         <QrReader
           className={"w-1/3 h-full"}
           videoStyle={{"height": "100%", "width" : "100%"}}
@@ -178,7 +178,7 @@ export default function QrRead(props: any) {
             setScannedUID(result.getText())
           }}
         />
-        <div className={"flex flex-row space-x-10"}>
+        <div className={"flex flex-col space-y-2"}>
           <div>
             Scanned UID: {scannedUID} <br/> <br/>
             <line></line>
