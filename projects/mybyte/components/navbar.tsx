@@ -79,7 +79,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
           " overflow-y-auto font-inter"
         }
       >
-        <nav className="bg-white border-gray-200 shadow-md">
+        <nav className="bg-white border-gray-200 shadow-md top-0 sticky z-10">
           <div className="flex flex-wrap items-center justify-between mx-auto py-6">
             <Link href={!user.uid ? "/" : "/dashboard"}>
               <span className="font-semibold uppercase text-xl tracking-5px px-5 hover:text-red-500 transition">
