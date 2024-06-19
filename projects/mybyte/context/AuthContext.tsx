@@ -51,6 +51,7 @@ export interface UserType {
 export interface EventRegistered {
   HACKS8: boolean | null;
   HACKS9: boolean | null;
+  HACKSX: boolean | null;
 }
 
 export interface EventCheckIn extends EventRegistered {}
