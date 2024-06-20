@@ -91,6 +91,7 @@ export const AuthContextProvider = ({
     registered: {
       HACKS8: null,
       HACKS9: null,
+      HACKSX: null,
     },
     user_type: null,
   });
@@ -110,10 +111,14 @@ export const AuthContextProvider = ({
   const teamRef = collection(db, "team");
   const emailTemplates = collection(db, "email-templates");
 
+   // Current Event (Hacks 9):
+  const registerRef = collection(db, "UHX-user-registration-details");
+  const registerMail = collection(db, "UHX-registrationMail");
+
   // Current Event (Hacks 9):
-  const eSportsRef = collection(db, "eSports9-user-registration-details");
-  const registerRef = collection(db, "UH9-user-registration-details");
-  const registerMail = collection(db, "UH9-registrationMail");
+  const eSportsRef_UH9 = collection(db, "eSports9-user-registration-details");
+  const registerRef_UH9 = collection(db, "UH9-user-registration-details");
+  const registerMail_UH9 = collection(db, "UH9-registrationMail");
 
   // Hacks 8:
   const eSportsRef_UH8 = collection(db, "user-e-sports-details");
@@ -208,6 +213,7 @@ export const AuthContextProvider = ({
           setDoc(doc(registerRef, user.uid ? user.uid : ""), {
             uid: user.uid,
             gender: data.gender,
+            race: data.race,
             phoneNumber: data.phoneNumber,
             countryResidence: data.countryResidence.label,
             year: data.year,
@@ -242,7 +248,7 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks9 & updates school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKS9": true,
+      "registered.HACKSX": true,
       school: data.school.value,
       user_type: Users.hacker,
       points: 0, // resets user's points to 0 on registration for UH9
@@ -256,24 +262,24 @@ export const AuthContextProvider = ({
    * Stores a mail document, which triggers an email to the user.
    */
   const triggerRegistrationEmail = async (data: RegisterForm) => {
-    const uh9RegistrationDoc = await getDoc(
-      doc(emailTemplates, "uh9-registration")
+    const uhXRegistrationDoc = await getDoc(
+      doc(emailTemplates, "uhX")
     );
 
-    if (uh9RegistrationDoc.exists()) {
-      const emailHTML = uh9RegistrationDoc.data().html;
+    if (uhXRegistrationDoc.exists()) {
+      const emailHTML = uhXRegistrationDoc.data().html;
 
       await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for UGAHacks 9",
+          subject: "Thank you for registering for UGAHacks X",
           text: "",
           html: emailHTML,
         },
       });
     } else {
       console.error(
-        'Document "uh9-registration" not found in the "email-templates" collection.'
+        'Document "uhX" not found in the "email-templates" collection.'
       );
     }
   };

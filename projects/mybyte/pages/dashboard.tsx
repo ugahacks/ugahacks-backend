@@ -12,7 +12,7 @@ import AlertCard from "../components/AlertCard";
 const HacksX: EventDetail = {
   key: Events.hacksX,
   page: "/register",
-  image: "/UHX_Banner.png",
+  image: "/Registration .png",
   startDate: new Date("02/07/2025"),
   endDate: new Date("02/9/2025"),
   deadline: new Date("01/31/2025"),

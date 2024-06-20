@@ -20,6 +20,7 @@ import {
   LevelsOfStudy,
   DietaryRestrictions,
   ELInterest,
+  Races,
 } from "../enums/registerEnums";
 
 import "react-phone-number-input/style.css";
@@ -242,14 +243,14 @@ export default function Register() {
                   onInit={(typewriter) => {
                     typewriter
                       .typeString("Register for ")
-                      .typeString("UGAHacks 9")
+                      .typeString("UGAHacks X")
                       .start();
                   }}
                 />
               </h1>
               <div className="pl-1 text-md w-4/5">
                 <p className="pb-3">
-                  We&apos;re excited that you are participating in UGAHacks 9!
+                  We&apos;re excited that you are participating in UGAHacks X!
                   We would love to see you at the event!
                 </p>
                 <p className="text-md">
@@ -419,6 +420,40 @@ export default function Register() {
                               {errors.gender && (
                                 <p className={errorStyles}>
                                   {errors.gender.message}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="w-full md:w-full px-3 mb-6">
+                            <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                              Race/Ethnicity<span className="text-red-600">*</span>
+                            </label>
+                            <div className="flex-shrink w-full inline-block relative">
+                              <select
+                                className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                {...register("race", {
+                                  required: "Select your race/ethnicity",
+                                })}
+                              >
+                                <option value="">Select your race/ethnicity</option>
+                                {Object.keys(Races).map((key) => (
+                                  <option key={key} value={key}>
+                                    {Races[key as keyof typeof Races]}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                                <svg
+                                  className="fill-current h-4 w-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                              </div>
+                              {errors.race && (
+                                <p className={errorStyles}>
+                                  {errors.race.message}
                                 </p>
                               )}
                             </div>
