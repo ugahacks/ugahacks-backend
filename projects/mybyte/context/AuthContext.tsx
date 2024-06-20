@@ -51,7 +51,6 @@ export interface UserType {
 export interface EventRegistered {
   HACKS8: boolean | null;
   HACKS9: boolean | null;
-  HACKSX: boolean | null;
 }
 
 export interface EventCheckIn extends EventRegistered {}
@@ -91,7 +90,6 @@ export const AuthContextProvider = ({
     registered: {
       HACKS8: null,
       HACKS9: null,
-      HACKSX: null,
     },
     user_type: null,
   });
@@ -111,14 +109,10 @@ export const AuthContextProvider = ({
   const teamRef = collection(db, "team");
   const emailTemplates = collection(db, "email-templates");
 
-   // Current Event (Hacks 9):
-  const registerRef = collection(db, "UHX-user-registration-details");
-  const registerMail = collection(db, "UHX-registrationMail");
-
   // Current Event (Hacks 9):
   const eSportsRef = collection(db, "eSports9-user-registration-details");
-  const registerRef_UH9 = collection(db, "UH9-user-registration-details");
-  const registerMail_UH9 = collection(db, "UH9-registrationMail");
+  const registerRef = collection(db, "UH9-user-registration-details");
+  const registerMail = collection(db, "UH9-registrationMail");
 
   // Hacks 8:
   const eSportsRef_UH8 = collection(db, "user-e-sports-details");
@@ -213,7 +207,6 @@ export const AuthContextProvider = ({
           setDoc(doc(registerRef, user.uid ? user.uid : ""), {
             uid: user.uid,
             gender: data.gender,
-            race: data.race,
             phoneNumber: data.phoneNumber,
             countryResidence: data.countryResidence.label,
             year: data.year,
@@ -248,7 +241,7 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks9 & updates school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKSX": true,
+      "registered.HACKS9": true,
       school: data.school.value,
       user_type: Users.hacker,
       points: 0, // resets user's points to 0 on registration for UH9
@@ -262,24 +255,24 @@ export const AuthContextProvider = ({
    * Stores a mail document, which triggers an email to the user.
    */
   const triggerRegistrationEmail = async (data: RegisterForm) => {
-    const uhXRegistrationDoc = await getDoc(
-      doc(emailTemplates, "uhX")
+    const uh9RegistrationDoc = await getDoc(
+      doc(emailTemplates, "uh9-registration")
     );
 
-    if (uhXRegistrationDoc.exists()) {
-      const emailHTML = uhXRegistrationDoc.data().html;
+    if (uh9RegistrationDoc.exists()) {
+      const emailHTML = uh9RegistrationDoc.data().html;
 
       await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for UGAHacks X",
+          subject: "Thank you for registering for UGAHacks 9",
           text: "",
           html: emailHTML,
         },
       });
     } else {
       console.error(
-        'Document "uhX" not found in the "email-templates" collection.'
+        'Document "uh9-registration" not found in the "email-templates" collection.'
       );
     }
   };
@@ -534,7 +527,8 @@ export const AuthContextProvider = ({
    */
   const checkinUser = async (userid: string) => {
     try {
-      await updateDoc(doc(registerRef, userid ? userid : ""), {
+      const docRef = doc(registerRef, userid);
+      await updateDoc(docRef, {
         checkedIn: true,
       });
       setUserInformation(userid);
@@ -554,40 +548,6 @@ export const AuthContextProvider = ({
         checkedOut: true,
       });
       setUserInformation(userid);
-    } catch (err: any) {
-      console.log(err);
-    }
-  };
-
-  /**
-   * checks if a user is checked in
-   * @param userid uuid of the user
-   * @return boolean true if the user is checked in
-   */
-  const isUserCheckedIn = async (userid: string) => {
-    try {
-      const docRef = doc(registerRef, userid);
-      const docSnap = await getDoc(docRef);
-
-      return docSnap.exists() && docSnap.data().checkedIn;
-    } catch (err: any) {
-      console.log(err);
-    }
-  };
-
-  /**
-   * gets a user's tshirt size by userid
-   * @param userid uuid of the user
-   * @return string size of the tshirt
-   */
-  const getTShirtSizeOfUser = async (userid: string) => {
-    try {
-      const docRef = doc(registerRef, userid);
-      const docSnap = await getDoc(docRef);
-      if (!docSnap.exists()) {
-        return null;
-      }
-      return docSnap.data().shirtSize;
     } catch (err: any) {
       console.log(err);
     }
@@ -680,38 +640,6 @@ export const AuthContextProvider = ({
     }
 
     return docSnap.data().first_name;
-  };
-
-  /**
-   * Get's user's full name from userid
-   * @param userid user's uuid
-   * @returns string of their full name
-   */
-  const getNameOfUser = async (userid: string) => {
-    const docRef = doc(userRef, userid ? userid : "");
-    const docSnap = await getDoc(docRef);
-
-    if (!docSnap.exists()) {
-      return null;
-    }
-
-    return docSnap.data().name;
-  };
-
-  /**
-   * Get's a user's registered events
-   * @param userid user's id
-   * @returns an array of registered events
-   */
-  const getRegisteredEventsForUser = async (userid: string) => {
-    const docRef = doc(userRef, userid ? userid : "");
-    const docSnap = await getDoc(docRef);
-
-    if (!docSnap.exists()) {
-      return null;
-    }
-
-    return docSnap.data().registered;
   };
 
   /**
@@ -871,35 +799,6 @@ export const AuthContextProvider = ({
     return false;
   };
 
-  const removePoints = async (uid: string, number: number) => {
-    if (
-      user_type == null ||
-      user_type == undefined ||
-      user_type != "service_writer"
-    )
-      throw new Error("Unauthorized");
-    const docRef = doc(userRef, uid);
-    const docSnap = await getDoc(docRef);
-
-    if (!docSnap.exists()) throw "User does not exist";
-    const points = docSnap.data().points;
-    if (!points || points < number) {
-      throw `${docSnap.data().name} does not have enough points!`;
-    }
-
-    try {
-      updateDoc(docRef, {
-        points: increment(-1 * number),
-      });
-      return true;
-    } catch (error) {
-      if (error instanceof FirebaseError) handleError(error);
-      if (error instanceof Error) throw error;
-      if (typeof error === "string") throw new Error(error);
-    }
-    return false;
-  };
-
   const checkIn = async (uid: string) => {
     if (
       user_type == null ||
@@ -910,7 +809,7 @@ export const AuthContextProvider = ({
     const docRef = doc(userRef, uid);
     try {
       updateDoc(docRef, {
-        checkedIn: true,
+        checkIn: true,
       });
       return true;
     } catch (error) {
@@ -1050,10 +949,7 @@ export const AuthContextProvider = ({
         hasFirstAndLastName,
         validUser,
         getFirstName,
-        getNameOfUser,
         getRegisteredEvents,
-        getRegisteredEventsForUser,
-        isUserCheckedIn,
         storeUserRegistrationInformation,
         setUserInformation,
         currEvent,
@@ -1068,7 +964,6 @@ export const AuthContextProvider = ({
         denyTeams,
         user_type,
         givePoints,
-        removePoints,
         checkIn,
         confirmEmails,
         confirmedOnTeam,
@@ -1076,7 +971,6 @@ export const AuthContextProvider = ({
         giveTeamPoints,
         checkinUser,
         checkoutUser,
-        getTShirtSizeOfUser,
         triggerRegistrationEmail,
         triggerESportsRegistrationEmail,
       }}

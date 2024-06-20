@@ -7,17 +7,6 @@ export enum ShirtSizes {
   xxxlarge = "XXX-Large",
 }
 
-export enum Races {
-  asianIndian = "Asian Indian",
-  asian = "Asian (Korean, Japanese, etc)",
-  white = "White",
-  black = "Black",
-  middleEastern = "Middle Eastern",
-  nativeAmerican = "Native American, Alaskan Native, or Native Hawaiian",
-  other = "Other",
-  preferNotToAnswer = "Prefer Not to Answer"
-}
-
 export enum Majors {
   csci = "Computer Science",
   csee = "Computer Systems Engineering",

@@ -9,6 +9,7 @@
   "workspaces": [
     "projects/*"
   ],
+  "packageManager": "yarn@4.0.2",
   "devDependencies": {
     "husky": "^8.0.0"
   },

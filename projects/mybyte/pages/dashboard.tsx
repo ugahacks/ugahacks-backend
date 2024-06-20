@@ -9,35 +9,57 @@ import Circle from "../components/Circle";
 import MobileDashboard from "../components/MobileDashboard";
 import AlertCard from "../components/AlertCard";
 
-const HacksX: EventDetail = {
-  key: Events.hacksX,
+const Hacks9: EventDetail = {
+  key: Events.hacks9,
   page: "/register",
-  image: "/Registration .png",
-  startDate: new Date("02/07/2025"),
-  endDate: new Date("02/9/2025"),
-  deadline: new Date("01/31/2025"),
+  image: "/uh9_banner.png",
+  startDate: new Date("02/09/2024"),
+  endDate: new Date("02/11/2024"),
+  deadline: new Date("02/02/2024"),
+};
+
+const ESports: EventDetail = {
+  key: Events.e_sports_9,
+  page: "/esports",
+  image: "/eSports9_banner.png",
+  startDate: new Date("02/09/2024"),
+  endDate: new Date("02/11/2024"),
+  deadline: new Date("02/09/2024"),
 };
 
 const events = [
   {
     event: (re: EventRegistered) => {
-      if (HacksX.deadline < new Date()) {
-        return <EventRect disabled={true} event={HacksX} />;
-      } else if (!re.HACKSX) {
-        return <EventRect disabled={false} event={HacksX} />; // Manually disable hacks9 now that deadline has passed
+      if (Hacks9.deadline < new Date()) {
+        return <EventRect disabled={true} event={Hacks9} />;
+      } else if (!re.HACKS9) {
+        return <EventRect disabled={true} event={Hacks9} />; // Manually disable hacks9 now that deadline has passed
       } else {
-        return <EventRect disabled={true} event={HacksX} />;
+        return <EventRect disabled={true} event={Hacks9} />;
       }
     },
     id: (re: EventRegistered) => {
       return true;
     },
-  }
+  },
+  {
+    event: (re: any) => {
+      if (!re.HACKS9 || !re || re.ESPORTS9) {
+        return <EventRect disabled={true} event={ESports} />;
+      } else {
+        return <EventRect disabled={false} event={ESports} />;
+      }
+    },
+    id: (re: EventRegistered) => {
+      return true;
+    },
+  },
 ];
 
 // Valid Open Events (pretty name):
 const eventMap = new Map<string, string>();
-eventMap.set("HACKSX", "UGAHacks X");
+eventMap.set("HACKS9", "UGAHacks 9");
+eventMap.set("ESPORTS9", "eSports 9");
 
 function openEventsRegistered(allRegisteredEvents: string[]) {
   let events = "";
@@ -72,20 +94,20 @@ const DashboardPage = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const registrationCheck = (ev: EventDetail) => {
-    // if (ev.key === Events.e_sports_9 && !registeredEvents.HACKS9) {
-    //   setAlert({
-    //     show: true,
-    //     message:
-    //       "Please register for UGAHacks 9 before registering for eSports 9",
-    //     color: "bg-[#212121]",
-    //   });
-    if (ev.key in registeredEvents) {
+    if (ev.key === Events.e_sports_9 && !registeredEvents.HACKS9) {
+      setAlert({
+        show: true,
+        message:
+          "Please register for UGAHacks 9 before registering for eSports 9",
+        color: "bg-[#212121]",
+      });
+    } else if (ev.key in registeredEvents) {
       setAlert({
         show: true,
         message: "You are already registered for this event",
         color: "bg-[#50C878]",
       });
-    } else if (ev.deadline < new Date()) {
+    } else if (ev.deadline < new Date() || ev.key === Events.hacks9) {
       // Manually disable hacks9 now that deadline has passed
       setAlert({
         show: true,
