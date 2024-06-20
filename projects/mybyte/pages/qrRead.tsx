@@ -1,8 +1,12 @@
-import React, {useState} from "react";
-import Html5QrcodePlugin from "../components/Html5QrcodePlugin";
+import React, { useState } from "react";
 import OrganizerRoute from "../components/OrganizerRoute";
-import {useAuth} from "../context/AuthContext";
-import {Html5QrcodeScannerState} from "html5-qrcode";
+import { useAuth } from "../context/AuthContext";
+import { QrReader } from "react-qr-reader";
+
+const initialUser = {
+  name: "N/A",
+  shirtSize: "N/A",
+};
 
 export default function QrRead(props: any) {
   const {
@@ -13,14 +17,20 @@ export default function QrRead(props: any) {
     givePoints,
     getNameOfUser,
     getRegisteredEventsForUser,
-    getTShirtSizeOfUser
+    getTShirtSizeOfUser,
+    user_type,
   } = useAuth();
-  const [data, setData] = useState("No result");
+  const [scannedUID, setScannedUID] = useState("");
+  const [user, setUser] = useState(initialUser);
   const [status, setStatus] = useState("Waiting for scan");
-  const ref = React.useRef<Html5QrcodePlugin | null>(null);
 
   const selectWhich: JSX.Element = (
-    <select id="what-for">
+    <select
+      id="what-for"
+      className={
+        "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      }
+    >
       <option value="checkin-first-day">Check in (Day 1)</option>
       <option value="checkin-other">Check in (Other)</option>
       <option value="checkout">Check out</option>
@@ -41,54 +51,49 @@ export default function QrRead(props: any) {
     </select>
   );
 
-  function pauseScanner() {
-    if (ref.current == null || ref.current?.html5QrcodeScanner == null) return
-    if (ref.current.html5QrcodeScanner.getState() == Html5QrcodeScannerState.SCANNING) {
-      ref.current.html5QrcodeScanner.pause();
-    }
-  }
-
-  function resumeScanner() {
-    if (ref.current == null || ref.current?.html5QrcodeScanner == null) return
-    if (ref.current.html5QrcodeScanner.getState() == Html5QrcodeScannerState.PAUSED) {
-      ref.current.html5QrcodeScanner.resume();
-    }
-  }
-
   const determineAction = async (uid: string) => {
-    // action state kept resetting to its default state for some reason
-    const val = document
-      .getElementsByTagName("select")
-      .namedItem("what-for")?.value;
-
     let outcomeMessage = "";
+    console.log(user_type);
     try {
-      const name = await getNameOfUser(uid)
+      if (!uid) throw "No QR Code has been scanned!";
+      // action state kept resetting to its default state for some reason
+      if (uid.includes("/")) {
+        window.alert("Not valid User QR-Code");
+        return;
+      } // https://stackoverflow.com/questions/52850099/what-is-the-reg-expression-for-firestore-constraints-on-document-ids
+
+      const selectedOption = document
+        .getElementsByTagName("select")
+        .namedItem("what-for")?.value;
+
+      const name = await getNameOfUser(uid);
       if (!name) {
-        throw new Error("User not found!");
+        throw "User not found!";
       }
-      outcomeMessage = `Successfully completed ${val} for ${name}`;
-      switch (val) {
+      const tShirtSize = await getTShirtSizeOfUser(uid);
+      setUser({ name: name, shirtSize: tShirtSize });
+      outcomeMessage = `Successfully completed ${selectedOption} for ${name}`;
+      switch (selectedOption) {
         case "checkin-first-day":
-          if (!("HACKS9" in await getRegisteredEventsForUser(uid))) {
-            throw new Error(`${name} is not registered for UGAHacks 9!`);
+          if (!("HACKS9" in (await getRegisteredEventsForUser(uid)))) {
+            throw `${name} is not registered for UGAHacks 9!`;
           }
           if (await isUserCheckedIn(uid)) {
-            throw new Error(`${name} is already checked in!`);
+            throw `${name} is already checked in!`;
           }
           await checkinUser(uid);
           givePoints(uid, 100);
-          outcomeMessage = `Checked in ${name}!\nT-Shirt size: ${await getTShirtSizeOfUser(uid)}`;
+          outcomeMessage = `Checked in ${name}!`;
           break;
         case "checkin-other":
-          if (!("HACKS9" in await getRegisteredEventsForUser(uid))) {
-            throw new Error(`${name} is not registered for UGAHacks 9!`);
+          if (!("HACKS9" in (await getRegisteredEventsForUser(uid)))) {
+            throw `${name} is not registered for UGAHacks 9!`;
           }
           if (await isUserCheckedIn(uid)) {
-            throw new Error(`${name} is already checked in!`);
+            throw `${name} is already checked in!`;
           }
           checkinUser(uid);
-          outcomeMessage = `Checked in ${name}!\nT-Shirt size: ${await getTShirtSizeOfUser(uid)}`;
+          outcomeMessage = `Checked in ${name}!`;
           break;
         case "checkout":
           checkoutUser(uid);
@@ -154,41 +159,62 @@ export default function QrRead(props: any) {
           break;
       }
     } catch (error) {
-      if (error instanceof Error) {
-        outcomeMessage = error.message;
+      if (typeof error === "string") {
+        outcomeMessage = error;
+      } else {
+        throw error;
       }
     } finally {
       setStatus(outcomeMessage);
-      window.alert(outcomeMessage);
+      setScannedUID("");
     }
   };
-  let lock = false
   return (
     <OrganizerRoute>
-      <Html5QrcodePlugin
-        ref={ref}
-        fps={10}
-        qrbox={250}
-        disableFlip={false}
-        qrCodeSuccessCallback={async (decodedText: string, decodedResult: any) => {
-          if (ref.current == null || ref.current?.html5QrcodeScanner == null) return
-          if (data === decodedText) return;
-          if (decodedText.includes("/")) {
-            window.alert("Not valid User QR-Code");
-            return;
-          } // https://stackoverflow.com/questions/52850099/what-is-the-reg-expression-for-firestore-constraints-on-document-ids
-          if (lock) return;
-          lock = true;
-          setData(decodedText);
-          if (ref.current?.html5QrcodeScanner?.getState() !== Html5QrcodeScannerState.PAUSED) {
-            await determineAction(decodedText);
-          }
-          lock = false;
-        }}
-      />
-      <span>Status: {status} </span>
-      <div>Scanner Options:</div>
-      {selectWhich}
+      <div className={"flex flex-col justify-center items-center space-x-10"}>
+        <QrReader
+          className={"w-full h-full"}
+          videoStyle={{ height: "100%", width: "100%" }}
+          constraints={{ facingMode: "back" }}
+          scanDelay={0}
+          onResult={async (result, _) => {
+            if (!result) return;
+            setScannedUID(result.getText());
+          }}
+        />
+        <div className={"flex flex-col space-y-2"}>
+          <div>
+            Scanned UID: {scannedUID} <br /> <br />
+            <line></line>
+            Name: {user.name} <br />
+            Shirt Size: {user.shirtSize} <br />
+          </div>
+          <div>Previous Status: {status} </div>
+          <label
+            className={
+              "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            }
+          >
+            Scanner Options:
+          </label>
+          {selectWhich}
+          <div>
+            <button
+              className={`py-2.5 px-5 me-2 mb-2 text-sm font-medium focus:outline-none bg-white rounded-lg border border-gray-200 ${
+                scannedUID === ""
+                  ? "text-gray-600"
+                  : "text-gray-900 hover:bg-gray-100 hover:text-blue-700 dark:hover:text-white dark:hover:bg-gray-700"
+              } focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600`}
+              onClick={async () => await determineAction(scannedUID)}
+              disabled={scannedUID === ""}
+            >
+              {scannedUID === ""
+                ? "Please Scan a QR Code"
+                : "Run Selected Action"}
+            </button>
+          </div>
+        </div>
+      </div>
     </OrganizerRoute>
   );
 }

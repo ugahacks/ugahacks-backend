@@ -534,8 +534,7 @@ export const AuthContextProvider = ({
    */
   const checkinUser = async (userid: string) => {
     try {
-      const docRef = doc(registerRef, userid);
-      await updateDoc(docRef, {
+      await updateDoc(doc(registerRef, userid ? userid : ""), {
         checkedIn: true,
       });
       setUserInformation(userid);
@@ -555,6 +554,40 @@ export const AuthContextProvider = ({
         checkedOut: true,
       });
       setUserInformation(userid);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * checks if a user is checked in
+   * @param userid uuid of the user
+   * @return boolean true if the user is checked in
+   */
+  const isUserCheckedIn = async (userid: string) => {
+    try {
+      const docRef = doc(registerRef, userid);
+      const docSnap = await getDoc(docRef);
+
+      return docSnap.exists() && docSnap.data().checkedIn;
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * gets a user's tshirt size by userid
+   * @param userid uuid of the user
+   * @return string size of the tshirt
+   */
+  const getTShirtSizeOfUser = async (userid: string) => {
+    try {
+      const docRef = doc(registerRef, userid);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        return null;
+      }
+      return docSnap.data().shirtSize;
     } catch (err: any) {
       console.log(err);
     }
@@ -647,6 +680,38 @@ export const AuthContextProvider = ({
     }
 
     return docSnap.data().first_name;
+  };
+
+  /**
+   * Get's user's full name from userid
+   * @param userid user's uuid
+   * @returns string of their full name
+   */
+  const getNameOfUser = async (userid: string) => {
+    const docRef = doc(userRef, userid ? userid : "");
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      return null;
+    }
+
+    return docSnap.data().name;
+  };
+
+  /**
+   * Get's a user's registered events
+   * @param userid user's id
+   * @returns an array of registered events
+   */
+  const getRegisteredEventsForUser = async (userid: string) => {
+    const docRef = doc(userRef, userid ? userid : "");
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      return null;
+    }
+
+    return docSnap.data().registered;
   };
 
   /**
@@ -806,6 +871,35 @@ export const AuthContextProvider = ({
     return false;
   };
 
+  const removePoints = async (uid: string, number: number) => {
+    if (
+      user_type == null ||
+      user_type == undefined ||
+      user_type != "service_writer"
+    )
+      throw new Error("Unauthorized");
+    const docRef = doc(userRef, uid);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) throw "User does not exist";
+    const points = docSnap.data().points;
+    if (!points || points < number) {
+      throw `${docSnap.data().name} does not have enough points!`;
+    }
+
+    try {
+      updateDoc(docRef, {
+        points: increment(-1 * number),
+      });
+      return true;
+    } catch (error) {
+      if (error instanceof FirebaseError) handleError(error);
+      if (error instanceof Error) throw error;
+      if (typeof error === "string") throw new Error(error);
+    }
+    return false;
+  };
+
   const checkIn = async (uid: string) => {
     if (
       user_type == null ||
@@ -816,7 +910,7 @@ export const AuthContextProvider = ({
     const docRef = doc(userRef, uid);
     try {
       updateDoc(docRef, {
-        checkIn: true,
+        checkedIn: true,
       });
       return true;
     } catch (error) {
@@ -956,7 +1050,10 @@ export const AuthContextProvider = ({
         hasFirstAndLastName,
         validUser,
         getFirstName,
+        getNameOfUser,
         getRegisteredEvents,
+        getRegisteredEventsForUser,
+        isUserCheckedIn,
         storeUserRegistrationInformation,
         setUserInformation,
         currEvent,
@@ -971,6 +1068,7 @@ export const AuthContextProvider = ({
         denyTeams,
         user_type,
         givePoints,
+        removePoints,
         checkIn,
         confirmEmails,
         confirmedOnTeam,
@@ -978,6 +1076,7 @@ export const AuthContextProvider = ({
         giveTeamPoints,
         checkinUser,
         checkoutUser,
+        getTShirtSizeOfUser,
         triggerRegistrationEmail,
         triggerESportsRegistrationEmail,
       }}
