@@ -1166,22 +1166,16 @@ export default function Register() {
                             <Controller
                               control={control}
                               name="mlhCommunication"
-                              rules={{
-                                required:
-                                  "You must select yes before proceeding",
-                              }}
                               render={({ field: { onChange, value } }) => (
                                 <>
                                   <label
                                     className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
                                     htmlFor="grid-text-1"
                                   >
-                                    <em>Communication from MLH: </em>“I
-                                    authorize MLH to send me an email where I
-                                    can further opt into the MLH Hacker, Events,
-                                    or Organizer Newsletters and other
-                                    communications from MLH.&quot;
-                                    <span className="text-red-600">*</span>
+                                    <em>Communication from MLH: </em>“I 
+                                    authorize MLH to send me occasional 
+                                    emails about relevant events, career 
+                                    opportunities, and community announcements.&quot;
                                   </label>
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                     <input

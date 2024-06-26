@@ -14,6 +14,7 @@ export enum Races {
   black = "Black",
   middleEastern = "Middle Eastern",
   nativeAmerican = "Native American, Alaskan Native, or Native Hawaiian",
+  hispanic = "Hispanic",
   other = "Other",
   preferNotToAnswer = "Prefer Not to Answer"
 }
@@ -68,6 +69,7 @@ export enum DietaryRestrictions {
   celiacDisease = "Celiac Disease",
   kosher = "Kosher",
   halal = "Halal",
+  glutenFree = "Gluten Free",
   none = "None",
   other = "Other",
 }
