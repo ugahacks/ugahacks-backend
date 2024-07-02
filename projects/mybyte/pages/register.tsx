@@ -51,6 +51,7 @@ export default function Register() {
       inputDietaryRestrictions: "",
       participated: false,
       elCreditInterest: undefined,
+      mlhCommunication: false,
     },
   });
 
