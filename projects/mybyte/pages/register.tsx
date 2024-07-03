@@ -491,6 +491,7 @@ export default function Register() {
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                               Country of Residence
+                              <span className="text-red-600">*</span>
                             </label>
                             <Controller
                               name="countryResidence"
