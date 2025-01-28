@@ -18,6 +18,15 @@ const HacksX: EventDetail = {
   deadline: new Date("01/31/2025"),
 };
 
+const ESportsX: EventDetail = {
+  key: Events.hacksX,
+  page: "/esports",
+  image: "/eSportsX_banner.png",
+  startDate: new Date("02/07/2025"),
+  endDate: new Date("02/9/2025"),
+  deadline: new Date("02/01/2025"),
+};
+
 const events = [
   {
     event: (re: EventRegistered) => {
@@ -27,6 +36,20 @@ const events = [
         return <EventRect disabled={false} event={HacksX} />; // Manually disable hacks9 now that deadline has passed
       } else {
         return <EventRect disabled={true} event={HacksX} />;
+      }
+    },
+    id: (re: EventRegistered) => {
+      return true;
+    },
+  },
+  {
+    event: (re: EventRegistered) => {
+      if (ESportsX.deadline < new Date()) {
+        return <EventRect disabled={true} event={ESportsX} />;
+      } else if (!re.ESPORTSX) {
+        return <EventRect disabled={false} event={ESportsX} />; // Manually disable hacks9 now that deadline has passed
+      } else {
+        return <EventRect disabled={true} event={ESportsX} />;
       }
     },
     id: (re: EventRegistered) => {
@@ -72,13 +95,14 @@ const DashboardPage = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const registrationCheck = (ev: EventDetail) => {
-    // if (ev.key === Events.e_sports_9 && !registeredEvents.HACKS9) {
-    //   setAlert({
-    //     show: true,
-    //     message:
-    //       "Please register for UGAHacks 9 before registering for eSports 9",
-    //     color: "bg-[#212121]",
-    //   });
+    if (ev.key === Events.e_sports_X && !registeredEvents.HACKSX) {
+      setAlert({
+        show: true,
+        message:
+          "Please register for UGAHacks X before registering for eSports X",
+        color: "bg-[#212121]",
+      });
+    }
     if (ev.key in registeredEvents) {
       setAlert({
         show: true,

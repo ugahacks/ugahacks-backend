@@ -52,6 +52,7 @@ export interface EventRegistered {
   HACKS8: boolean | null;
   HACKS9: boolean | null;
   HACKSX: boolean | null;
+  ESPORTSX: boolean | null;
 }
 
 export interface EventCheckIn extends EventRegistered {}
@@ -92,6 +93,7 @@ export const AuthContextProvider = ({
       HACKS8: null,
       HACKS9: null,
       HACKSX: null,
+      ESPORTSX: null,
     },
     user_type: null,
   });
@@ -115,8 +117,7 @@ export const AuthContextProvider = ({
   const registerRef = collection(db, "UHX-user-registration-details");
   const registerMail = collection(db, "UHX-registrationMail");
 
-  // Current Event (Hacks 9):
-  const eSportsRef = collection(db, "eSports9-user-registration-details");
+  const eSportsRef = collection(db, "eSportsX-user-registration-details");
   const registerRef_UH9 = collection(db, "UH9-user-registration-details");
   const registerMail_UH9 = collection(db, "UH9-registrationMail");
 
@@ -289,7 +290,7 @@ export const AuthContextProvider = ({
    */
   const triggerESportsRegistrationEmail = async (data: eSportsForm) => {
     const uh9RegistrationDoc = await getDoc(
-      doc(emailTemplates, "eSports9Registration")
+      doc(emailTemplates, "esportsXRegistration")
     );
 
     if (uh9RegistrationDoc.exists()) {
@@ -298,7 +299,7 @@ export const AuthContextProvider = ({
       await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for eSports 9",
+          subject: "Thank you for registering for eSports X",
           text: "",
           html: emailHTML,
         },
@@ -331,7 +332,7 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks8
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.ESPORTS9": true,
+      "registered.ESPORTSX": true,
     });
 
     // Update userInfo

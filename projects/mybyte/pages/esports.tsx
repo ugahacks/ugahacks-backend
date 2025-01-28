@@ -93,7 +93,7 @@ export default function ESportsRegister() {
                   onInit={(typewriter) => {
                     typewriter
                       .typeString("Register for ")
-                      .typeString("eSports 9")
+                      .typeString("eSports X")
                       .start();
                   }}
                 />
@@ -101,7 +101,7 @@ export default function ESportsRegister() {
               <div className="pl-1 text-md w-4/5">
                 <p className="pb-3">
                   We&apos;re excited that you are participating in the eSports
-                  tournament at UGAHacks 9 (pog!).
+                  tournament at UGAHacks X (pog!).
                 </p>
                 <p className="text-md">
                   If you have any questions, please send us an email at{" "}
