@@ -20,8 +20,8 @@ const HacksX: EventDetail = {
 
 const ESportsX: EventDetail = {
   key: Events.hacksX,
-  page: "/register",
-  image: "/eSports9_banner.png",
+  page: "/esports",
+  image: "/eSportsX_banner.png",
   startDate: new Date("02/07/2025"),
   endDate: new Date("02/9/2025"),
   deadline: new Date("02/01/2025"),
@@ -95,13 +95,14 @@ const DashboardPage = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const registrationCheck = (ev: EventDetail) => {
-    // if (ev.key === Events.e_sports_9 && !registeredEvents.HACKS9) {
-    //   setAlert({
-    //     show: true,
-    //     message:
-    //       "Please register for UGAHacks 9 before registering for eSports 9",
-    //     color: "bg-[#212121]",
-    //   });
+    if (ev.key === Events.e_sports_X && !registeredEvents.HACKSX) {
+      setAlert({
+        show: true,
+        message:
+          "Please register for UGAHacks X before registering for eSports X",
+        color: "bg-[#212121]",
+      });
+    }
     if (ev.key in registeredEvents) {
       setAlert({
         show: true,
