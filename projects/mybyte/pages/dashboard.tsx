@@ -24,13 +24,15 @@ const ESportsX: EventDetail = {
   image: "/eSportsX_banner.png",
   startDate: new Date("02/07/2025"),
   endDate: new Date("02/9/2025"),
-  deadline: new Date("02/01/2025"),
+  deadline: new Date("02/05/2025"),
 };
 
 const events = [
   {
     event: (re: EventRegistered) => {
-      if (HacksX.deadline < new Date()) {
+      let uhxDup = new Date(HacksX.deadline);
+      uhxDup.setDate(HacksX.deadline.getDate() + 1);
+      if (uhxDup < new Date()) {
         return <EventRect disabled={true} event={HacksX} />;
       } else if (!re.HACKSX) {
         return <EventRect disabled={false} event={HacksX} />; // Manually disable hacks9 now that deadline has passed
@@ -44,7 +46,9 @@ const events = [
   },
   {
     event: (re: EventRegistered) => {
-      if (ESportsX.deadline < new Date()) {
+      let esportDup = new Date(ESportsX.deadline);
+      esportDup.setDate(ESportsX.deadline.getDate() + 1);
+      if (esportDup < new Date()) {
         return <EventRect disabled={true} event={ESportsX} />;
       } else if (!re.ESPORTSX) {
         return <EventRect disabled={false} event={ESportsX} />; // Manually disable hacks9 now that deadline has passed
