@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import ProtectedRoute from "../components/ProtectedRoute";
-import { useAuth, EventRegistered } from "../context/AuthContext";
-import EventRect, { EventDetail } from "../components/EventRect";
-import { Events } from "../enums/events";
 import { QRCodeCanvas } from "qrcode.react";
-import Circle from "../components/Circle";
-import MobileDashboard from "../components/MobileDashboard";
+import React, { useEffect, useState } from "react";
 import AlertCard from "../components/AlertCard";
+import Circle from "../components/Circle";
+import EventRect, { EventDetail } from "../components/EventRect";
+import MobileDashboard from "../components/MobileDashboard";
+import ProtectedRoute from "../components/ProtectedRoute";
+import { EventRegistered, useAuth } from "../context/AuthContext";
+import { Events } from "../enums/events";
 
 const HacksX: EventDetail = {
   key: Events.hacksX,
@@ -15,7 +15,7 @@ const HacksX: EventDetail = {
   image: "/Registration .png",
   startDate: new Date("02/07/2025"),
   endDate: new Date("02/9/2025"),
-  deadline: new Date("01/31/2025"),
+  deadline: new Date("02/1/2025"),
 };
 
 const ESportsX: EventDetail = {
