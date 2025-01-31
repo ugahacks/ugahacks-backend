@@ -15,7 +15,7 @@ const HacksX: EventDetail = {
   image: "/Registration .png",
   startDate: new Date("02/07/2025"),
   endDate: new Date("02/9/2025"),
-  deadline: new Date("02/1/2025"),
+  deadline: new Date("01/31/2025"),
 };
 
 const ESportsX: EventDetail = {
