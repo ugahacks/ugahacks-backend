@@ -9,17 +9,17 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import { EventRegistered, useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
 
-const HacksX: EventDetail = {
-  key: Events.hacksX,
+const Hacks11: EventDetail = {
+  key: Events.hacks11,
   page: "/register",
   image: "/Registration .png",
-  startDate: new Date("02/07/2025"),
-  endDate: new Date("02/9/2025"),
-  deadline: new Date("01/31/2025"),
+  startDate: new Date("02/06/2026"),
+  endDate: new Date("02/08/2026"),
+  deadline: new Date("01/31/2026"),
 };
 
 const ESportsX: EventDetail = {
-  key: Events.hacksX,
+  key: Events.hacks11,
   page: "/esports",
   image: "/eSportsX_banner.png",
   startDate: new Date("02/07/2025"),
@@ -30,14 +30,14 @@ const ESportsX: EventDetail = {
 const events = [
   {
     event: (re: EventRegistered) => {
-      let uhxDup = new Date(HacksX.deadline);
-      uhxDup.setDate(HacksX.deadline.getDate() + 1);
-      if (uhxDup < new Date()) {
-        return <EventRect disabled={true} event={HacksX} />;
-      } else if (!re.HACKSX) {
-        return <EventRect disabled={false} event={HacksX} />; // Manually disable hacks9 now that deadline has passed
+      let uh11Dup = new Date(Hacks11.deadline);
+      uh11Dup.setDate(Hacks11.deadline.getDate() + 1);
+      if (uh11Dup < new Date()) {
+        return <EventRect disabled={true} event={Hacks11} />;
+      } else if (!re.HACKS11) {
+        return <EventRect disabled={false} event={Hacks11} />; // Manually disable hacks9 now that deadline has passed
       } else {
-        return <EventRect disabled={true} event={HacksX} />;
+        return <EventRect disabled={true} event={Hacks11} />;
       }
     },
     id: (re: EventRegistered) => {
@@ -64,7 +64,7 @@ const events = [
 
 // Valid Open Events (pretty name):
 const eventMap = new Map<string, string>();
-eventMap.set("HACKSX", "UGAHacks X");
+eventMap.set("HACKS11", "UGAHacks 11");
 
 function openEventsRegistered(allRegisteredEvents: string[]) {
   let events = "";
@@ -99,11 +99,11 @@ const DashboardPage = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const registrationCheck = (ev: EventDetail) => {
-    if (ev.key === Events.e_sports_X && !registeredEvents.HACKSX) {
+    if (ev.key === Events.e_sports_11 && !registeredEvents.HACKS11) {
       setAlert({
         show: true,
         message:
-          "Please register for UGAHacks X before registering for eSports X",
+          "Please register for UGAHacks 11 before registering for eSports 11",
         color: "bg-[#212121]",
       });
     }
