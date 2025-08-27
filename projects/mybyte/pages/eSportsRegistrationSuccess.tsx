@@ -64,7 +64,7 @@ export default function ESportsRegistrationSuccess() {
                 <h2 className="text-xl pt-4">
                   You have successfully registered for eSports 11!
                 </h2>
-                <h2 className="text-xl">See you soon! 😃</h2>
+                <h2 className="text-xl">See ya soon! 😃</h2>
               </div>
             </div>
 
