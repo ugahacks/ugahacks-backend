@@ -29,8 +29,8 @@ jobs:
       - name: Cache Yarn
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'yarn'
+          node-version: "18"
+          cache: "yarn"
 
       - name: Install project dependencies
         run: yarn install
@@ -59,25 +59,25 @@ jobs:
     needs: [flake8, eslint, pytest, jest]
     runs-on: ubuntu-latest
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: "read"
+      id-token: "write"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v1'
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
         with:
-          workload_identity_provider: 'projects/436222925278/locations/global/workloadIdentityPools/pool-ugahacks-backend/providers/provider-ugahacks-backend'
-          service_account: 'ugahacks-cicd@ugahacks-core-infra.iam.gserviceaccount.com'
+          workload_identity_provider: "projects/436222925278/locations/global/workloadIdentityPools/pool-ugahacks-backend/providers/provider-ugahacks-backend"
+          service_account: "ugahacks-cicd@ugahacks-core-infra.iam.gserviceaccount.com"
 
-      - name: 'Setup Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
+      - name: "Setup Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
 
-      - name: Authorize Docker push
-        run: gcloud auth configure-docker
+      - name: Authorize Docker push (Artifact Registry)
+        run: gcloud auth configure-docker --quiet ${{ env.REGION }}-docker.pkg.dev
 
       - id: file_changes
         name: Get Changed Files
@@ -95,16 +95,17 @@ jobs:
       - name: Build and Push mybyte Container
         run: |-
           echo "mybyte changed, building ..."
-          docker build -t gcr.io/${{ env.PROJECT_ID }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }} projects/mybyte
-          docker push gcr.io/${{ env.PROJECT_ID }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}
+          IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/mybyte/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}"
+          docker build -t "$IMAGE_URI" projects/mybyte
+          docker push "$IMAGE_URI"
         if: contains(steps.file_changes.outputs.files , 'mybyte')
-
       - name: Deploy mybyte to Cloud Run
         id: deploy_mybyte
         uses: google-github-actions/deploy-cloudrun@v1
         with:
+          project_id: ${{ env.PROJECT_ID }}
           service: mybyte-${{ env.DEPLOY_ENV }}
-          image: gcr.io/${{ env.PROJECT_ID }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/mybyte/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}
           region: ${{ env.REGION }}
         if: contains(steps.file_changes.outputs.files , 'mybyte')
 
