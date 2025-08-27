@@ -201,69 +201,75 @@ export const AuthContextProvider = ({
    */
   const storeUserRegistrationInformation = async (data: RegisterForm) => {
     const storage = getStorage();
-    const file = data.resume[0];
+    const file = data.resume?.[0];
 
-    const storageRef = ref(storage, "resume/" + user.uid + "/" + file.name);
+    let downloadURL: string | null = null;
 
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    if (file) {
+      const storageRef = ref(storage, "resume/" + user.uid + "/" + file.name);
+      const uploadTask = uploadBytesResumable(storageRef, file);
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        console.log("upload in progress");
-      },
-      (error) => {
-        console.log("Error uploading resume");
-        alert(error);
-      },
-      async () => {
-        await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setDoc(doc(registerRef, user.uid ? user.uid : ""), {
-            uid: user.uid,
-            gender: data.gender,
-            race: data.race,
-            phoneNumber: data.phoneNumber,
-            countryResidence: data.countryResidence.label,
-            year: data.year,
-            major: data.major,
-            inputMajor: data.inputMajor,
-            minor: data.minor,
-            email: data.email,
-            participated: data.participated,
-            hopeToSee: data.hopeToSee,
-            dietaryRestrictions: data.dietaryRestrictions,
-            inputDietaryRestrictions: data.inputDietaryRestrictions,
-            shirtSize: data.shirtSize,
-            codeOfConduct: data.codeOfConduct,
-            eventLogisticsInfo: data.eventLogisticsInfo,
-            mlhCommunication: data.mlhCommunication,
-            age: data.age,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            levelOfStudy: data.levelsOfStudy,
-            school: data.school.value,
-            inputSchool: data.inputSchool,
-            elCreditInterest: data.elCreditInterest,
-            accepted: null,
-            checkedIn: false,
-            checkedOut: false,
-            resumeLink: downloadURL,
-            submitted_time: serverTimestamp(),
-          });
-        });
-      }
-    );
+      // Wait for upload to finish and get the download URL (or throw on error)
+      downloadURL = await new Promise<string>((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          () => { },
+          (error) => reject(error),
+          async () => {
+            try {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve(url);
+            } catch (e) {
+              reject(e);
+            }
+          }
+        );
+      });
+    }
 
-    // Set the user status to registered for hacks9 & updates school
+    // Write registration doc for UH11
+    await setDoc(doc(registerRef, user.uid ? user.uid : ""), {
+      uid: user.uid,
+      gender: data.gender,
+      race: data.race,
+      phoneNumber: data.phoneNumber,
+      countryResidence: data.countryResidence.label,
+      year: data.year,
+      major: data.major,
+      inputMajor: data.inputMajor,
+      minor: data.minor,
+      email: data.email,
+      participated: data.participated,
+      hopeToSee: data.hopeToSee,
+      dietaryRestrictions: data.dietaryRestrictions,
+      inputDietaryRestrictions: data.inputDietaryRestrictions,
+      shirtSize: data.shirtSize,
+      codeOfConduct: data.codeOfConduct,
+      eventLogisticsInfo: data.eventLogisticsInfo,
+      mlhCommunication: data.mlhCommunication,
+      age: data.age,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      levelOfStudy: data.levelsOfStudy,
+      school: data.school.value,
+      inputSchool: data.inputSchool,
+      elCreditInterest: data.elCreditInterest,
+      accepted: null,
+      checkedIn: false,
+      checkedOut: false,
+      resumeLink: downloadURL, // can be null if no file uploaded
+      submitted_time: serverTimestamp(),
+    });
+
+    // Update user's registered status and school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
       "registered.HACKS11": true,
       school: data.school.value,
       user_type: Users.hacker,
-      points: 0, // resets user's points to 0 on registration for UH9
+      points: 0,
     });
 
-    // Update userInfo
-    setUserInformation(user.uid);
+    await setUserInformation(user.uid);
   };
 
   /**

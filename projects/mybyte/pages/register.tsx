@@ -55,9 +55,9 @@ export default function Register() {
     },
   });
 
-  const onSubmit: SubmitHandler<RegisterForm> = (data) => {
-    storeUserRegistrationInformation(data);
-    triggerRegistrationEmail();
+  const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
+    await storeUserRegistrationInformation(data);
+    await triggerRegistrationEmail();
     router.push("/registrationSuccess");
   };
   //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);

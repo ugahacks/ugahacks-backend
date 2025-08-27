@@ -1,4 +1,5 @@
-import Image from "next/image";
+// import { User } from "firebase/auth";
+// import Image from "next/image";
 import { QRCodeCanvas } from "qrcode.react";
 import React, { useEffect, useState } from "react";
 import AlertCard from "../components/AlertCard";
@@ -78,6 +79,7 @@ function openEventsRegistered(allRegisteredEvents: string[]) {
 
 const DashboardPage = () => {
   const { user, userInfo } = useAuth();
+  // console.log(user.uid + " is logged in"); debugging
   const registeredEvents: EventRegistered = userInfo.registered;
   const registeredEventKeys = Object.keys(registeredEvents);
 

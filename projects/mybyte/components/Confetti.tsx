@@ -208,7 +208,7 @@ const ConfettiAnimation = () => {
             },
           },
           color: {
-            value: "#ffd700",
+            value: "#9C6897",
             animation: {
               h: {
                 count: 0,
