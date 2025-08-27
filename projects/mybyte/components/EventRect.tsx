@@ -1,17 +1,17 @@
-import React from "react";
-import Image from "next/image";
-import vercelPic from "../public/vercel.svg";
-import { useRouter } from "next/router";
 import {
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
+  CardHeader,
   Typography,
 } from "@material-tailwind/react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import React from "react";
 import { EventStatus } from "../enums/eventStatus";
 import { Events } from "../enums/events";
 import hacks8Byte from "../public/byte_mini.png";
+import vercelPic from "../public/vercel.svg";
 
 export interface EventDetail {
   key: Events;
@@ -47,7 +47,7 @@ export default function EventRect(props: {
   const gray = props.disabled ? "grayscale-[20%] rounded-t-md" : "";
   return (
     <div
-      onClick={!props.disabled ? handleClick : () => {}}
+      onClick={!props.disabled ? handleClick : () => { }}
       className={props.disabled ? "cursor-default opacity-70" : ""}
     >
       <Card className="w-96 shadow-lg">

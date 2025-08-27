@@ -1,47 +1,47 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
 import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
+  GoogleAuthProvider,
+  onAuthStateChanged,
   sendEmailVerification,
   sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
 } from "firebase/auth";
 import {
-  doc,
-  setDoc,
-  collection,
-  updateDoc,
-  serverTimestamp,
-  getDoc,
   addDoc,
-  FirestoreError,
-  Query,
+  collection,
+  doc,
   DocumentData,
-  QuerySnapshot,
-  query,
-  where,
+  FirestoreError,
+  getDoc,
   getDocs,
-  WhereFilterOp,
   increment,
+  Query,
+  query,
+  QuerySnapshot,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+  WhereFilterOp,
 } from "firebase/firestore";
-import { auth, db } from "../config/firebase";
-import { Events } from "../enums/events";
 import {
+  getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
-  getDownloadURL,
 } from "firebase/storage";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { auth, db } from "../config/firebase";
+import { Events } from "../enums/events";
 
-import { RegisterForm } from "../interfaces/registerForm";
-import { eSportsForm } from "../interfaces/eSportsForm";
-import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { FirebaseError } from "firebase/app";
 import Router from "next/router";
 import { Users } from "../enums/userType";
+import { eSportsForm } from "../interfaces/eSportsForm";
+import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
+import { RegisterForm } from "../interfaces/registerForm";
 
 export interface UserType {
   email: string | null;
@@ -53,10 +53,12 @@ export interface EventRegistered {
   HACKS9: boolean | null;
   HACKSX: boolean | null;
   ESPORTSX: boolean | null;
+  HACKS11: boolean | null;
+  ESPORTS11: boolean | null;
 }
 
-export interface EventCheckIn extends EventRegistered {}
-export interface EventCheckOut extends EventRegistered {}
+export interface EventCheckIn extends EventRegistered { }
+export interface EventCheckOut extends EventRegistered { }
 
 export interface UserInfoType {
   first_name: string | null;
@@ -94,6 +96,8 @@ export const AuthContextProvider = ({
       HACKS9: null,
       HACKSX: null,
       ESPORTSX: null,
+      HACKS11: null,
+      ESPORTS11: null,
     },
     user_type: null,
   });
@@ -113,9 +117,12 @@ export const AuthContextProvider = ({
   const teamRef = collection(db, "team");
   const emailTemplates = collection(db, "email-templates");
 
-   // Current Event (Hacks 9):
-  const registerRef = collection(db, "UHX-user-registration-details");
-  const registerMail = collection(db, "UHX-registrationMail");
+  // Current Event (Hacks X):
+  const registerRef = collection(db, "UH11-user-registration-details");
+  const registerMail = collection(db, "UH11-registrationMail");
+
+  const registerRef_UHX = collection(db, "UHX-user-registration-details");
+  const registerMail_UHX = collection(db, "UHX-registrationMail");
 
   const eSportsRef = collection(db, "eSportsX-user-registration-details");
   const registerRef_UH9 = collection(db, "UH9-user-registration-details");
@@ -194,93 +201,99 @@ export const AuthContextProvider = ({
    */
   const storeUserRegistrationInformation = async (data: RegisterForm) => {
     const storage = getStorage();
-    const file = data.resume[0];
+    const file = data.resume?.[0];
 
-    const storageRef = ref(storage, "resume/" + user.uid + "/" + file.name);
+    let downloadURL: string | null = null;
 
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    if (file) {
+      const storageRef = ref(storage, "resume/" + user.uid + "/" + file.name);
+      const uploadTask = uploadBytesResumable(storageRef, file);
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        console.log("upload in progress");
-      },
-      (error) => {
-        console.log("Error uploading resume");
-        alert(error);
-      },
-      async () => {
-        await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setDoc(doc(registerRef, user.uid ? user.uid : ""), {
-            uid: user.uid,
-            gender: data.gender,
-            race: data.race,
-            phoneNumber: data.phoneNumber,
-            countryResidence: data.countryResidence.label,
-            year: data.year,
-            major: data.major,
-            inputMajor: data.inputMajor,
-            minor: data.minor,
-            email: data.email,
-            participated: data.participated,
-            hopeToSee: data.hopeToSee,
-            dietaryRestrictions: data.dietaryRestrictions,
-            inputDietaryRestrictions: data.inputDietaryRestrictions,
-            shirtSize: data.shirtSize,
-            codeOfConduct: data.codeOfConduct,
-            eventLogisticsInfo: data.eventLogisticsInfo,
-            mlhCommunication: data.mlhCommunication,
-            age: data.age,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            levelOfStudy: data.levelsOfStudy,
-            school: data.school.value,
-            inputSchool: data.inputSchool,
-            elCreditInterest: data.elCreditInterest,
-            accepted: null,
-            checkedIn: false,
-            checkedOut: false,
-            resumeLink: downloadURL,
-            submitted_time: serverTimestamp(),
-          });
-        });
-      }
-    );
+      // Wait for upload to finish and get the download URL (or throw on error)
+      downloadURL = await new Promise<string>((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          () => { },
+          (error) => reject(error),
+          async () => {
+            try {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve(url);
+            } catch (e) {
+              reject(e);
+            }
+          }
+        );
+      });
+    }
 
-    // Set the user status to registered for hacks9 & updates school
-    await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKSX": true,
+    // Write registration doc for UH11
+    await setDoc(doc(registerRef, user.uid ? user.uid : ""), {
+      uid: user.uid,
+      gender: data.gender,
+      race: data.race,
+      phoneNumber: data.phoneNumber,
+      countryResidence: data.countryResidence.label,
+      year: data.year,
+      major: data.major,
+      inputMajor: data.inputMajor,
+      minor: data.minor,
+      email: data.email,
+      participated: data.participated,
+      hopeToSee: data.hopeToSee,
+      dietaryRestrictions: data.dietaryRestrictions,
+      inputDietaryRestrictions: data.inputDietaryRestrictions,
+      shirtSize: data.shirtSize,
+      codeOfConduct: data.codeOfConduct,
+      eventLogisticsInfo: data.eventLogisticsInfo,
+      mlhCommunication: data.mlhCommunication,
+      age: data.age,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      levelOfStudy: data.levelsOfStudy,
       school: data.school.value,
-      user_type: Users.hacker,
-      points: 0, // resets user's points to 0 on registration for UH9
+      inputSchool: data.inputSchool,
+      elCreditInterest: data.elCreditInterest,
+      accepted: null,
+      checkedIn: false,
+      checkedOut: false,
+      resumeLink: downloadURL, // can be null if no file uploaded
+      submitted_time: serverTimestamp(),
     });
 
-    // Update userInfo
-    setUserInformation(user.uid);
+    // Update user's registered status and school
+    await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
+      "registered.HACKS11": true,
+      school: data.school.value,
+      user_type: Users.hacker,
+      points: 0,
+    });
+
+    await setUserInformation(user.uid);
   };
 
   /**
    * Stores a mail document, which triggers an email to the user.
    */
   const triggerRegistrationEmail = async (data: RegisterForm) => {
-    const uhXRegistrationDoc = await getDoc(
-      doc(emailTemplates, "uhX")
+    const uh11RegistrationDoc = await getDoc(
+      doc(emailTemplates, "uh11")
     );
 
-    if (uhXRegistrationDoc.exists()) {
-      const emailHTML = uhXRegistrationDoc.data().html;
+    if (uh11RegistrationDoc.exists()) {
+      const emailHTML = uh11RegistrationDoc.data().html;
 
       await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for UGAHacks X",
+          subject: "Thank you for registering for UGAHacks 11",
           text: "",
           html: emailHTML,
         },
       });
     } else {
       console.error(
-        'Document "uhX" not found in the "email-templates" collection.'
+        'Document "uh11" not found in the "email-templates" collection.'
       );
     }
   };
@@ -299,7 +312,7 @@ export const AuthContextProvider = ({
       await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for eSports X",
+          subject: "Thank you for registering for eSports 11",
           text: "",
           html: emailHTML,
         },
@@ -832,10 +845,10 @@ export const AuthContextProvider = ({
         tid === ""
           ? query(teamRef, where("members", "array-contains", user.email))
           : query(
-              teamRef,
-              where("members", "array-contains", user.email),
-              where("__name__", operator, tid)
-            );
+            teamRef,
+            where("members", "array-contains", user.email),
+            where("__name__", operator, tid)
+          );
       const results: QuerySnapshot<DocumentData> = await getDocs(q);
       results.forEach((elem) => {
         let team: TeamType = { members: [] };
@@ -955,22 +968,22 @@ export const AuthContextProvider = ({
     emails: string[],
     strict: boolean = true
   ) => {
-    let returned: boolean[] = [];
-    for (let times: number = 0; times < emails.length; times++)
-      returned.push(false);
-    const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
-    const results: QuerySnapshot<DocumentData> = await getDocs(q);
-    results.forEach((elem) => {
-      emails.forEach((email, index) => {
-        if (
-          email === elem.data().email &&
-          (!strict || elem.data().tid == undefined)
-        )
-          returned[index] = true;
+      let returned: boolean[] = [];
+      for (let times: number = 0; times < emails.length; times++)
+        returned.push(false);
+      const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
+      const results: QuerySnapshot<DocumentData> = await getDocs(q);
+      results.forEach((elem) => {
+        emails.forEach((email, index) => {
+          if (
+            email === elem.data().email &&
+            (!strict || elem.data().tid == undefined)
+          )
+            returned[index] = true;
+        });
       });
-    });
-    return returned;
-  };
+      return returned;
+    };
 
   /**
    * Checks if `emails` is in the given team.

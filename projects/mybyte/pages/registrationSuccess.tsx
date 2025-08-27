@@ -23,10 +23,10 @@ export default function RegistrationSuccess() {
       <ConfettiAnimation />
       {isMobile ? (
         <div className="inset-0 flex overflow-hidden font-mono">
-          <div className="container mx-auto mt-12 rounded-md">
+          <div className="container mx-auto mt-6 rounded-md">
             <div className="flex flex-col items-center">
               <Image
-                src="/byte drums.png"
+                src="/bytebusteyesclosed.PNG"
                 alt="circle"
                 width={200}
                 height={200}
@@ -34,8 +34,7 @@ export default function RegistrationSuccess() {
               <div className="px-4 mt-4 text-center text-lg sm:px-12">
                 <h1 className="text-4xl">Congratulations!</h1>
                 <p className="pt-2">
-                  You have successfully registered for UGAHacks X! Let&apos;s get this party started!
-                  😃
+                  You have successfully registered for UGAHacks 11! Let&apos;s make some magic happen 🪄
                 </p>
               </div>
             </div>
@@ -51,20 +50,18 @@ export default function RegistrationSuccess() {
         </div>
       ) : (
         <div className="inset-0 flex overflow-hidden font-mono">
-          <div className="sign-up-form container mx-auto max-w-min mt-12 rounded-md">
+          <div className="sign-up-form container mx-auto max-w-min mt-6 rounded-md">
             <div className="flex flex-col items-center">
               <Image
-                src="/byte drums.png"
+                src="/bytebusteyesclosed.PNG"
                 alt="circle"
-                width={400}
-                height={400}
+                width={300}
+                height={100}
               />
-              <div className="px-12 mt-8 text-center text-xl">
+              <div className="px-8 mt-8 text-center text-xl">
                 <h1 className="text-6xl">Congratulations!</h1>
                 <h2 className="text-xl pt-4">
-                  You have successfully registered for UGAHacks X!
-                  Let&apos;s get this party started!
-                  😃
+                  You have successfully registered for UGAHacks 11! Let&apos;s make some magic happen 🪄
                 </h2>
               </div>
             </div>

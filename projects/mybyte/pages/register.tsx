@@ -1,32 +1,32 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import Select from "react-select";
 import countryList from "react-select-country-list";
-import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
-import Link from "next/link";
+import Typewriter from "typewriter-effect";
 import { useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
-import { useRouter } from "next/router";
-import Typewriter from "typewriter-effect";
 
 import { RegisterForm } from "../interfaces/registerForm";
 
 import {
-  Genders,
-  StudentYears,
-  Majors,
-  ShirtSizes,
-  LevelsOfStudy,
   DietaryRestrictions,
   ELInterest,
+  Genders,
+  LevelsOfStudy,
+  Majors,
   Races,
+  ShirtSizes,
+  StudentYears,
 } from "../enums/registerEnums";
 
-import "react-phone-number-input/style.css";
-import ProtectedRoute from "../components/ProtectedRoute";
 import { Card } from "@material-tailwind/react";
+import "react-phone-number-input/style.css";
 import Circle from "../components/Circle";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function Register() {
   const router = useRouter();
@@ -55,9 +55,9 @@ export default function Register() {
     },
   });
 
-  const onSubmit: SubmitHandler<RegisterForm> = (data) => {
-    storeUserRegistrationInformation(data);
-    triggerRegistrationEmail();
+  const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
+    await storeUserRegistrationInformation(data);
+    await triggerRegistrationEmail();
     router.push("/registrationSuccess");
   };
   //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);
@@ -78,14 +78,14 @@ export default function Register() {
     let objPattern = new RegExp(
       // Delimiters.
       "(\\" +
-        strDelimiter +
-        "|\\r?\\n|\\r|^)" +
-        // Quoted fields.
-        '(?:"([^"]*(?:""[^"]*)*)"|' +
-        // Standard fields.
-        '([^"\\' +
-        strDelimiter +
-        "\\r\\n]*))",
+      strDelimiter +
+      "|\\r?\\n|\\r|^)" +
+      // Quoted fields.
+      '(?:"([^"]*(?:""[^"]*)*)"|' +
+      // Standard fields.
+      '([^"\\' +
+      strDelimiter +
+      "\\r\\n]*))",
       "gi"
     );
 
@@ -244,14 +244,14 @@ export default function Register() {
                   onInit={(typewriter) => {
                     typewriter
                       .typeString("Register for ")
-                      .typeString("UGAHacks X")
+                      .typeString("UGAHacks 11")
                       .start();
                   }}
                 />
               </h1>
               <div className="pl-1 text-md w-4/5">
                 <p className="pb-3">
-                  We&apos;re excited that you are participating in UGAHacks X!
+                  We&apos;re excited that you are participating in UGAHacks 11!
                   We would love to see you at the event!
                 </p>
                 <p className="text-md">
@@ -576,7 +576,7 @@ export default function Register() {
                                   <option key={key} value={key}>
                                     {
                                       LevelsOfStudy[
-                                        key as keyof typeof LevelsOfStudy
+                                      key as keyof typeof LevelsOfStudy
                                       ]
                                     }
                                   </option>
@@ -671,7 +671,7 @@ export default function Register() {
                                   <option key={key} value={key}>
                                     {
                                       StudentYears[
-                                        key as keyof typeof StudentYears
+                                      key as keyof typeof StudentYears
                                       ]
                                     }
                                   </option>
@@ -958,7 +958,7 @@ export default function Register() {
                                   <option key={key} value={key}>
                                     {
                                       DietaryRestrictions[
-                                        key as keyof typeof DietaryRestrictions
+                                      key as keyof typeof DietaryRestrictions
                                       ]
                                     }
                                   </option>
@@ -998,16 +998,16 @@ export default function Register() {
                                 <>
                                   {errors.inputDietaryRestrictions.type ===
                                     "required" && (
-                                    <p className={errorStyles}>
-                                      {errors.inputDietaryRestrictions.message}
-                                    </p>
-                                  )}
+                                      <p className={errorStyles}>
+                                        {errors.inputDietaryRestrictions.message}
+                                      </p>
+                                    )}
                                   {errors.inputDietaryRestrictions.type ===
                                     "pattern" && (
-                                    <p className={errorStyles}>
-                                      {errors.inputDietaryRestrictions.message}
-                                    </p>
-                                  )}
+                                      <p className={errorStyles}>
+                                        {errors.inputDietaryRestrictions.message}
+                                      </p>
+                                    )}
                                 </>
                               ) : null}
                             </div>
@@ -1173,9 +1173,9 @@ export default function Register() {
                                     className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
                                     htmlFor="grid-text-1"
                                   >
-                                    <em>Communication from MLH: </em>“I 
-                                    authorize MLH to send me occasional 
-                                    emails about relevant events, career 
+                                    <em>Communication from MLH: </em>“I
+                                    authorize MLH to send me occasional
+                                    emails about relevant events, career
                                     opportunities, and community announcements.&quot;
                                   </label>
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
