@@ -80,7 +80,7 @@ jobs:
 
       - name: Authorize Docker push (Artifact Registry)
         run: gcloud auth configure-docker --quiet ${{ env.AR_HOST }}
-
+        
       - id: file_changes
         name: Get Changed Files
         uses: trilom/file-changes-action@v1.2.4
