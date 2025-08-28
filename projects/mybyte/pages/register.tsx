@@ -42,7 +42,7 @@ export default function Register() {
     watch,
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterForm>({
     defaultValues: {
       phoneNumber: "",
@@ -56,9 +56,14 @@ export default function Register() {
   });
 
   const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
-    await storeUserRegistrationInformation(data);
-    await triggerRegistrationEmail();
-    router.push("/registrationSuccess");
+    try {
+      await storeUserRegistrationInformation(data);
+      await triggerRegistrationEmail();
+      router.push("/registrationSuccess");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      // The button will automatically re-enable when isSubmitting becomes false
+    }
   };
   //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);
 
@@ -1202,10 +1207,14 @@ export default function Register() {
                           </div>
                           <div className={!shouldRender ? "pb-56" : "pb-20"}>
                             <button
-                              className="border rounded w-full border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors p-2"
+                              className={`border rounded w-full transition-colors p-2 ${isSubmitting
+                                ? "border-gray-300 bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white"
+                                }`}
                               type="submit"
+                              disabled={isSubmitting}
                             >
-                              Register!
+                              {isSubmitting ? "Registering..." : "Register!"}
                             </button>
                           </div>
                         </div>

@@ -27,7 +27,7 @@ export default function RegistrationSuccess() {
             <div className="flex flex-col items-center">
               <Image
                 src="/bytebusteyesclosed.PNG"
-                alt="circle"
+                alt="Magical Byte stirring a witch pot"
                 width={200}
                 height={200}
               />
@@ -54,7 +54,7 @@ export default function RegistrationSuccess() {
             <div className="flex flex-col items-center">
               <Image
                 src="/bytebusteyesclosed.PNG"
-                alt="circle"
+                alt="Magical Byte stirring a witch pot"
                 width={300}
                 height={100}
               />
