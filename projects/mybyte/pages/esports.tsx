@@ -1,32 +1,32 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import Select from "react-select";
 import countryList from "react-select-country-list";
-import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
-import Link from "next/link";
+import Typewriter from "typewriter-effect";
 import { useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
-import { useRouter } from "next/router";
-import Typewriter from "typewriter-effect";
 
 import { RegisterForm } from "../interfaces/registerForm";
 
 import {
-  Games,
-  Genders,
-  StudentYears,
-  Majors,
-  ShirtSizes,
-  LevelsOfStudy,
   DietaryRestrictions,
   ELInterest,
+  Games,
+  Genders,
+  LevelsOfStudy,
+  Majors,
+  ShirtSizes,
+  StudentYears,
 } from "../enums/registerEnums";
 
-import "react-phone-number-input/style.css";
-import ProtectedRoute from "../components/ProtectedRoute";
 import { Card } from "@material-tailwind/react";
+import "react-phone-number-input/style.css";
 import Circle from "../components/Circle";
+import ProtectedRoute from "../components/ProtectedRoute";
 import { eSportsForm } from "../interfaces/eSportsForm";
 
 export default function ESportsRegister() {
@@ -101,7 +101,7 @@ export default function ESportsRegister() {
               <div className="pl-1 text-md w-4/5">
                 <p className="pb-3">
                   We&apos;re excited that you are participating in the eSports
-                  tournament at UGAHacks X (pog!).
+                  tournament at UGAHacks 11 (pog!).
                 </p>
                 <p className="text-md">
                   If you have any questions, please send us an email at{" "}
