@@ -23,9 +23,9 @@ const ESportsX: EventDetail = {
   key: Events.hacks11,
   page: "/esports",
   image: "/eSportsX_banner.png",
-  startDate: new Date("02/07/2026"),
-  endDate: new Date("02/9/2026"),
-  deadline: new Date("02/05/2026"),
+  startDate: new Date("02/07/2025"),
+  endDate: new Date("02/9/2025"),
+  deadline: new Date("02/05/2025"),
 };
 
 const events = [
