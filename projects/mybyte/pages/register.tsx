@@ -371,9 +371,9 @@ export default function Register() {
                                   "Please enter your school email (.edu)",
                                 pattern: {
                                   value:
-                                    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu)/,
+                                    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu|\.ca)$/,
                                   message:
-                                    "Needs to be a valid school email (.edu)",
+                                    "Needs to be a valid school email (.edu or .ca)",
                                 },
                               })}
                               id="grid-text-1"
