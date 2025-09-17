@@ -9,6 +9,8 @@ env:
   REGION: us-central1
   DEPLOY_ENV: prod
   CI: true # silences "yarn install"
+  AR_HOST: us-central1-docker.pkg.dev
+  AR_REPO: mybyte-prod
 
 jobs:
   flake8:
@@ -77,8 +79,8 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v1"
 
       - name: Authorize Docker push (Artifact Registry)
-        run: gcloud auth configure-docker --quiet ${{ env.REGION }}-docker.pkg.dev
-
+        run: gcloud auth configure-docker --quiet ${{ env.AR_HOST }}
+        
       - id: file_changes
         name: Get Changed Files
         uses: trilom/file-changes-action@v1.2.4
@@ -95,7 +97,7 @@ jobs:
       - name: Build and Push mybyte Container
         run: |-
           echo "mybyte changed, building ..."
-          IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/mybyte/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}"
+          IMAGE_URI="${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}"
           docker build -t "$IMAGE_URI" projects/mybyte
           docker push "$IMAGE_URI"
         if: contains(steps.file_changes.outputs.files , 'mybyte')
@@ -105,7 +107,7 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
           service: mybyte-${{ env.DEPLOY_ENV }}
-          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/mybyte/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}
+          image: ${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}
           region: ${{ env.REGION }}
         if: contains(steps.file_changes.outputs.files , 'mybyte')
 

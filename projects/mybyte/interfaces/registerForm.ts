@@ -1,10 +1,10 @@
 import {
+  DietaryRestrictions,
   Genders,
-  StudentYears,
+  LevelsOfStudy,
   Majors,
   ShirtSizes,
-  LevelsOfStudy,
-  DietaryRestrictions,
+  StudentYears,
 } from "../enums/registerEnums";
 import { ReactSelectObject } from "../interfaces/react-select";
 
@@ -21,7 +21,7 @@ export interface RegisterForm {
   minor: string;
   school: ReactSelectObject;
   inputSchool: string;
-  email: string; // .edu
+  email: string; // .edu or whitelisted domains
   participated: boolean; // Have you ever participated in a hackathon? Yes or No
   elCreditInterest: boolean; // Hackers who are interested in ELCredit
   hopeToSee: string; // What do you hope to see from UGA Hacks 8?
