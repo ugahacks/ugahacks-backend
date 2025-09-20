@@ -13,7 +13,7 @@ import { Events } from "../enums/events";
 const Hacks11: EventDetail = {
   key: Events.hacks11,
   page: "/register",
-  image: "/Registration .png",
+  image: "/UH11_Registration_Banner.png",
   startDate: new Date("02/06/2026"),
   endDate: new Date("02/08/2026"),
   deadline: new Date("01/31/2026"),
