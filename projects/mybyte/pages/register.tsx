@@ -363,17 +363,17 @@ export default function Register() {
                               className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
                               {...register("email", {
                                 required:
-                                  "Please enter your school email (.edu)",
+                                  "Please enter your school email (.edu or .ac.uk)",
                                 pattern: {
                                   value:
-                                    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu)/,
+                                    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu|\.ac\.uk)$/i,
                                   message:
-                                    "Needs to be a valid school email (.edu)",
+                                    "Needs to be a valid school email (.edu or .ac.uk)",
                                 },
                               })}
                               id="grid-text-1"
                               type="text"
-                              placeholder="byte@uga.edu"
+                              placeholder="byte@uga.edu or byte@ucl.ac.uk"
                               maxLength={100}
                             />
                             {errors.email ? (
