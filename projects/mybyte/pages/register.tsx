@@ -472,10 +472,12 @@ export default function Register() {
                               name="age"
                               rules={{
                                 required: "Please provide an age",
+                                min: { value: 13, message: "Age cannot be below 13." },
+                                max: { value: 100, message: "Age cannot exceed 100." },
                               }}
                               render={({
                                 field: { name, onChange, value },
-                              }) => (
+                               }) => (
                                 <input
                                   type="number"
                                   placeholder={name}
@@ -483,6 +485,8 @@ export default function Register() {
                                   value={value}
                                   onChange={onChange}
                                   {...register}
+                                  min={13}
+                                  max={100}
                                 />
                               )}
                               control={control}
