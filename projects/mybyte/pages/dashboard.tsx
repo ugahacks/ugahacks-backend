@@ -60,7 +60,7 @@ const events = [
     id: (re: EventRegistered) => {
       return true;
     },
-  }
+  },
 ];
 
 // Valid Open Events (pretty name):
@@ -204,14 +204,14 @@ const DashboardPage = () => {
                 Register for events
               </h3>
               <div className="flex flex-wrap gap-10">
-                {events.map((data) => {
+                {events.map((data, i) => {
                   if (data.id(registeredEvents)) {
                     let ev = data.event(registeredEvents);
                     return (
                       <button
                         onClick={() => registrationCheck(ev.props.event)}
                         className="pt-2 transform hover:scale-95 duration-300"
-                        key={ev.key}
+                        key={i}
                       >
                         {ev}
                       </button>
