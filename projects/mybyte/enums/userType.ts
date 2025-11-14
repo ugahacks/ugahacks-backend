@@ -4,4 +4,5 @@ export enum Users {
     judge = "JUDGE",
     volunteer = "VOLUNTEER",
     admin = "ADMIN",
+    organizer = "ORGANIZER"
 }
