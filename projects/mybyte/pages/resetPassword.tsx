@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import AlertCard from "../components/AlertCard";
+import { useAuth } from "../context/AuthContext";
 
 export default function ResetPassword() {
   interface resetPasswordForm {
@@ -52,24 +52,35 @@ export default function ResetPassword() {
   };
 
   const originalText = "password?";
-  const resetStep = ["p##s#o3d?", "p#ss#o3d?", "p#ss#ord?", "p##swo3d?"];
   const dictionary = "0123456789qwertyuiopasdfghjklzxcvbnm!?></\\a`~+*=@#$%";
+  const resetStep = useMemo(
+
+    () => ["p##s#o3d?", "p#ss#o3d?", "p#ss#ord?", "p##swo3d?"], []);
   const [randomizedString, setRandomizedString] = useState("p##s#o3d?");
   let id: any = undefined;
 
-  const animateText = () => {
-    const intervalId = setInterval(() => {
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const animateText = useCallback(() => {
+    // start the scrambling interval
+    intervalRef.current = setInterval(() => {
       const newString = originalText
         .split("")
-        .map(() => dictionary[Math.floor(Math.random() * dictionary.length)])
+        .map(
+          () => dictionary[Math.floor(Math.random() * dictionary.length)]
+        )
         .join("");
 
       setRandomizedString(newString);
     }, 100);
 
     setTimeout(() => {
-      clearInterval(intervalId);
+      // stop scrambling after 5s
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
 
+      // then step through resetStep and end on originalText
       setTimeout(() => {
         setRandomizedString(resetStep[0]);
         setTimeout(() => {
@@ -84,17 +95,22 @@ export default function ResetPassword() {
         }, 100);
       }, 100);
 
+      // loop the animation
       setTimeout(() => {
-        // loops animation
         animateText();
       }, 10000);
     }, 5000);
-  };
+  }, [dictionary, originalText, resetStep]);
 
   useEffect(() => {
     animateText();
-    return () => clearInterval(id);
-  }, []);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+  }, [animateText]);
 
   return (
     <div className="flex font-inter items-center justify-center mb-[80px] flex-col md:flex-row">

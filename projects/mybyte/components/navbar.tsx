@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuth } from "../context/AuthContext";
-import { Events } from "../enums/events";
 import { useLayoutEffect, useState } from "react";
+import { Users } from "../enums/userType";
 
 const Navbar = ({ children }: { children: React.ReactNode }) => {
-  const { user, logOut, currEvent, userInfo, user_type } = useAuth();
+  const { user, logOut, userInfo, user_type } = useAuth();
   const router = useRouter();
 
   const menuItems = [
@@ -101,9 +101,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
               >
                 <path
                   stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
                   d="M1 1h15M1 7h15M1 13h15"
                 />
               </svg>
@@ -179,7 +179,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                       userInfo.first_name != "" &&
                       user_type !== null &&
                       user_type !== undefined &&
-                      user_type == "service_writer" ? (
+                      user_type == Users.organizer ? (
                         <li>
                           <Link href="/qrRead">
                             <span
