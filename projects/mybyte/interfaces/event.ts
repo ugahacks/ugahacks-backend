@@ -45,6 +45,12 @@ export const addAttendance = async (eventId: string, userId: string) => {
   if (snapshot.exists() == false) throw new Error("Event not found");
 
   const attendanceRef = collection(eventsRef, eventId, "attendance");
+
+  const alreadyAttended = await getDocs(
+    query(attendanceRef, where("uid", "==", userId)),
+  );
+  if (alreadyAttended.docs.length > 0) throw new Error("Already attended");
+
   await setDoc(doc(attendanceRef, userId), {
     uid: userId,
     timestamp: new Date(),

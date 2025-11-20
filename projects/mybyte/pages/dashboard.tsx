@@ -9,6 +9,7 @@ import MobileDashboard from "../components/MobileDashboard";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { EventRegistered, useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
+import { getPoints } from "../interfaces/event";
 
 const Hacks11: EventDetail = {
   key: Events.hacks11,
@@ -79,11 +80,18 @@ function openEventsRegistered(allRegisteredEvents: string[]) {
 
 const DashboardPage = () => {
   const { user, userInfo } = useAuth();
+  const [points, setPoints] = useState<number>(0);
   // console.log(user.uid + " is logged in"); debugging
   const registeredEvents: EventRegistered = userInfo.registered;
   const registeredEventKeys = Object.keys(registeredEvents);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    getPoints(user.uid).then((points) => {
+      setPoints(points);
+    });
+  }, [user.uid]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -182,8 +190,7 @@ const DashboardPage = () => {
                   </span>
                 </h2>
                 <h2>
-                  Points:{" "}
-                  <span className="font-bold">{userInfo.points + "pts"}</span>
+                  Points: <span className="font-bold">{points + "pts"}</span>
                 </h2>
                 <h2>
                   Next Registered Event(s):{" "}
