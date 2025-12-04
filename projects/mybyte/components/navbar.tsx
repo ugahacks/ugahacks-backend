@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useAuth } from "../context/AuthContext";
 import { useLayoutEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { Users } from "../enums/userType";
 
 const Navbar = ({ children }: { children: React.ReactNode }) => {
@@ -40,9 +40,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
 
     return !(
       Math.floor(100 - ((rect.top >= 0 ? 0 : rect.top) / +-rect.height) * 100) <
-        percentVisible ||
+      percentVisible ||
       Math.floor(100 - ((rect.bottom - windowHeight) / rect.height) * 100) <
-        percentVisible
+      percentVisible
     );
   };
 
@@ -109,9 +109,8 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
               </svg>
             </button>
             <div
-              className={`${
-                isMenuOpen ? "block" : "hidden"
-              } px-5 w-full md:block md:w-auto`}
+              className={`${isMenuOpen ? "block" : "hidden"
+                } px-5 w-full md:block md:w-auto`}
               id="navbar-default"
             >
               <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-100 md:flex-row md:space-x-5 md:mt-0 md:border-0 md:bg-white">
@@ -140,7 +139,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                   ) : (
                     <>
                       {userInfo.first_name != null &&
-                      userInfo.first_name != "" ? (
+                        userInfo.first_name != "" ? (
                         <li>
                           <Link href="/dashboard">
                             <span
@@ -176,12 +175,12 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                       {/* TODO: Why are we doing the first_name check */}
 
                       {userInfo.first_name != null &&
-                      userInfo.first_name != "" &&
-                      user_type !== null &&
-                      user_type !== undefined &&
-                      user_type == Users.organizer ? (
+                        userInfo.first_name != "" &&
+                        user_type !== null &&
+                        user_type !== undefined &&
+                        (user_type == Users.organizer || user_type == Users.admin) ? (
                         <li>
-                          <Link href="/qrRead">
+                          <Link href="/qrRead" className="text-red-500">
                             <span
                               className={
                                 "/qrRead" === router.asPath
