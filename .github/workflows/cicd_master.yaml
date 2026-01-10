@@ -96,7 +96,7 @@ jobs:
         run: |-
           echo "mybyte changed, building ..."
           IMAGE_URI="${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}"
-          docker build -t "$IMAGE_URI" projects/mybyte
+          docker build -f projects/mybyte/Dockerfile -t "$IMAGE_URI" .
           docker push "$IMAGE_URI"
         if: contains(steps.file_changes.outputs.all_changed_files, 'projects/mybyte/')
 
