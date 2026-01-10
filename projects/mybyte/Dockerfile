@@ -12,7 +12,7 @@ RUN corepack enable && corepack prepare yarn@4.12.0 --activate
 ENV YARN_NODE_LINKER=node-modules
 
 # Copy dependency metadata first (important!)
-COPY --chown=node:node package.json yarn.lock .yarnrc.yml /home/node/
+COPY --chown=node:node package.json yarn.lock /home/node/
 
 RUN yarn cache clean
 RUN rm -rf node_modules
