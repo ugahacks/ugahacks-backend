@@ -514,7 +514,9 @@ export default function Register() {
                                   className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
                                   options={countryOptions}
                                   value={value}
-                                  onChange={onChange}
+                                  onChange={(newValue) => {
+                                    if (newValue) onChange(newValue);
+                                  }}
                                   name={name}
                                 />
                               )}
@@ -544,7 +546,7 @@ export default function Register() {
                                 render={({ field: { onChange, value } }) => (
                                   <PhoneInput
                                     value={value}
-                                    onChange={onChange}
+                                    onChange={(val: string | undefined) => onChange(val ?? "")}
                                     defaultCountry="US"
                                     id="phoneNumber"
                                   />
@@ -623,7 +625,9 @@ export default function Register() {
                                   className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
                                   options={schoolOptions}
                                   value={value}
-                                  onChange={onChange}
+                                  onChange={(newValue) => {
+                                    if (newValue) onChange(newValue);
+                                  }}
                                   name={name}
                                 />
                               )}

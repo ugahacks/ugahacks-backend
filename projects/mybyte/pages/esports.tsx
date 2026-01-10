@@ -253,7 +253,7 @@ export default function ESportsRegister() {
                                 render={({ field: { onChange, value } }) => (
                                   <PhoneInput
                                     value={value}
-                                    onChange={onChange}
+                                    onChange={(val: string | undefined) => onChange(val ?? "")}
                                     defaultCountry="US"
                                     id="phoneNumber"
                                   />

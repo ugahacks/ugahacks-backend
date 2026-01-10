@@ -89,8 +89,8 @@ jobs:
 
       - name: Output Changed Files
         run: |
-          echo "Changed Files (~/files.csv):"
-          cat $HOME/files.csv
+          echo "Changed files:"
+          echo "${{ steps.file_changes.outputs.all_changed_files }}"
 
       - name: Build and Push mybyte Container
         run: |-
