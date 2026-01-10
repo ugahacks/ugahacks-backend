@@ -28,8 +28,7 @@
     "tsparticles": "2",
     "tsparticles-engine": "2",
     "typescript": "^5.9.3",
-    "typewriter-effect": "2.21.0",
-    "yarn": "^1.22.19"
+    "typewriter-effect": "2.21.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
