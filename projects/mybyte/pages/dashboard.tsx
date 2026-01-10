@@ -41,7 +41,7 @@ const events = [
         return <EventRect disabled={true} event={Hacks11} />;
       }
     },
-    id: (re: EventRegistered) => {
+    id: () => {
       return true;
     },
   },
@@ -57,10 +57,10 @@ const events = [
         return <EventRect disabled={true} event={ESportsX} />;
       }
     },
-    id: (re: EventRegistered) => {
+    id: () => {
       return true;
     },
-  }
+  },
 ];
 
 // Valid Open Events (pretty name):
@@ -98,7 +98,6 @@ const DashboardPage = () => {
   }, []);
 
   const [alert, setAlert] = useState({ show: false, message: "", color: "" });
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const registrationCheck = (ev: EventDetail) => {
     if (ev.key === Events.e_sports_11 && !registeredEvents.HACKS11) {
@@ -204,14 +203,14 @@ const DashboardPage = () => {
                 Register for events
               </h3>
               <div className="flex flex-wrap gap-10">
-                {events.map((data) => {
-                  if (data.id(registeredEvents)) {
+                {events.map((data, i) => {
+                  if (data.id()) {
                     let ev = data.event(registeredEvents);
                     return (
                       <button
                         onClick={() => registrationCheck(ev.props.event)}
                         className="pt-2 transform hover:scale-95 duration-300"
-                        key={ev.key}
+                        key={i}
                       >
                         {ev}
                       </button>

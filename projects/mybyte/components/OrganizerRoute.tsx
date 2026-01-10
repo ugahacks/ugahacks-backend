@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children, className = "h-screen min-h-full overflow-au
         if (user.uid == null) {
             router.push("/login");
         }
-        if (user_type === undefined || user_type === null || user_type !== Users.organizer) {
+        if (user_type === undefined || user_type === null || (user_type !== Users.organizer && user_type !== Users.admin)) {
             router.push("/dashboard");
         }
     }, [router, user, user_type]);

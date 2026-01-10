@@ -1,220 +1,423 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import OrganizerRoute from "../components/OrganizerRoute";
 import { useAuth } from "../context/AuthContext";
 import { QrReader } from "react-qr-reader";
+import {
+  addAttendance,
+  Event,
+  getEvents,
+  getPoints,
+} from "../interfaces/event";
 
-const initialUser = {
-  name: "N/A",
-  shirtSize: "N/A",
+type UserPreview = {
+  name: string;
+  shirtSize: string;
+  points: number;
 };
 
-export default function QrRead(props: any) {
-  const {
-    isUserCheckedIn,
-    checkoutUser,
-    checkinUser,
-    removePoints,
-    givePoints,
-    getNameOfUser,
-    getRegisteredEventsForUser,
-    getTShirtSizeOfUser,
-    user_type,
-  } = useAuth();
-  const [scannedUID, setScannedUID] = useState("");
-  const [user, setUser] = useState(initialUser);
-  const [status, setStatus] = useState("Waiting for scan");
+type ScanVisualStatus = "idle" | "success" | "warning" | "error";
 
-  const selectWhich: JSX.Element = (
-    <select
-      id="what-for"
-      className={
-        "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+type ScanLogItem = {
+  uid: string;
+  name: string;
+  eventTitle: string;
+  status: ScanVisualStatus;
+  message: string;
+  timestamp: number;
+};
+
+const initialUser: UserPreview = {
+  name: "N/A",
+  shirtSize: "N/A",
+  points: 0,
+};
+
+const DEBOUNCE_MS = 3000;
+
+const QrRead: React.FC = () => {
+  const { getNameOfUser, getTShirtSizeOfUser } = useAuth();
+
+  const [scannedUID, setScannedUID] = useState<string>("");
+  const [user, setUser] = useState<UserPreview>(initialUser);
+  const [statusMessage, setStatusMessage] =
+    useState<string>("Waiting for scan");
+  const [events, setEvents] = useState<Event[]>([]);
+  const [scanStatus, setScanStatus] = useState<ScanVisualStatus>("idle");
+  const [scanLog, setScanLog] = useState<ScanLogItem[]>([]);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
+  const flashTimeoutRef = useRef<number | null>(null);
+
+  const successSoundRef = useRef<HTMLAudioElement | null>(null);
+  const warningSoundRef = useRef<HTMLAudioElement | null>(null);
+  const errorSoundRef = useRef<HTMLAudioElement | null>(null);
+  const audioUnlockedRef = useRef<boolean>(false);
+
+  const lastScanRef = useRef<{ uid: string; time: number } | null>(null);
+
+  useEffect(() => {
+    getEvents().then((eventsResponse) => {
+      setEvents(eventsResponse);
+    });
+  }, []);
+
+  const unlockAudioAutomatically = () => {
+    if (audioUnlockedRef.current) return;
+
+    const audios = [
+      successSoundRef.current,
+      warningSoundRef.current,
+      errorSoundRef.current,
+    ];
+
+    audios.forEach((audio) => {
+      if (!audio) return;
+      audio.muted = true;
+      audio
+        .play()
+        .then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.muted = false;
+          audioUnlockedRef.current = true;
+        })
+        .catch(() => {});
+    });
+  };
+
+  useEffect(() => {
+    if (scanStatus === "idle") return;
+
+    if (flashTimeoutRef.current !== null) {
+      window.clearTimeout(flashTimeoutRef.current);
+    }
+
+    flashTimeoutRef.current = window.setTimeout(() => {
+      setScanStatus("idle");
+      setStatusMessage("Waiting for scan");
+    }, 400);
+
+    return () => {
+      if (flashTimeoutRef.current !== null) {
+        window.clearTimeout(flashTimeoutRef.current);
       }
-    >
-      <option value="checkin-first-day">Check in (Day 1)</option>
-      <option value="checkin-other">Check in (Other)</option>
-      <option value="checkout">Check out</option>
-      <option value="side-event">Side Event (250)</option>
-      <option value="company-event">Company Event (1,000)</option>
-      <option value="workshop">Workshop (500)</option>
-      <option value="ctf-checkin">CTF Check in (100)</option>
-      <option value="ctf-cp1">CTF Checkpoint 1 (250)</option>
-      <option value="ctf-cp2">CTF Checkpoint 2 (500)</option>
-      <option value="escape-room">Escape Room Winner (1,000)</option>
-      <option value="e-sports-winner">E-Sports Winner (500)</option>
-      <option value="remove-250">Remove 250 Points</option>
-      <option value="remove-500">Remove 500 Points</option>
-      <option value="remove-1000">Remove 1,000 Points</option>
-      <option value="remove-2000">Remove 2,000 Points</option>
-      <option value="remove-4000">Remove 4,000 Points</option>
-      <option value="remove-10000">Remove 10,000 Points</option>
-    </select>
-  );
+    };
+  }, [scanStatus]);
+
+  const playSoundForStatus = (status: ScanVisualStatus) => {
+    const play = (audio: HTMLAudioElement | null) => {
+      if (!audio) return;
+      audio.play().catch(() => {});
+    };
+
+    if (status === "success") play(successSoundRef.current);
+    if (status === "warning") play(warningSoundRef.current);
+    if (status === "error") play(errorSoundRef.current);
+  };
 
   const determineAction = async (uid: string) => {
-    let outcomeMessage = "";
-    console.log(user_type);
-    try {
-      if (!uid) throw "No QR Code has been scanned!";
-      // action state kept resetting to its default state for some reason
-      if (uid.includes("/")) {
-        window.alert("Not valid User QR-Code");
-        return;
-      } // https://stackoverflow.com/questions/52850099/what-is-the-reg-expression-for-firestore-constraints-on-document-ids
+    if (!uid) return;
 
-      const selectedOption = document
-        .getElementsByTagName("select")
-        .namedItem("what-for")?.value;
+    let outcomeMessage = "";
+    let outcomeStatus: ScanVisualStatus = "error";
+    let eventId = "";
+    let eventTitle = "";
+    let scannedNameForLog = "";
+
+    try {
+      setIsProcessing(true);
+      unlockAudioAutomatically();
+
+      if (!uid) throw "No QR Code has been scanned!";
+      if (uid.includes("/")) throw "Not valid User QR-Code";
+
+      const selectEl = document.getElementById(
+        "what-for",
+      ) as HTMLSelectElement | null;
+
+      if (!selectEl?.value) {
+        throw "Please select an event.";
+      }
+
+      eventId = selectEl.value;
+      eventTitle =
+        events.find((e) => e.id === eventId)?.title ?? `Event ${eventId}`;
 
       const name = await getNameOfUser(uid);
-      if (!name) {
-        throw "User not found!";
-      }
-      const tShirtSize = await getTShirtSizeOfUser(uid);
-      setUser({ name: name, shirtSize: tShirtSize });
-      outcomeMessage = `Successfully completed ${selectedOption} for ${name}`;
-      switch (selectedOption) {
-        case "checkin-first-day":
-          if (!("HACKS9" in (await getRegisteredEventsForUser(uid)))) {
-            throw `${name} is not registered for UGAHacks 9!`;
-          }
-          if (await isUserCheckedIn(uid)) {
-            throw `${name} is already checked in!`;
-          }
-          await checkinUser(uid);
-          givePoints(uid, 100);
-          outcomeMessage = `Checked in ${name}!`;
-          break;
-        case "checkin-other":
-          if (!("HACKS9" in (await getRegisteredEventsForUser(uid)))) {
-            throw `${name} is not registered for UGAHacks 9!`;
-          }
-          if (await isUserCheckedIn(uid)) {
-            throw `${name} is already checked in!`;
-          }
-          checkinUser(uid);
-          outcomeMessage = `Checked in ${name}!`;
-          break;
-        case "checkout":
-          checkoutUser(uid);
-          outcomeMessage = `Checked out ${name}!`;
-          break;
-        case "side-event":
-          givePoints(uid, 250);
-          outcomeMessage = `Awarded ${name} 250 points for the side event!`;
-          break;
-        case "company-event":
-          givePoints(uid, 1000);
-          outcomeMessage = `Awarded ${name} 1,000 points for the company event!`;
-          break;
-        case "workshop":
-          givePoints(uid, 500);
-          outcomeMessage = `Awarded ${name} 500 points for the workshop!`;
-          break;
-        case "ctf-checkin":
-          givePoints(uid, 100);
-          outcomeMessage = `Awarded ${name} 100 points for CTF Checkin!`;
-          break;
-        case "ctf-cp1":
-          givePoints(uid, 250);
-          outcomeMessage = `Awarded ${name} 250 points for CTF Checkpoint 1!`;
-          break;
-        case "ctf-cp2":
-          givePoints(uid, 500);
-          outcomeMessage = `Awarded ${name} 500 points for CTF Checkpoint 2!`;
-          break;
-        case "escape-room":
-          givePoints(uid, 1000);
-          outcomeMessage = `Awarded ${name} 1,000 points for winning escape room!`;
-          break;
-        case "e-sports-winner":
-          givePoints(uid, 500);
-          outcomeMessage = `Awarded ${name} 500 points for winning E-Sports event!`;
-          break;
-        case "remove-250":
-          await removePoints(uid, 250);
-          outcomeMessage = `Removed 250 points from ${name}`;
-          break;
-        case "remove-500":
-          await removePoints(uid, 500);
-          outcomeMessage = `Removed 500 points from ${name}`;
-          break;
-        case "remove-1000":
-          await removePoints(uid, 1000);
-          outcomeMessage = `Removed 1,000 points from ${name}`;
-          break;
-        case "remove-2000":
-          await removePoints(uid, 2000);
-          outcomeMessage = `Removed 2,000 points from ${name}`;
-          break;
-        case "remove-4000":
-          await removePoints(uid, 4000);
-          outcomeMessage = `Removed 4,000 points from ${name}`;
-          break;
-        case "remove-10000":
-          await removePoints(uid, 10000);
-          outcomeMessage = `Removed 10,000 points from ${name}`;
-          break;
-        default:
-          break;
-      }
+      if (!name) throw "User not found!";
+
+      scannedNameForLog = name;
+
+      const shirtSize = await getTShirtSizeOfUser(uid);
+      let points = await getPoints(uid);
+
+      setUser({ name, shirtSize, points });
+
+      await addAttendance(eventId, uid);
+
+      points = await getPoints(uid);
+      setUser({ name, shirtSize, points });
+
+      outcomeMessage = `Successfully completed ${eventTitle} for ${name}`;
+      outcomeStatus = "success";
     } catch (error) {
-      if (typeof error === "string") {
+      if (error instanceof Error) {
+        if (error.message === "Already attended") {
+          outcomeMessage = "Already attended";
+          outcomeStatus = "warning";
+        } else {
+          outcomeMessage = error.message;
+          outcomeStatus = "error";
+        }
+      } else if (typeof error === "string") {
         outcomeMessage = error;
+        outcomeStatus = "error";
       } else {
-        throw error;
+        outcomeMessage = "Unexpected error";
+        outcomeStatus = "error";
       }
     } finally {
-      setStatus(outcomeMessage);
-      setScannedUID("");
+      setStatusMessage(outcomeMessage);
+      setScanStatus(outcomeStatus);
+
+      const timestamp = Date.now();
+      const nameForLog =
+        scannedNameForLog || user.name || "Unknown participant";
+      const effectiveEventTitle = eventTitle || "Unknown event";
+
+      setScanLog((prev) => {
+        const next: ScanLogItem[] = [
+          {
+            uid,
+            name: nameForLog,
+            eventTitle: effectiveEventTitle,
+            status: outcomeStatus,
+            message: outcomeMessage,
+            timestamp,
+          },
+          ...prev,
+        ];
+        return next.slice(0, 50);
+      });
+
+      playSoundForStatus(outcomeStatus);
+      setIsProcessing(false);
     }
   };
+
+  const statusLabel =
+    scanStatus === "success"
+      ? "Success"
+      : scanStatus === "warning"
+        ? "Already attended"
+        : scanStatus === "error"
+          ? "Error"
+          : "Idle";
+
   return (
     <OrganizerRoute>
-      <div className={"flex flex-col justify-center items-center space-x-10"}>
-        <QrReader
-          className={"w-full h-full"}
-          videoStyle={{ height: "100%", width: "100%" }}
-          constraints={{ facingMode: "back" }}
-          scanDelay={0}
-          onResult={async (result, _) => {
-            if (!result) return;
-            setScannedUID(result.getText());
-          }}
-        />
-        <div className={"flex flex-col space-y-2"}>
-          <div>
-            Scanned UID: {scannedUID} <br /> <br />
-            <line></line>
-            Name: {user.name} <br />
-            Shirt Size: {user.shirtSize} <br />
-          </div>
-          <div>Previous Status: {status} </div>
-          <label
-            className={
-              "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            }
+      <div className="relative min-h-screen bg-slate-950 text-slate-50 flex flex-col p-4">
+        {scanStatus === "success" && (
+          <div className="fixed inset-0 z-30 pointer-events-none bg-emerald-500/40" />
+        )}
+        {scanStatus === "warning" && (
+          <div className="fixed inset-0 z-30 pointer-events-none bg-amber-400/40" />
+        )}
+        {scanStatus === "error" && (
+          <div className="fixed inset-0 z-30 pointer-events-none bg-red-500/40" />
+        )}
+
+        <audio ref={successSoundRef} src="/sounds/success.mp3" preload="auto" />
+        <audio ref={warningSoundRef} src="/sounds/warning.mp3" preload="auto" />
+        <audio ref={errorSoundRef} src="/sounds/error.mp3" preload="auto" />
+
+        <header className="mb-3">
+          <h1 className="text-lg font-semibold tracking-tight">
+            Event Check-In
+          </h1>
+          <p className="text-xs text-slate-400">
+            Hold a participant&rsquo;s QR code in view to confirm attendance.
+          </p>
+        </header>
+
+        <main className="flex-1 flex flex-col gap-4">
+          <div
+            className="relative rounded-2xl overflow-hidden bg-black shadow-xl"
+            style={{
+              height: "40vh",
+              maxHeight: 600,
+            }}
           >
-            Scanner Options:
-          </label>
-          {selectWhich}
-          <div>
-            <button
-              className={`py-2.5 px-5 me-2 mb-2 text-sm font-medium focus:outline-none bg-white rounded-lg border border-gray-200 ${
-                scannedUID === ""
-                  ? "text-gray-600"
-                  : "text-gray-900 hover:bg-gray-100 hover:text-blue-700 dark:hover:text-white dark:hover:bg-gray-700"
-              } focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600`}
-              onClick={async () => await determineAction(scannedUID)}
-              disabled={scannedUID === ""}
-            >
-              {scannedUID === ""
-                ? "Please Scan a QR Code"
-                : "Run Selected Action"}
-            </button>
+            <QrReader
+              containerStyle={{ width: "100%", height: "100%" }}
+              videoContainerStyle={{ width: "100%", height: "100%" }}
+              videoStyle={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+              constraints={{ facingMode: "environment" }}
+              scanDelay={0}
+              onResult={async (result) => {
+                if (!result) return;
+
+                const uid = result.getText();
+                const now = Date.now();
+
+                if (lastScanRef.current) {
+                  const { uid: lastUid, time } = lastScanRef.current;
+                  if (uid === lastUid && now - time < DEBOUNCE_MS) {
+                    return;
+                  }
+                }
+
+                if (isProcessing) return;
+
+                lastScanRef.current = { uid, time: now };
+
+                unlockAudioAutomatically();
+                setScannedUID(uid);
+
+                try {
+                  const [name, shirtSize, points] = await Promise.all([
+                    getNameOfUser(uid),
+                    getTShirtSizeOfUser(uid),
+                    getPoints(uid),
+                  ]);
+
+                  if (name) {
+                    setUser({ name, shirtSize, points });
+                  } else {
+                    setUser(initialUser);
+                  }
+                } catch {
+                  setUser(initialUser);
+                }
+
+                void determineAction(uid);
+              }}
+            />
+
+            {/* Scan frame overlay */}
+            <div className="pointer-events-none absolute inset-6 rounded-2xl border border-white/30" />
           </div>
-        </div>
+
+          <section className="space-y-3">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-3 text-sm">
+              <div className="text-xs font-semibold text-slate-400 mb-1">
+                Current Scan
+              </div>
+              <div className="text-xs text-slate-400 mb-2">
+                UID:{" "}
+                <span className="font-mono text-[0.7rem] text-slate-300 break-all">
+                  {scannedUID || "—"}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-y-1 text-xs">
+                <span className="text-slate-400">Name</span>
+                <span className="col-span-2">{user.name}</span>
+
+                <span className="text-slate-400">Shirt Size</span>
+                <span className="col-span-2">{user.shirtSize}</span>
+
+                <span className="text-slate-400">Points</span>
+                <span className="col-span-2">{user.points}</span>
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="what-for"
+                className="block mb-1 text-xs font-medium text-slate-300"
+              >
+                Scanner Options
+              </label>
+              <select
+                id="what-for"
+                className="bg-slate-900 border border-slate-700 text-slate-50 text-sm rounded-lg block w-full p-2.5"
+              >
+                {events.map((event) => (
+                  <option key={event.id} value={event.id}>
+                    {event.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mt-1 flex justify-start">
+              <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/80 border border-slate-700 px-3 py-1.5 text-xs">
+                <span
+                  className={`h-2.5 w-2.5 rounded-full ${
+                    scanStatus === "success"
+                      ? "bg-emerald-400"
+                      : scanStatus === "warning"
+                        ? "bg-amber-400"
+                        : scanStatus === "error"
+                          ? "bg-red-400"
+                          : "bg-slate-500"
+                  }`}
+                />
+                <span className="font-semibold uppercase tracking-wide">
+                  {statusLabel}
+                </span>
+                <span className="text-slate-300 truncate max-w-[12rem]">
+                  {statusMessage}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-2">
+            <h2 className="text-xs font-semibold text-slate-400 mb-1">
+              Recent scans
+            </h2>
+            {scanLog.length === 0 ? (
+              <p className="text-[0.7rem] text-slate-500">
+                No scans yet. Hold a QR code up to the camera.
+              </p>
+            ) : (
+              <div className="space-y-1 max-h-40 overflow-y-auto pr-1">
+                {scanLog.map((entry, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-start justify-between rounded-xl border border-slate-800 bg-slate-900/70 px-2 py-1.5 text-[0.7rem]"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1">
+                        <span className="font-semibold truncate">
+                          {entry.name}
+                        </span>
+                        <span className="px-1.5 py-[1px] rounded-full bg-slate-800 text-slate-200 truncate max-w-[8rem]">
+                          {entry.eventTitle}
+                        </span>
+                      </div>
+                      <div className="text-slate-400 truncate">
+                        {entry.message}
+                      </div>
+                      <div className="text-slate-500 font-mono">
+                        {new Date(entry.timestamp).toLocaleTimeString()}
+                      </div>
+                    </div>
+                    <span
+                      className={`ml-2 mt-1 h-2.5 w-2.5 rounded-full shrink-0 ${
+                        entry.status === "success"
+                          ? "bg-emerald-400"
+                          : entry.status === "warning"
+                            ? "bg-amber-400"
+                            : entry.status === "error"
+                              ? "bg-red-400"
+                              : "bg-slate-500"
+                      }`}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </main>
       </div>
     </OrganizerRoute>
   );
-}
+};
+
+export default QrRead;
