@@ -83,13 +83,9 @@ jobs:
 
       - name: Authorize Docker push (Artifact Registry)
         run: gcloud auth configure-docker --quiet ${{ env.AR_HOST }}
-
-      - id: file_changes
-        name: Get Changed Files
-        uses: trilom/file-changes-action@v1.2.4
-        with:
-          output: ","
-          fileOutput: ","
+      - name: Get changed files
+        id: file_changes
+        uses: tj-actions/changed-files@v45
 
       - name: Output Changed Files
         run: |
@@ -102,7 +98,7 @@ jobs:
           IMAGE_URI="${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}"
           docker build -t "$IMAGE_URI" projects/mybyte
           docker push "$IMAGE_URI"
-        if: contains(steps.file_changes.outputs.files , 'mybyte')
+        if: contains(steps.file_changes.outputs.all_changed_files, 'projects/mybyte/')
 
       - name: Deploy mybyte to Cloud Run
         id: deploy_mybyte
@@ -112,10 +108,10 @@ jobs:
           service: mybyte-${{ env.DEPLOY_ENV }}
           image: ${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/mybyte-${{ env.DEPLOY_ENV }}:${{ github.sha }}
           region: ${{ env.REGION }}
-        if: contains(steps.file_changes.outputs.files , 'mybyte')
+        if: contains(steps.file_changes.outputs.all_changed_files, 'projects/mybyte/')
 
       - name: mybyte Post Deployment
         run: |-
           echo "Active URL:"
           echo ${{ steps.deploy_mybyte.outputs.url }}
-        if: contains(steps.file_changes.outputs.files , 'mybyte')
+        if: contains(steps.file_changes.outputs.all_changed_files, 'projects/mybyte/')
