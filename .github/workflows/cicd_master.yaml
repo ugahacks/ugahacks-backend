@@ -8,7 +8,7 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: us-central1
   DEPLOY_ENV: prod
-  CI: true # silences "yarn install"
+  CI: true
   AR_HOST: us-central1-docker.pkg.dev
   AR_REPO: mybyte-prod
 
@@ -22,22 +22,26 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     steps:
-      - name: Update Yarn
-        run: yarn set version berry
-
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Cache Yarn
-        uses: actions/setup-node@v3
+      - name: Setup Node (with Yarn cache)
+        uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
           cache: "yarn"
+          cache-dependency-path: yarn.lock
 
-      - name: Install project dependencies
-        run: yarn install
+      - name: Enable Corepack + pin Yarn 4.12.0
+        run: |
+          corepack enable
+          corepack prepare yarn@4.12.0 --activate
+          yarn --version
 
-      - name: Lint
+      - name: Install project dependencies (Yarn 4)
+        run: yarn install --immutable
+
+      - name: Lint (mybyte workspace)
         run: |
           echo "yarn version: $(yarn --version)"
           yarn workspace mybyte run lint
@@ -56,7 +60,6 @@ jobs:
       - name: Test Typescript Code
         run: echo "TYPESCRIPT UNIT TESTING COMPLETE"
 
-  # Conditionally build, containerize, and deploy UGAHacks services iff files are changed #
   deploy:
     needs: [flake8, eslint, pytest, jest]
     runs-on: ubuntu-latest
@@ -66,7 +69,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - id: "auth"
         name: "Authenticate to Google Cloud"
@@ -80,7 +83,7 @@ jobs:
 
       - name: Authorize Docker push (Artifact Registry)
         run: gcloud auth configure-docker --quiet ${{ env.AR_HOST }}
-        
+
       - id: file_changes
         name: Get Changed Files
         uses: trilom/file-changes-action@v1.2.4
@@ -93,7 +96,6 @@ jobs:
           echo "Changed Files (~/files.csv):"
           cat $HOME/files.csv
 
-      # mybyte
       - name: Build and Push mybyte Container
         run: |-
           echo "mybyte changed, building ..."
@@ -101,6 +103,7 @@ jobs:
           docker build -t "$IMAGE_URI" projects/mybyte
           docker push "$IMAGE_URI"
         if: contains(steps.file_changes.outputs.files , 'mybyte')
+
       - name: Deploy mybyte to Cloud Run
         id: deploy_mybyte
         uses: google-github-actions/deploy-cloudrun@v1
