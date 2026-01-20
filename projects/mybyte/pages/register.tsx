@@ -45,6 +45,7 @@ export default function Register() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterForm>({
     defaultValues: {
+      age: 18,
       phoneNumber: "",
       inputMajor: "",
       inputSchool: "",
@@ -52,6 +53,8 @@ export default function Register() {
       participated: false,
       elCreditInterest: undefined,
       mlhCommunication: false,
+      codeOfConduct: false,
+      eventLogisticsInfo: false,
     },
   });
 
@@ -91,7 +94,7 @@ export default function Register() {
       '([^"\\' +
       strDelimiter +
       "\\r\\n]*))",
-      "gi"
+      "gi",
     );
 
     // Create an array to hold our data. Give the array
@@ -192,10 +195,8 @@ export default function Register() {
 
   function otherDietaryRestrictionsInput(value: string) {
     if (value == "other") {
-      console.log(value);
       setOtherDietaryRestrictions(true);
     } else {
-      console.log(value);
       setOtherDietaryRestrictions(false);
       resetField("inputDietaryRestrictions");
     }
@@ -432,7 +433,8 @@ export default function Register() {
                           </div>
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                              Race/Ethnicity<span className="text-red-600">*</span>
+                              Race/Ethnicity
+                              <span className="text-red-600">*</span>
                             </label>
                             <div className="flex-shrink w-full inline-block relative">
                               <select
@@ -441,7 +443,9 @@ export default function Register() {
                                   required: "Select your race/ethnicity",
                                 })}
                               >
-                                <option value="">Select your race/ethnicity</option>
+                                <option value="">
+                                  Select your race/ethnicity
+                                </option>
                                 {Object.keys(Races).map((key) => (
                                   <option key={key} value={key}>
                                     {Races[key as keyof typeof Races]}
@@ -472,19 +476,24 @@ export default function Register() {
                               name="age"
                               rules={{
                                 required: "Please provide an age",
-                                min: { value: 13, message: "Age cannot be below 13." },
-                                max: { value: 100, message: "Age cannot exceed 100." },
+                                min: {
+                                  value: 13,
+                                  message: "Age cannot be below 13.",
+                                },
+                                max: {
+                                  value: 100,
+                                  message: "Age cannot exceed 100.",
+                                },
                               }}
-                              render={({
-                                field: { name, onChange, value },
-                              }) => (
+                              render={({ field: { onChange, value } }) => (
                                 <input
                                   type="number"
-                                  placeholder={name}
+                                  placeholder="age"
                                   className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
                                   value={value}
-                                  onChange={onChange}
-                                  {...register}
+                                  onChange={(e) =>
+                                    onChange(Number(e.target.value))
+                                  }
                                   min={13}
                                   max={100}
                                 />
@@ -546,7 +555,9 @@ export default function Register() {
                                 render={({ field: { onChange, value } }) => (
                                   <PhoneInput
                                     value={value}
-                                    onChange={(val: string | undefined) => onChange(val ?? "")}
+                                    onChange={(val: string | undefined) =>
+                                      onChange(val ?? "")
+                                    }
                                     defaultCountry="US"
                                     id="phoneNumber"
                                   />
@@ -848,7 +859,7 @@ export default function Register() {
                                         onChange(!value);
                                         let span =
                                           document.getElementById(
-                                            "grid-text-1-span"
+                                            "grid-text-1-span",
                                           );
                                         if (span === null) return;
                                         let text = span.innerText;
@@ -1096,7 +1107,7 @@ export default function Register() {
                                       onChange={() => {
                                         onChange(!value);
                                       }}
-                                      checked={value}
+                                      checked={!!value}
                                     />
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                                   </label>
@@ -1163,7 +1174,7 @@ export default function Register() {
                                       onChange={() => {
                                         onChange(!value);
                                       }}
-                                      checked={value}
+                                      checked={!!value}
                                     />
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                                   </label>
@@ -1187,9 +1198,9 @@ export default function Register() {
                                     htmlFor="grid-text-1"
                                   >
                                     <em>Communication from MLH: </em>“I
-                                    authorize MLH to send me occasional
-                                    emails about relevant events, career
-                                    opportunities, and community announcements.&quot;
+                                    authorize MLH to send me occasional emails
+                                    about relevant events, career opportunities,
+                                    and community announcements.&quot;
                                   </label>
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                     <input
@@ -1200,7 +1211,7 @@ export default function Register() {
                                       onChange={() => {
                                         onChange(!value);
                                       }}
-                                      checked={value}
+                                      checked={!!value}
                                     />
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                                   </label>
@@ -1216,8 +1227,8 @@ export default function Register() {
                           <div className={!shouldRender ? "pb-56" : "pb-20"}>
                             <button
                               className={`border rounded w-full transition-colors p-2 ${isSubmitting
-                                ? "border-gray-300 bg-gray-300 text-gray-500 cursor-not-allowed"
-                                : "border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white"
+                                  ? "border-gray-300 bg-gray-300 text-gray-500 cursor-not-allowed"
+                                  : "border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white"
                                 }`}
                               type="submit"
                               disabled={isSubmitting}

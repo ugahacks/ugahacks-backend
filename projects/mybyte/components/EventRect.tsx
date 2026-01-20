@@ -35,7 +35,8 @@ export default function EventRect(props: {
   let statusClass: string = "border-green-800 text-green-700";
   let dup = new Date(props.event.deadline);
   dup.setDate(props.event.deadline.getDate() + 1);
-  if (new Date() > dup || props.event.key === Events.hacks9) {    // Manually disable hacks9 now that registration has passed
+  if (new Date() > dup || props.event.key === Events.hacks9) {
+    // Manually disable hacks9 now that registration has passed
     statusName = "closed";
     statusClass = "border-primary-500 text-primary-500";
   }
@@ -57,6 +58,8 @@ export default function EventRect(props: {
             alt="img-blur-shadow"
             className={"h-full w-60 rounded-t-lg" + gray}
             fill
+            loading="eager"
+            sizes="300px"
           />
         </CardHeader>
         <CardBody className="p-0 pt-2">

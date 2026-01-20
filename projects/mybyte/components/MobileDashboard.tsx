@@ -1,10 +1,10 @@
-import React, { useState } from "react";
 import Image from "next/image";
 import { QRCodeCanvas } from "qrcode.react";
-import { EventRegistered, useAuth } from "../context/AuthContext";
-import AlertCard from "./AlertCard";
+import React, { useState } from "react";
 import EventRect, { EventDetail } from "../components/EventRect";
+import { EventRegistered, useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
+import AlertCard from "./AlertCard";
 
 interface MobileDashboardProps {
   user: any; // Define the type for 'user' based on your application
@@ -36,11 +36,11 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const registrationCheck = (ev: EventDetail) => {
-    if (ev.key === Events.e_sports_9 && !registeredEvents.HACKS9) {
+    if (ev.key === Events.e_sports_11 && !registeredEvents.HACKS11) {
       setAlert({
         show: true,
         message:
-          "Please register for UGAHacks 9 before registering for eSports 9",
+          "Please register for UGAHacks 11 before registering for eSports 11",
         color: "bg-[#212121]",
       });
     } else if (ev.key in registeredEvents) {
@@ -62,12 +62,15 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
     void element?.offsetWidth;
     element?.classList.add("animate-fade-in-out");
   };
+  const first = userInfo?.first_name ?? "";
+  const last = userInfo?.last_name ?? "";
+  const fullName = `${first} ${last}`.trim();
 
   return (
     <div className="flex py-2 flex-initial w-full text-center pb-48">
       <div className="text-gray-800 mt-4 inter">
         <h2 className="text-2xl font-semibold">
-          Welcome, {userInfo.first_name + " " + userInfo.last_name}
+          Welcome{fullName ? `, ${fullName}` : ""}!
         </h2>
         <div className="text-sm pt-3 pb-5 font-mono container">
           <p>
@@ -121,21 +124,28 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
             Register for events
           </h3>
           <div className="items-center justify-center h-full flex flex-wrap gap-10">
-            {events.map((data) => {
-              if (data.id(registeredEvents)) {
-                let ev = data.event(registeredEvents);
+            {events
+              .filter((data) => data.id(registeredEvents))
+              .map((data, idx) => {
+                const ev = data.event(registeredEvents);
+                // Prefer a stable identifier from your event definition object
+                const stableKey =
+                  data.key ??
+                  data.idKey ??
+                  data.name ??
+                  ev.props?.event?.key ??
+                  idx;
+
                 return (
                   <button
+                    key={String(stableKey)}
                     onClick={() => registrationCheck(ev.props.event)}
                     className="py-2 transform hover:scale-95 duration-300"
-                    key={ev.key}
                   >
                     {ev}
                   </button>
                 );
-              }
-              return <></>;
-            })}
+              })}
           </div>
         </div>
       </div>

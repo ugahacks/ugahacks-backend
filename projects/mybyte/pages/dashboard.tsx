@@ -20,7 +20,7 @@ const Hacks11: EventDetail = {
 };
 
 const ESportsX: EventDetail = {
-  key: Events.hacks11,
+  key: Events.e_sports_11,
   page: "/esports",
   image: "/eSportsX_banner.png",
   startDate: new Date("02/07/2025"),
