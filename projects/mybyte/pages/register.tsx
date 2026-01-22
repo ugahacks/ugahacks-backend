@@ -717,9 +717,9 @@ export default function Register() {
                               )}
                             </div>
                           </div>
-                          <div className="w-full md:w-full px-3 mb-6">
+                          {/* <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                              Resume<span className="text-red-600">*</span>
+                              Resume<span className="text-yellow-600">*</span>
                             </label>
                             <span className="block pt-[1px] pb-[10px] text-xs font-normal">
                               <span className="italic underline">NOTE:</span>{" "}
@@ -730,9 +730,9 @@ export default function Register() {
                             <input
                               className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
                               {...register("resume", {
-                                validate: (value) =>
-                                  validateFileInput(value) ||
-                                  "Please submit your resume in .pdf or .doc format",
+                                // validate: (value) =>
+                                //   validateFileInput(value) ||
+                                //   "Please submit your resume in .pdf or .doc format",
                               })}
                               type="file"
                             />
@@ -741,7 +741,7 @@ export default function Register() {
                                 {errors.resume.message}
                               </p>
                             )}
-                          </div>
+                          </div> */}
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                               Current Major
@@ -1227,8 +1227,8 @@ export default function Register() {
                           <div className={!shouldRender ? "pb-56" : "pb-20"}>
                             <button
                               className={`border rounded w-full transition-colors p-2 ${isSubmitting
-                                  ? "border-gray-300 bg-gray-300 text-gray-500 cursor-not-allowed"
-                                  : "border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white"
+                                ? "border-gray-300 bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white"
                                 }`}
                               type="submit"
                               disabled={isSubmitting}
