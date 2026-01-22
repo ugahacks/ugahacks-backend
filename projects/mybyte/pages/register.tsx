@@ -86,14 +86,14 @@ export default function Register() {
     let objPattern = new RegExp(
       // Delimiters.
       "(\\" +
-      strDelimiter +
-      "|\\r?\\n|\\r|^)" +
-      // Quoted fields.
-      '(?:"([^"]*(?:""[^"]*)*)"|' +
-      // Standard fields.
-      '([^"\\' +
-      strDelimiter +
-      "\\r\\n]*))",
+        strDelimiter +
+        "|\\r?\\n|\\r|^)" +
+        // Quoted fields.
+        '(?:"([^"]*(?:""[^"]*)*)"|' +
+        // Standard fields.
+        '([^"\\' +
+        strDelimiter +
+        "\\r\\n]*))",
       "gi",
     );
 
@@ -143,18 +143,27 @@ export default function Register() {
     // Return the parsed data.
     return arrData;
   }
-  let schoolOptions: { value: string; label: string }[] = [];
-  fetch("/schools.csv")
-    .then((resp) => resp.text())
-    .then((text) => {
-      CSVToArray(text, ",").forEach((row, index) => {
-        if (index != 0) {
-          schoolOptions.push({ value: row[0], label: row[0] });
-        }
-      });
-    });
+  type SchoolOptions = {
+    value: string;
+    label: string;
+  };
+  const [schoolOptions, setSchoolOptions] = useState<SchoolOptions[]>();
 
-  schoolOptions.push({ value: "other", label: "Other" });
+  useEffect(() => {
+    let options: SchoolOptions[] = [];
+    fetch("/schools.csv")
+      .then((resp) => resp.text())
+      .then((text) => {
+        CSVToArray(text, ",").forEach((row, index) => {
+          if (index != 0) {
+            options.push({ value: row[0], label: row[0] });
+          }
+        });
+      });
+
+    options.push({ value: "other", label: "Other" });
+    setSchoolOptions(options);
+  }, []);
 
   const [otherMajor, setOtherMajor] = useState(false);
   const [otherSchool, setOtherSchool] = useState(false);
@@ -598,7 +607,7 @@ export default function Register() {
                                   <option key={key} value={key}>
                                     {
                                       LevelsOfStudy[
-                                      key as keyof typeof LevelsOfStudy
+                                        key as keyof typeof LevelsOfStudy
                                       ]
                                     }
                                   </option>
@@ -695,7 +704,7 @@ export default function Register() {
                                   <option key={key} value={key}>
                                     {
                                       StudentYears[
-                                      key as keyof typeof StudentYears
+                                        key as keyof typeof StudentYears
                                       ]
                                     }
                                   </option>
@@ -982,7 +991,7 @@ export default function Register() {
                                   <option key={key} value={key}>
                                     {
                                       DietaryRestrictions[
-                                      key as keyof typeof DietaryRestrictions
+                                        key as keyof typeof DietaryRestrictions
                                       ]
                                     }
                                   </option>
@@ -1022,16 +1031,16 @@ export default function Register() {
                                 <>
                                   {errors.inputDietaryRestrictions.type ===
                                     "required" && (
-                                      <p className={errorStyles}>
-                                        {errors.inputDietaryRestrictions.message}
-                                      </p>
-                                    )}
+                                    <p className={errorStyles}>
+                                      {errors.inputDietaryRestrictions.message}
+                                    </p>
+                                  )}
                                   {errors.inputDietaryRestrictions.type ===
                                     "pattern" && (
-                                      <p className={errorStyles}>
-                                        {errors.inputDietaryRestrictions.message}
-                                      </p>
-                                    )}
+                                    <p className={errorStyles}>
+                                      {errors.inputDietaryRestrictions.message}
+                                    </p>
+                                  )}
                                 </>
                               ) : null}
                             </div>
@@ -1226,10 +1235,11 @@ export default function Register() {
                           </div>
                           <div className={!shouldRender ? "pb-56" : "pb-20"}>
                             <button
-                              className={`border rounded w-full transition-colors p-2 ${isSubmitting
-                                ? "border-gray-300 bg-gray-300 text-gray-500 cursor-not-allowed"
-                                : "border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white"
-                                }`}
+                              className={`border rounded w-full transition-colors p-2 ${
+                                isSubmitting
+                                  ? "border-gray-300 bg-gray-300 text-gray-500 cursor-not-allowed"
+                                  : "border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white"
+                              }`}
                               type="submit"
                               disabled={isSubmitting}
                             >
