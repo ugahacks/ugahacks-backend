@@ -12,7 +12,7 @@ import { Events } from "../enums/events";
 
 // TODO: Set to false when PC registration bug is fixed
 // Issue: https://github.com/orgs/ugahacks/projects/8/views/1?pane=issue&itemId=150820061&issue=ugahacks%7Cugahacks%7C556
-const SHOW_PC_REGISTRATION_WARNING = false;
+const SHOW_PC_REGISTRATION_WARNING = true;
 
 const Hacks11: EventDetail = {
   key: Events.hacks11,
