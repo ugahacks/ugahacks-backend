@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 import React from "react";
 import { EventStatus } from "../enums/eventStatus";
 import { Events } from "../enums/events";
-import hacks8Byte from "../public/byte_mini.png";
 import vercelPic from "../public/vercel.svg";
 
 export interface EventDetail {

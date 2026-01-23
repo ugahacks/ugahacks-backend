@@ -40,9 +40,9 @@ import { FirebaseError } from "firebase/app";
 import Router from "next/router";
 import { Users } from "../enums/userType";
 import { eSportsForm } from "../interfaces/eSportsForm";
+import { getPoints } from "../interfaces/event";
 import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { RegisterForm } from "../interfaces/registerForm";
-import { getPoints } from "../interfaces/event";
 
 export interface UserType {
   email: string | null;
@@ -50,7 +50,6 @@ export interface UserType {
 }
 
 export interface EventRegistered {
-  HACKS8: boolean | null;
   HACKS9: boolean | null;
   HACKSX: boolean | null;
   ESPORTSX: boolean | null;
@@ -58,8 +57,8 @@ export interface EventRegistered {
   ESPORTS11: boolean | null;
 }
 
-export interface EventCheckIn extends EventRegistered {}
-export interface EventCheckOut extends EventRegistered {}
+export interface EventCheckIn extends EventRegistered { }
+export interface EventCheckOut extends EventRegistered { }
 
 export interface UserInfoType {
   first_name: string | null;
@@ -93,7 +92,6 @@ export const AuthContextProvider = ({
     tid: null,
     school: null,
     registered: {
-      HACKS8: null,
       HACKS9: null,
       HACKSX: null,
       ESPORTSX: null,
@@ -118,18 +116,17 @@ export const AuthContextProvider = ({
   const teamRef = collection(db, "team");
   const emailTemplates = collection(db, "email-templates");
 
-  // Current Event (Hacks X):
+  // Current Event (Hacks 11):
   const registerRef = collection(db, "UH11-user-registration-details");
   const registerMail = collection(db, "UH11-registrationMail");
+  const eSportsRef = collection(db, "eSports11-user-registration-details");
 
   const registerRef_UHX = collection(db, "UHX-user-registration-details");
   const registerMail_UHX = collection(db, "UHX-registrationMail");
 
-  const eSportsRef = collection(db, "eSportsX-user-registration-details");
   const registerRef_UH9 = collection(db, "UH9-user-registration-details");
   const registerMail_UH9 = collection(db, "UH9-registrationMail");
 
-  // Hacks 8:
   const eSportsRef_UH8 = collection(db, "user-e-sports-details");
   const registerRef_UH8 = collection(db, "user-registration-details");
   const workshopRef = collection(db, "user-workshop-details");
@@ -214,7 +211,7 @@ export const AuthContextProvider = ({
       downloadURL = await new Promise<string>((resolve, reject) => {
         uploadTask.on(
           "state_changed",
-          () => {},
+          () => { },
           (error) => reject(error),
           async () => {
             try {
@@ -342,7 +339,7 @@ export const AuthContextProvider = ({
       submitted_time: serverTimestamp(),
     });
 
-    // Set the user status to registered for hacks8
+    // Set the user status to registered for hacks # esports
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
       "registered.ESPORTSX": true,
     });
@@ -844,10 +841,10 @@ export const AuthContextProvider = ({
         tid === ""
           ? query(teamRef, where("members", "array-contains", user.email))
           : query(
-              teamRef,
-              where("members", "array-contains", user.email),
-              where("__name__", operator, tid),
-            );
+            teamRef,
+            where("members", "array-contains", user.email),
+            where("__name__", operator, tid),
+          );
       const results: QuerySnapshot<DocumentData> = await getDocs(q);
       results.forEach((elem) => {
         let team: TeamType = { members: [] };
@@ -969,22 +966,22 @@ export const AuthContextProvider = ({
     emails: string[],
     strict: boolean = true,
   ) => {
-    let returned: boolean[] = [];
-    for (let times: number = 0; times < emails.length; times++)
-      returned.push(false);
-    const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
-    const results: QuerySnapshot<DocumentData> = await getDocs(q);
-    results.forEach((elem) => {
-      emails.forEach((email, index) => {
-        if (
-          email === elem.data().email &&
-          (!strict || elem.data().tid == undefined)
-        )
-          returned[index] = true;
+      let returned: boolean[] = [];
+      for (let times: number = 0; times < emails.length; times++)
+        returned.push(false);
+      const q: Query<DocumentData> = query(userRef, where("email", "in", emails));
+      const results: QuerySnapshot<DocumentData> = await getDocs(q);
+      results.forEach((elem) => {
+        emails.forEach((email, index) => {
+          if (
+            email === elem.data().email &&
+            (!strict || elem.data().tid == undefined)
+          )
+            returned[index] = true;
+        });
       });
-    });
-    return returned;
-  };
+      return returned;
+    };
 
   /**
    * Checks if `emails` is in the given team.
