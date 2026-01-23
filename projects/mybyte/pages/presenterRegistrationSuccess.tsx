@@ -19,7 +19,7 @@ export default function PresenterRegistrationSuccess() {
       <div className="mt-8 mb-8">
         <div className="flex justify-center text-xl">
           <p className="text-cyan-500">
-            <Link href="/events/hacks-8">Return to Mybyte</Link>
+            <Link href="/events/hacks-8">Return to Hacks 8</Link>
           </p>
         </div>
       </div>

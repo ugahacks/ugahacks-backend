@@ -1,12 +1,17 @@
+import React from "react";
+import Image from "next/image";
+import vercelPic from "../public/vercel.svg";
+import { useRouter } from "next/router";
 import {
   Card,
+  CardHeader,
   CardBody,
   CardFooter,
-  CardHeader,
   Typography,
 } from "@material-tailwind/react";
-import Image from "next/image";
-import { useRouter } from "next/router";
+import { EventStatus } from "../enums/eventStatus";
+import hacks8Byte from "../public/byte_mini.png";
+
 export interface EventDetail {
   key: string;
   eventName: string;

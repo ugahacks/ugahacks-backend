@@ -4,7 +4,7 @@ import { EventStatus } from "../enums/eventStatus";
 
 function assignColor(evt: EventStatus): string {
     let str = "";
-    switch (evt) {
+    switch(evt) {
         case EventStatus.Accepted:
             str = "bg-green-200";
             break;
@@ -27,11 +27,13 @@ function assignColor(evt: EventStatus): string {
 }
 
 function colorCode(props: any): JSX.Element {
-    const which =
-        Events.hacks11 in props.registered
-            ? EventStatus.Registered
-            : EventStatus.NotRegistered;
-    return <span className={assignColor(which)}>{which}</span>;
+    const which = Events.hacks8 in props.registered ?
+        EventStatus.Registered : EventStatus.NotRegistered;
+    return (
+        <span className={assignColor(which)}>
+          {which}
+        </span>
+    );
 }
 
 export default colorCode;

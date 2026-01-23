@@ -1,6 +1,9 @@
+import ReactDOMServer from "react-dom/server";
 import type { NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
+import hacks8Byte from "../public/byte_mini.png";
 import Circle from "../components/Circle";
 
 const Home: NextPage = () => {

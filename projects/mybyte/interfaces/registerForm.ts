@@ -24,7 +24,7 @@ export interface RegisterForm {
   email: string; // .edu or whitelisted domains
   participated: boolean; // Have you ever participated in a hackathon? Yes or No
   elCreditInterest: boolean; // Hackers who are interested in ELCredit
-  hopeToSee: string; // What do you hope to see from UGA Hacks 11?
+  hopeToSee: string; // What do you hope to see from UGA Hacks 8?
   dietaryRestrictions: DietaryRestrictions; // Vegetarian, etc : Should give options
   inputDietaryRestrictions: string;
   shirtSize: ShirtSizes; // S, M, L, XL, XXL, should be enum

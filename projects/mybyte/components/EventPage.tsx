@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import Event, { EventDetail } from "../components/Event";
+import React, { useState, useEffect } from "react";
 import ProtectedRoute from "../components/ProtectedRoute";
-import RegisterCard, { ApplicationPaths } from "../components/RegisterCard";
 import { useAuth } from "../context/AuthContext";
+import Event, { EventDetail } from "../components/Event";
+import RegisterCard, { ApplicationPaths } from "../components/RegisterCard";
 import { Events } from "../enums/events";
 import { EventStatus } from "../enums/eventStatus";
 
@@ -15,7 +15,7 @@ const EventPage = () => {
     application_type: "Participant",
     deadline: "December 31st, 2022",
     page: "/register",
-    disabled: Events.hacks9 in userInfo.registered,
+    disabled: Events.hacks8 in userInfo.registered,
     image: "/byte_mini.png",
   };
 
@@ -38,7 +38,7 @@ const EventPage = () => {
         <div className="text-gray-600 px-12 py-24 mt-24 mx-auto">
           <h2 className="text-2xl font-semibold">Hey {firstName}, this is </h2>
           STATUS:{" "}
-          {Events.hacks9 in registeredEvents
+          {Events.hacks8 in registeredEvents
             ? EventStatus.Registered
             : EventStatus.NotRegistered}
         </div>
