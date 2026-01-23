@@ -10,10 +10,6 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import { EventRegistered, useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
 
-// TODO: Set to false when PC registration bug is fixed
-// Issue: https://github.com/orgs/ugahacks/projects/8/views/1?pane=issue&itemId=150820061&issue=ugahacks%7Cugahacks%7C556
-const SHOW_PC_REGISTRATION_WARNING = true;
-
 const Hacks11: EventDetail = {
   key: Events.hacks11,
   page: "/register",
@@ -135,23 +131,6 @@ const DashboardPage = () => {
 
   return (
     <ProtectedRoute>
-      {SHOW_PC_REGISTRATION_WARNING && (
-        <div className="sticky top-0 left-0 w-full bg-amber-500 text-white px-4 py-3 shadow-md z-40">
-          <div className="container mx-auto">
-            <p className="font-semibold">
-              ⚠️ Important: Please register for UGAHacks 11 on your mobile device. There is currently a bug affecting registration on PC devices.{" "}
-              <a
-                href="https://github.com/orgs/ugahacks/projects/8/views/1?pane=issue&itemId=150820061&issue=ugahacks%7Cugahacks%7C556"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-amber-100"
-              >
-                View issue details →
-              </a>
-            </p>
-          </div>
-        </div>
-      )}
       {isMobile ? (
         <MobileDashboard
           user={user}
