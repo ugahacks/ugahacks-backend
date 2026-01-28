@@ -299,7 +299,7 @@ export const AuthContextProvider = ({
    */
   const triggerESportsRegistrationEmail = async (data: eSportsForm) => {
     const uh9RegistrationDoc = await getDoc(
-      doc(emailTemplates, "esportsXRegistration"),
+      doc(emailTemplates, "esports11Registration"),
     );
 
     if (uh9RegistrationDoc.exists()) {
@@ -315,7 +315,7 @@ export const AuthContextProvider = ({
       });
     } else {
       console.error(
-        'Document "eSports9Registration" not found in the "email-templates" collection.',
+        'Document "esports11Registration" not found in the "email-templates" collection.',
       );
     }
   };
@@ -341,7 +341,7 @@ export const AuthContextProvider = ({
 
     // Set the user status to registered for hacks # esports
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.ESPORTSX": true,
+      "registered.ESPORTS11": true,
     });
 
     // Update userInfo
