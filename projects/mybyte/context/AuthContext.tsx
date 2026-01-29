@@ -297,35 +297,42 @@ export const AuthContextProvider = ({
   /**
    * Stores a mail document, which triggers an email to the user (ESPORTS).
    */
+
+
   const triggerESportsRegistrationEmail = async (data: eSportsForm) => {
-    const uh9RegistrationDoc = await getDoc(
-      doc(emailTemplates, "esports11Registration"),
-    );
+    if (!user?.uid || !user?.email) throw new Error("User not authenticated");
 
-    if (uh9RegistrationDoc.exists()) {
-      const emailHTML = uh9RegistrationDoc.data().html;
-
-      await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
-        to: user.email,
-        message: {
-          subject: "Thank you for registering for eSports 11",
-          text: "",
-          html: emailHTML,
-        },
-      });
-    } else {
-      console.error(
-        'Document "esports11Registration" not found in the "email-templates" collection.',
-      );
+    const templateDoc = await getDoc(doc(emailTemplates, "esports11Registration"));
+    if (!templateDoc.exists()) {
+      throw new Error('Missing email template: email-templates/esports11Registration');
     }
+
+    const emailHTML = templateDoc.data().html;
+
+    await addDoc(registerMail, {
+      to: user.email,
+      message: {
+        subject: "Thank you for registering for eSports 11",
+        text: "",
+        html: emailHTML,
+      },
+      // optional debug metadata
+      createdAt: serverTimestamp(),
+      uid: user.uid,
+      type: "esports11",
+    });
   };
+
 
   /**
    * Stores registration details for ESports in firestore.
    * @param data data from form fields on esports form
    */
   const storeESportsRegistrationInformation = async (data: eSportsForm) => {
-    await setDoc(doc(eSportsRef, user.uid ? user.uid : ""), {
+    if (!user?.uid) {
+      throw new Error("User not authenticated");
+    }
+    await setDoc(doc(eSportsRef, user.uid), {
       firstName: data.firstName,
       lastName: data.lastName,
       gamerTag: data.gamerTag,
@@ -339,12 +346,10 @@ export const AuthContextProvider = ({
       submitted_time: serverTimestamp(),
     });
 
-    // Set the user status to registered for hacks # esports
-    await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
+    await updateDoc(doc(userRef, user.uid), {
       "registered.ESPORTS11": true,
     });
 
-    // Update userInfo
     setUserInformation(user.uid);
   };
 
