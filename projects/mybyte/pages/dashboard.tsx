@@ -16,7 +16,7 @@ const Hacks11: EventDetail = {
   image: "/UH11_Registration_Banner.png",
   startDate: new Date("02/06/2026"),
   endDate: new Date("02/08/2026"),
-  deadline: new Date("01/31/2026"),
+  deadline: new Date("02/01/2026"),
 };
 
 const ESports11: EventDetail = {
