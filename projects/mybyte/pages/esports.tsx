@@ -100,6 +100,11 @@ export default function ESportsRegister() {
                 />
               </h1>
               <div className="pl-1 text-md w-4/5">
+              <p className="pb-3">
+                  We&apos;re excited that you are participating in the eSports
+                  tournament at UGAHacks 11 👾. Join us on Saturday the 7th
+                  from 1-7pm for Super Smash Bros. Ultimate and Mario Kart 8!
+                </p>
                 <p className="text-md">
                   If you have any questions, please send us an email at{" "}
                   <Link
