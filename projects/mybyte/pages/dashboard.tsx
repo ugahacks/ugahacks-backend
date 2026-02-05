@@ -10,26 +10,22 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import { EventRegistered, useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
 
-// TODO: Set to false when PC registration bug is fixed
-// Issue: https://github.com/orgs/ugahacks/projects/8/views/1?pane=issue&itemId=150820061&issue=ugahacks%7Cugahacks%7C556
-const SHOW_PC_REGISTRATION_WARNING = false;
-
 const Hacks11: EventDetail = {
   key: Events.hacks11,
   page: "/register",
   image: "/UH11_Registration_Banner.png",
   startDate: new Date("02/06/2026"),
   endDate: new Date("02/08/2026"),
-  deadline: new Date("01/31/2026"),
+  deadline: new Date("02/01/2026"),
 };
 
-const ESportsX: EventDetail = {
+const ESports11: EventDetail = {
   key: Events.e_sports_11,
   page: "/esports",
-  image: "/eSportsX_banner.png",
-  startDate: new Date("02/07/2025"),
-  endDate: new Date("02/9/2025"),
-  deadline: new Date("02/05/2025"),
+  image: "/eSports11_banner.png",
+  startDate: new Date("02/07/2026"),
+  endDate: new Date("02/07/2026"),
+  deadline: new Date("02/07/2026"),
 };
 
 const events = [
@@ -51,14 +47,14 @@ const events = [
   },
   {
     event: (re: EventRegistered) => {
-      let esportDup = new Date(ESportsX.deadline);
-      esportDup.setDate(ESportsX.deadline.getDate() + 1);
+      let esportDup = new Date(ESports11.deadline);
+      esportDup.setDate(ESports11.deadline.getDate() + 1);
       if (esportDup < new Date()) {
-        return <EventRect disabled={true} event={ESportsX} />;
-      } else if (!re.ESPORTSX) {
-        return <EventRect disabled={false} event={ESportsX} />; // Manually disable hacks9 now that deadline has passed
+        return <EventRect disabled={true} event={ESports11} />;
+      } else if (!re.ESPORTS11) {
+        return <EventRect disabled={false} event={ESports11} />; // Manually disable hacks9 now that deadline has passed
       } else {
-        return <EventRect disabled={true} event={ESportsX} />;
+        return <EventRect disabled={true} event={ESports11} />;
       }
     },
     id: () => {
@@ -135,23 +131,6 @@ const DashboardPage = () => {
 
   return (
     <ProtectedRoute>
-      {SHOW_PC_REGISTRATION_WARNING && (
-        <div className="sticky top-0 left-0 w-full bg-amber-500 text-white px-4 py-3 shadow-md z-40">
-          <div className="container mx-auto">
-            <p className="font-semibold">
-              ⚠️ Important: Please register for UGAHacks 11 on your mobile device. There is currently a bug affecting registration on PC devices.{" "}
-              <a
-                href="https://github.com/orgs/ugahacks/projects/8/views/1?pane=issue&itemId=150820061&issue=ugahacks%7Cugahacks%7C556"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-amber-100"
-              >
-                View issue details →
-              </a>
-            </p>
-          </div>
-        </div>
-      )}
       {isMobile ? (
         <MobileDashboard
           user={user}

@@ -71,8 +71,11 @@ export default function EventRect(props: {
           </Typography>
           <div className="flex justify-between mx-3 pb-2 text-xs">
             <Typography className="text-xs ">
-              {props.event.startDate.toLocaleDateString("default", dateOpt)} -{" "}
-              {props.event.endDate.toLocaleDateString("default", dateOpt)}
+              {props.event.startDate.toLocaleDateString("default", dateOpt)}
+              {props.event.startDate.getTime() !==
+                props.event.endDate.getTime() && (
+                  <> - {props.event.endDate.toLocaleDateString("default", dateOpt)}</>
+                )}
             </Typography>
             <Typography
               className={`text-xs border-2 rounded px-2 font-mono ${statusClass}`}
