@@ -94,14 +94,13 @@ export default function ESportsRegister() {
                 <Typewriter
                   onInit={(typewriter) => {
                     typewriter
-                      .typeString("Register for ")
-                      .typeString("eSports 11")
+                      .typeString("eSports")
                       .start();
                   }}
                 />
               </h1>
               <div className="pl-1 text-md w-4/5">
-                <p className="pb-3">
+              <p className="pb-3">
                   We&apos;re excited that you are participating in the eSports
                   tournament at UGAHacks 11 👾. Join us on Saturday the 7th
                   from 1-7pm for Super Smash Bros. Ultimate and Mario Kart 8!
@@ -483,8 +482,7 @@ export default function ESportsRegister() {
                                     <em>Tardy Agreement: </em>“I understand that
                                     if I am more than 5 minutes late to my time
                                     to play, I will be automatically
-                                    eliminated.” (**Note: When it is your turn
-                                    to play, you will be notified via Slack.)
+                                    eliminated.”
                                     <span className="text-red-600">*</span>
                                   </label>
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
