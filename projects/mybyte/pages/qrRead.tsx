@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import OrganizerRoute from "../components/OrganizerRoute";
 import { useAuth } from "../context/AuthContext";
 import { QrReader } from "react-qr-reader";
@@ -15,7 +15,7 @@ type UserPreview = {
   points: number;
 };
 
-type ScanVisualStatus = "idle" | "success" | "warning" | "error";
+type ScanVisualStatus = "idle" | "success" | "warning" | "error" | "processing";
 
 type ScanLogItem = {
   uid: string;
@@ -42,6 +42,7 @@ const QrRead: React.FC = () => {
   const [statusMessage, setStatusMessage] =
     useState<string>("Waiting for scan");
   const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [scanStatus, setScanStatus] = useState<ScanVisualStatus>("idle");
   const [scanLog, setScanLog] = useState<ScanLogItem[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -58,6 +59,7 @@ const QrRead: React.FC = () => {
   useEffect(() => {
     getEvents().then((eventsResponse) => {
       setEvents(eventsResponse);
+      setIsLoading(false);
     });
   }, []);
 
@@ -86,7 +88,7 @@ const QrRead: React.FC = () => {
   };
 
   useEffect(() => {
-    if (scanStatus === "idle") return;
+    if (scanStatus === "idle" || scanStatus === "processing") return;
 
     if (flashTimeoutRef.current !== null) {
       window.clearTimeout(flashTimeoutRef.current);
@@ -103,6 +105,22 @@ const QrRead: React.FC = () => {
       }
     };
   }, [scanStatus]);
+
+  const statusLabel = useMemo(() => {
+    return scanStatus === "success"
+      ? "Success"
+      : scanStatus === "processing"
+        ? "Processing..."
+        : scanStatus === "warning"
+          ? "Already attended"
+          : scanStatus === "error"
+            ? "Error"
+            : "Idle";
+  }, [scanStatus]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const playSoundForStatus = (status: ScanVisualStatus) => {
     const play = (audio: HTMLAudioElement | null) => {
@@ -141,9 +159,11 @@ const QrRead: React.FC = () => {
       }
 
       eventId = selectEl.value;
-      eventTitle =
-        events.find((e) => e.id === eventId)?.title ?? `Event ${eventId}`;
-      eventPoints = events.find((e) => e.id === eventId)?.points ?? 0;
+      const event = events.find((e) => e.id === eventId);
+      if (!event) throw "Event not found";
+
+      eventTitle = event?.title ?? `Event ${eventId}`;
+      eventPoints = event?.points ?? 0;
 
       const name = await getNameOfUser(uid);
       if (!name) throw "User not found!";
@@ -159,8 +179,7 @@ const QrRead: React.FC = () => {
 
       await addAttendance(eventId, uid);
 
-      points = await getPoints(uid);
-      setUser({ name, shirtSize, points });
+      setUser({ name, shirtSize, points: points + eventPoints });
 
       outcomeMessage = `Successfully completed ${eventTitle} for ${name}`;
       outcomeStatus = "success";
@@ -209,15 +228,6 @@ const QrRead: React.FC = () => {
     }
   };
 
-  const statusLabel =
-    scanStatus === "success"
-      ? "Success"
-      : scanStatus === "warning"
-        ? "Already attended"
-        : scanStatus === "error"
-          ? "Error"
-          : "Idle";
-
   return (
     <OrganizerRoute>
       <div className="relative min-h-screen bg-slate-950 text-slate-50 flex flex-col p-4">
@@ -263,6 +273,7 @@ const QrRead: React.FC = () => {
               constraints={{ facingMode: "environment" }}
               scanDelay={0}
               onResult={async (result) => {
+                if (isProcessing) return;
                 if (!result) return;
 
                 const uid = result.getText();
@@ -275,30 +286,18 @@ const QrRead: React.FC = () => {
                   }
                 }
 
-                if (isProcessing) return;
-
                 lastScanRef.current = { uid, time: now };
 
                 unlockAudioAutomatically();
                 setScannedUID(uid);
 
-                try {
-                  const [name, shirtSize, points] = await Promise.all([
-                    getNameOfUser(uid),
-                    getTShirtSizeOfUser(uid),
-                    getPoints(uid),
-                  ]);
+                setIsProcessing(true);
+                setScanStatus("processing");
 
-                  if (name) {
-                    setUser({ name, shirtSize, points });
-                  } else {
-                    setUser(initialUser);
-                  }
-                } catch {
-                  setUser(initialUser);
-                }
-
-                void determineAction(uid);
+                determineAction(uid).then(() => {
+                  const timeTaken = Date.now() - now;
+                  console.log(`Processing Took: ${timeTaken}ms`);
+                });
               }}
             />
 
