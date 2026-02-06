@@ -122,6 +122,7 @@ const QrRead: React.FC = () => {
     let outcomeStatus: ScanVisualStatus = "error";
     let eventId = "";
     let eventTitle = "";
+    let eventPoints = 0;
     let scannedNameForLog = "";
 
     try {
@@ -142,6 +143,7 @@ const QrRead: React.FC = () => {
       eventId = selectEl.value;
       eventTitle =
         events.find((e) => e.id === eventId)?.title ?? `Event ${eventId}`;
+      eventPoints = events.find((e) => e.id === eventId)?.points ?? 0;
 
       const name = await getNameOfUser(uid);
       if (!name) throw "User not found!";
@@ -152,6 +154,8 @@ const QrRead: React.FC = () => {
       let points = await getPoints(uid);
 
       setUser({ name, shirtSize, points });
+
+      if (points + eventPoints < 0) throw "Not enough points";
 
       await addAttendance(eventId, uid);
 
