@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   getDoc,
@@ -46,19 +47,31 @@ export const addAttendance = async (eventId: string, userId: string) => {
 
   const attendanceRef = collection(eventsRef, eventId, "attendance");
 
-  // Allows point store "events" to be "attended" multiple times
-  if (
-    !(snapshot.data() as Event).title.toLowerCase().includes("[point store]")
-  ) {
-    const alreadyAttended = await getDocs(
-      query(attendanceRef, where("uid", "==", userId)),
-    );
-    if (alreadyAttended.docs.length > 0) throw new Error("Already attended");
+  const isPointStore = (snapshot.data() as Event).title
+    .toLowerCase()
+    .includes("[point store]");
+
+  const alreadyAttended = await getDocs(
+    query(attendanceRef, where("uid", "==", userId)),
+  );
+  if (alreadyAttended.docs.length > 0) {
+    if (isPointStore) {
+      await setDoc(doc(attendanceRef, userId), {
+        uid: userId,
+        timestamp: new Date(),
+        times: alreadyAttended.docs[0].data().times
+          ? alreadyAttended.docs[0].data().times + 1
+          : 1,
+      });
+      return;
+    }
+    throw new Error("Already attended");
   }
 
   await setDoc(doc(attendanceRef, userId), {
     uid: userId,
     timestamp: new Date(),
+    times: 1,
   });
 };
 
@@ -73,7 +86,7 @@ export const getPoints = async (userId: string) => {
     );
     const snapshot = await getDocs(q);
     if (snapshot.docs.length > 0) {
-      points += event.points;
+      points += event.points * (snapshot.docs[0].data().times || 1);
     }
   }
   return points;
