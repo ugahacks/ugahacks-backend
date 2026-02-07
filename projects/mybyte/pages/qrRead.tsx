@@ -339,6 +339,9 @@ const QrRead: React.FC = () => {
                 id="what-for"
                 className="bg-slate-900 border border-slate-700 text-slate-50 text-sm rounded-lg block w-full p-2.5"
               >
+                <option key="" value="invalid">
+                  SELECT AN EVENT
+                </option>
                 {events.map((event) => (
                   <option key={event.id} value={event.id}>
                     {event.title}
