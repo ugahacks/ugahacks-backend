@@ -34,7 +34,7 @@ export default function RegistrationSuccess() {
               <div className="px-4 mt-4 text-center text-lg sm:px-12">
                 <h1 className="text-4xl">Congratulations!</h1>
                 <p className="pt-2">
-                  You have successfully registered for UGAHacks 11! Let&apos;s make some magic happen 🪄
+                  You have successfully registered for UGAHacks 12! Let&apos;s solve some mysteries. 🕵️
                 </p>
               </div>
             </div>
@@ -61,7 +61,7 @@ export default function RegistrationSuccess() {
               <div className="px-8 mt-8 text-center text-xl">
                 <h1 className="text-6xl">Congratulations!</h1>
                 <h2 className="text-xl pt-4">
-                  You have successfully registered for UGAHacks 11! Let&apos;s make some magic happen 🪄
+                  You have successfully registered for UGAHacks 12! Let&apos;s solve some mysteries.🕵️
                 </h2>
               </div>
             </div>
