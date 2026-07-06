@@ -14,18 +14,18 @@ const Hacks11: EventDetail = {
   key: Events.hacks11,
   page: "/register",
   image: "/UH11_Registration_Banner.png",
-  startDate: new Date("02/06/2026"),
-  endDate: new Date("02/08/2026"),
-  deadline: new Date("02/01/2026"),
+  startDate: new Date("02/05/2026"),
+  endDate: new Date("02/07/2026"),
+  deadline: new Date("02/05/2026"),
 };
 
 const ESports11: EventDetail = {
   key: Events.e_sports_11,
   page: "/esports",
   image: "/eSports11_banner.png",
-  startDate: new Date("02/07/2026"),
-  endDate: new Date("02/07/2026"),
-  deadline: new Date("02/07/2026"),
+  startDate: new Date("02/05/2027"),
+  endDate: new Date("02/07/2027"),
+  deadline: new Date("02/05/2027"),
 };
 
 const events = [
@@ -34,11 +34,11 @@ const events = [
       let uh11Dup = new Date(Hacks11.deadline);
       uh11Dup.setDate(Hacks11.deadline.getDate() + 1);
       if (uh11Dup < new Date()) {
-        return <EventRect disabled={true} event={Hacks11} />;
+        return <EventRect disabled={true} event={Hacks12} />;
       } else if (!re.HACKS11) {
-        return <EventRect disabled={false} event={Hacks11} />; // Manually disable hacks9 now that deadline has passed
+        return <EventRect disabled={false} event={Hacks12} />; // Manually disable hacks9 now that deadline has passed
       } else {
-        return <EventRect disabled={true} event={Hacks11} />;
+        return <EventRect disabled={true} event={Hacks12} />;
       }
     },
     id: () => {
@@ -50,11 +50,11 @@ const events = [
       let esportDup = new Date(ESports11.deadline);
       esportDup.setDate(ESports11.deadline.getDate() + 1);
       if (esportDup < new Date()) {
-        return <EventRect disabled={true} event={ESports11} />;
+        return <EventRect disabled={true} event={ESports12} />;
       } else if (!re.ESPORTS11) {
-        return <EventRect disabled={false} event={ESports11} />; // Manually disable hacks9 now that deadline has passed
+        return <EventRect disabled={false} event={ESports12} />; // Manually disable hacks9 now that deadline has passed
       } else {
-        return <EventRect disabled={true} event={ESports11} />;
+        return <EventRect disabled={true} event={ESports12} />;
       }
     },
     id: () => {
@@ -65,7 +65,7 @@ const events = [
 
 // Valid Open Events (pretty name):
 const eventMap = new Map<string, string>();
-eventMap.set("HACKS11", "UGAHacks 11");
+eventMap.set("HACKS12", "UGAHacks 12");
 
 function openEventsRegistered(allRegisteredEvents: string[]) {
   let events = "";
@@ -104,7 +104,7 @@ const DashboardPage = () => {
       setAlert({
         show: true,
         message:
-          "Please register for UGAHacks 11 before registering for eSports 11",
+          "Please register for UGAHacks 12 before registering for eSports 12",
         color: "bg-[#212121]",
       });
     }
