@@ -40,7 +40,7 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
       setAlert({
         show: true,
         message:
-          "Please register for UGAHacks 11 before registering for eSports 11",
+          "Please register for UGAHacks 12 before registering for eSports 12",
         color: "bg-[#212121]",
       });
     } else if (ev.key in registeredEvents) {
