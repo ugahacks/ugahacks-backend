@@ -5,4 +5,6 @@ export enum Events {
   e_sports_X = "ESPORTSX",
   hacks11 = "HACKS11",
   e_sports_11 = "ESPORTS11",
+  hacks12 = "HACKS12",
+  e_sports_12 = "ESPORTS12",
 }
