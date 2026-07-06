@@ -282,7 +282,7 @@ export const AuthContextProvider = ({
       await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for UGAHacks 11",
+          subject: "Thank you for registering for UGAHacks 12",
           text: "",
           html: emailHTML,
         },
@@ -312,7 +312,7 @@ export const AuthContextProvider = ({
     await addDoc(registerMail, {
       to: user.email,
       message: {
-        subject: "Thank you for registering for eSports 11",
+        subject: "Thank you for registering for eSports 12",
         text: "",
         html: emailHTML,
       },
