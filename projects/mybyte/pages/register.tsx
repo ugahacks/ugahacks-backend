@@ -259,14 +259,14 @@ export default function Register() {
                   onInit={(typewriter) => {
                     typewriter
                       .typeString("Register for ")
-                      .typeString("UGAHacks 11")
+                      .typeString("UGAHacks 12")
                       .start();
                   }}
                 />
               </h1>
               <div className="pl-1 text-md w-4/5">
                 <p className="pb-3">
-                  We&apos;re excited that you are participating in UGAHacks 11!
+                  We&apos;re excited that you are participating in UGAHacks 12!
                   We would love to see you at the event!
                 </p>
                 <p className="text-md">
