@@ -35,5 +35,6 @@ export interface RegisterForm {
   resumeLink: string;
   age: number;
   levelsOfStudy: LevelsOfStudy;
+  preferredName: string;
   // excitement: Number; // Scale of 1- 100
 }
