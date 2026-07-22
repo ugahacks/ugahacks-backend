@@ -282,14 +282,14 @@ export const AuthContextProvider = ({
       await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for UGAHacks 11",
+          subject: "Thank you for registering for UGAHacks 12",
           text: "",
           html: emailHTML,
         },
       });
     } else {
       console.error(
-        'Document "uh11" not found in the "email-templates" collection.',
+        'Document "uh12" not found in the "email-templates" collection.',
       );
     }
   };
@@ -302,9 +302,9 @@ export const AuthContextProvider = ({
   const triggerESportsRegistrationEmail = async (data: eSportsForm) => {
     if (!user?.uid || !user?.email) throw new Error("User not authenticated");
 
-    const templateDoc = await getDoc(doc(emailTemplates, "esports11Registration"));
+    const templateDoc = await getDoc(doc(emailTemplates, "esports12Registration"));
     if (!templateDoc.exists()) {
-      throw new Error('Missing email template: email-templates/esports11Registration');
+      throw new Error('Missing email template: email-templates/esports12Registration');
     }
 
     const emailHTML = templateDoc.data().html;
@@ -312,7 +312,7 @@ export const AuthContextProvider = ({
     await addDoc(registerMail, {
       to: user.email,
       message: {
-        subject: "Thank you for registering for eSports 11",
+        subject: "Thank you for registering for eSports 12",
         text: "",
         html: emailHTML,
       },
