@@ -13,7 +13,7 @@ const EventPage = () => {
 
   const application_path: ApplicationPaths = {
     application_type: "Participant",
-    deadline: "October 24th, 2024",
+    deadline: "October 24th, 2026",
     page: "/register",
     disabled: Events.cadathon in userInfo.registered,
     image: "/byte_mini.png",
