@@ -65,84 +65,51 @@ export default function Register() {
       router.push("/registrationSuccess");
     } catch (error) {
       console.error("Registration failed:", error);
-      // The button will automatically re-enable when isSubmitting becomes false
     }
   };
-  //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);
 
-  const watchers = watch(["major", "school", "dietaryRestrictions"]); // Watching major  input fields in case user selects "other" option
+  const watchers = watch(["major", "school", "dietaryRestrictions"]);
 
   const countryOptions = useMemo(() => countryList().getData(), []);
-  // ref: http://stackoverflow.com/a/1293163/2343
-  // This will parse a delimited string into an array of
-  // arrays. The default delimiter is the comma, but this
-  // can be overriden in the second argument.
+
   function CSVToArray(strData: string, strDelimiter: string) {
-    // Check to see if the delimiter is defined. If not,
-    // then default to comma.
     strDelimiter = strDelimiter || ",";
 
-    // Create a regular expression to parse the CSV values.
     let objPattern = new RegExp(
-      // Delimiters.
       "(\\" +
         strDelimiter +
         "|\\r?\\n|\\r|^)" +
-        // Quoted fields.
         '(?:"([^"]*(?:""[^"]*)*)"|' +
-        // Standard fields.
         '([^"\\' +
         strDelimiter +
         "\\r\\n]*))",
       "gi",
     );
 
-    // Create an array to hold our data. Give the array
-    // a default empty first row.
     let arrData: string[][] = [[]];
-
-    // Create an array to hold our individual pattern
-    // matching groups.
     let arrMatches = null;
 
-    // Keep looping over the regular expression matches
-    // until we can no longer find a match.
     while ((arrMatches = objPattern.exec(strData))) {
-      // Get the delimiter that was found.
       let strMatchedDelimiter = arrMatches[1];
 
-      // Check to see if the given delimiter has a length
-      // (is not the start of string) and if it matches
-      // field delimiter. If id does not, then we know
-      // that this delimiter is a row delimiter.
       if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
-        // Since we have reached a new row of data,
-        // add an empty row to our data array.
         arrData.push([]);
       }
 
       let strMatchedValue;
 
-      // Now that we have our delimiter out of the way,
-      // let's check to see which kind of value we
-      // captured (quoted or unquoted).
       if (arrMatches[2]) {
-        // We found a quoted value. When we capture
-        // this value, unescape any double quotes.
         strMatchedValue = arrMatches[2].replace(new RegExp('""', "g"), '"');
       } else {
-        // We found a non-quoted value.
         strMatchedValue = arrMatches[3];
       }
 
-      // Now that we have our value string, let's add
-      // it to the data array.
       arrData[arrData.length - 1].push(strMatchedValue);
     }
 
-    // Return the parsed data.
     return arrData;
   }
+
   type SchoolOptions = {
     value: string;
     label: string;
@@ -169,8 +136,6 @@ export default function Register() {
   const [otherSchool, setOtherSchool] = useState(false);
   const [otherDietaryRestrictions, setOtherDietaryRestrictions] =
     useState(false);
-  const [resumeUploadProgress, setResumeUploadProgress] = useState();
-  const [textCount, setTextCount] = useState(0);
 
   register("major", {
     onChange: (e) => otherMajorInput(e.target.value),
@@ -217,32 +182,19 @@ export default function Register() {
     return fileRegex.test(value[0]?.name);
   }
 
-  //   const storage = getStorage();
-  //   const file = data.resume[0]
-  //   const storageRef = ref(storage, 'resume/' + user.uid + '/' + file.name)
-
-  //   const uploadTask = uploadBytesResumable(storageRef, file)
-
   const errorStyles = "text-red-500 font-mono text-xs m-1";
 
   const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
-      // Adjust the threshold as needed
-      const isSmallScreen = window.innerWidth <= 825; // Adjust the width as needed
-
-      // Update the state based on the window width
+      const isSmallScreen = window.innerWidth <= 825;
       setShouldRender(!isSmallScreen);
     };
 
-    // Attach the event listener
     window.addEventListener("resize", handleResize);
-
-    // Initial check on mount
     handleResize();
 
-    // Cleanup the event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -259,14 +211,14 @@ export default function Register() {
                   onInit={(typewriter) => {
                     typewriter
                       .typeString("Register for ")
-                      .typeString("UGAHacks 12")
+                      .typeString("UGA Cadathon")
                       .start();
                   }}
                 />
               </h1>
               <div className="pl-1 text-md w-4/5">
                 <p className="pb-3">
-                  We&apos;re excited that you are participating in UGAHacks 12!
+                  We&apos;re excited that you are participating in UGA Cadathon!
                   We would love to see you at the event!
                 </p>
                 <p className="text-md">
@@ -305,7 +257,7 @@ export default function Register() {
                                 <span className="text-red-600">*</span>
                               </label>
                               <input
-                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                                 {...register("firstName", {
                                   required: "Please enter your first name",
                                   pattern: {
@@ -338,7 +290,7 @@ export default function Register() {
                                 <span className="text-red-600">*</span>
                               </label>
                               <input
-                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                                 {...register("lastName", {
                                   required: "Please enter your last name",
                                   pattern: {
@@ -375,7 +327,7 @@ export default function Register() {
                               <span className="text-red-600">*</span>
                             </label>
                             <input
-                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                               {...register("email", {
                                 required:
                                   "Please enter your school email (.edu, .ca, .ac.uk, .ac.kr, or .usthb.dz)",
@@ -424,7 +376,7 @@ export default function Register() {
                                   </option>
                                 ))}
                               </select>
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -461,7 +413,7 @@ export default function Register() {
                                   </option>
                                 ))}
                               </select>
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -551,7 +503,7 @@ export default function Register() {
                               Phone Number
                               <span className="text-red-600">*</span>
                             </label>
-                            <div className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500">
+                            <div className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500">
                               <Controller
                                 name="phoneNumber"
                                 control={control}
@@ -613,7 +565,7 @@ export default function Register() {
                                   </option>
                                 ))}
                               </select>
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -660,7 +612,7 @@ export default function Register() {
                             )}
                             {otherSchool ? (
                               <input
-                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                                 {...register("inputSchool", {
                                   required: "Please enter your school",
                                   pattern: {
@@ -710,7 +662,7 @@ export default function Register() {
                                   </option>
                                 ))}
                               </select>
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -732,12 +684,12 @@ export default function Register() {
                             </label>
                             <span className="block pt-[1px] pb-[10px] text-xs font-normal">
                               <span className="italic underline">NOTE:</span>{" "}
-                              Resume will be sent to our hackathon sponsors; it{" "}
+                              Resume will be sent to our event sponsors; it{" "}
                               <span className="underline">WILL NOT</span> be
-                              used for hackathon acceptance decisions
+                              used for event acceptance decisions
                             </span>
                             <input
-                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                               {...register("resume", {
                                 validate: (value) =>
                                   validateFileInput(value) ||
@@ -772,7 +724,7 @@ export default function Register() {
                               </select>
                               {otherMajor ? (
                                 <input
-                                  className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                                  className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                                   {...register("inputMajor", {
                                     required: "Please enter your major",
                                     pattern: {
@@ -785,7 +737,7 @@ export default function Register() {
                                   placeholder="Type your major here"
                                 />
                               ) : null}
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -820,7 +772,7 @@ export default function Register() {
                               Minor
                             </label>
                             <input
-                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                               {...register("minor", {
                                 pattern: {
                                   value: /^[a-z ,.'-]+$/i,
@@ -854,21 +806,21 @@ export default function Register() {
                                 <>
                                   <label
                                     className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
-                                    htmlFor="grid-text-1"
+                                    htmlFor="grid-text-participated"
                                   >
-                                    First Time at a Hackathon?
+                                    First Time at a Cadathon / CAD Event?
                                   </label>
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                     <input
                                       type="checkbox"
                                       value=""
-                                      id="grid-text-1"
+                                      id="grid-text-participated"
                                       className="sr-only peer"
                                       onChange={() => {
                                         onChange(!value);
                                         let span =
                                           document.getElementById(
-                                            "grid-text-1-span",
+                                            "grid-text-participated-span",
                                           );
                                         if (span === null) return;
                                         let text = span.innerText;
@@ -881,7 +833,7 @@ export default function Register() {
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                                     <span
                                       className="ml-3 text-sm"
-                                      id="grid-text-1-span"
+                                      id="grid-text-participated-span"
                                     >
                                       No
                                     </span>
@@ -931,7 +883,7 @@ export default function Register() {
                                   </option>
                                 ))}
                               </select>
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -950,7 +902,7 @@ export default function Register() {
 
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                              What do you expect out of UGAHacks?
+                              What do you expect out of UGA Cadathon?
                               <span className="text-red-600">*</span>
                             </label>
                             <textarea
@@ -999,7 +951,7 @@ export default function Register() {
                               </select>
                               {otherDietaryRestrictions ? (
                                 <input
-                                  className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                                  className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                                   {...register("inputDietaryRestrictions", {
                                     required:
                                       "Please select your dietary restrictions",
@@ -1013,7 +965,7 @@ export default function Register() {
                                   placeholder="Type your dietary restrictions here"
                                 />
                               ) : null}
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -1065,7 +1017,7 @@ export default function Register() {
                                   </option>
                                 ))}
                               </select>
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -1093,7 +1045,7 @@ export default function Register() {
                                 <>
                                   <label
                                     className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                    htmlFor="grid-text-1"
+                                    htmlFor="grid-text-conduct"
                                   >
                                     <em>MLH Code of Conduct: </em>&quot;I have
                                     read and agree to the{" "}
@@ -1111,7 +1063,7 @@ export default function Register() {
                                     <input
                                       type="checkbox"
                                       value=""
-                                      id="grid-text-1"
+                                      id="grid-text-conduct"
                                       className="sr-only peer"
                                       onChange={() => {
                                         onChange(!value);
@@ -1141,7 +1093,7 @@ export default function Register() {
                                 <>
                                   <label
                                     className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                    htmlFor="grid-text-1"
+                                    htmlFor="grid-text-logistics"
                                   >
                                     <em>Event Logistics Information: </em>“I
                                     authorize you to share my
@@ -1178,7 +1130,7 @@ export default function Register() {
                                     <input
                                       type="checkbox"
                                       value=""
-                                      id="grid-text-1"
+                                      id="grid-text-logistics"
                                       className="sr-only peer"
                                       onChange={() => {
                                         onChange(!value);
@@ -1204,7 +1156,7 @@ export default function Register() {
                                 <>
                                   <label
                                     className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                    htmlFor="grid-text-1"
+                                    htmlFor="grid-text-comm"
                                   >
                                     <em>Communication from MLH: </em>“I
                                     authorize MLH to send me occasional emails
@@ -1215,7 +1167,7 @@ export default function Register() {
                                     <input
                                       type="checkbox"
                                       value=""
-                                      id="grid-text-1"
+                                      id="grid-text-comm"
                                       className="sr-only peer"
                                       onChange={() => {
                                         onChange(!value);
@@ -1235,10 +1187,11 @@ export default function Register() {
                           </div>
                           <div className={!shouldRender ? "pb-56" : "pb-20"}>
                             <button
-                              className={`border rounded w-full transition-colors p-2 ${isSubmitting
+                              className={`border rounded w-full transition-colors p-2 ${
+                                isSubmitting
                                   ? "border-gray-300 bg-gray-300 text-gray-500 cursor-not-allowed"
                                   : "border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white"
-                                }`}
+                              }`}
                               type="submit"
                               disabled={isSubmitting}
                             >
