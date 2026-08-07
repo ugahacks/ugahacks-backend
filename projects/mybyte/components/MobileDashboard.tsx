@@ -36,11 +36,11 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const registrationCheck = (ev: EventDetail) => {
-    if (ev.key === Events.e_sports_11 && !registeredEvents.HACKS11) {
+    if (ev.key === Events.e_sports_11 && !registeredEvents.CADATHON) {
       setAlert({
         show: true,
         message:
-          "Please register for UGAHacks 12 before registering for eSports 12",
+          "Please register for UGA Cadathon before registering for side events",
         color: "bg-[#212121]",
       });
     } else if (ev.key in registeredEvents) {
@@ -74,8 +74,8 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
         </h2>
         <div className="text-sm pt-3 pb-5 font-mono container">
           <p>
-            This is the UGAHacks registration portal, feel free to register for
-            any events below. Happy hacking!
+            This is the UGA Cadathon registration portal, feel free to register for
+            any events below.
           </p>
         </div>
         <div>
