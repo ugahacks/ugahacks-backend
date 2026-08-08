@@ -50,7 +50,6 @@ export interface UserType {
 }
 
 export interface EventRegistered {
-  CADATHON: boolean | null;
   HACKS9: boolean | null;
   HACKSX: boolean | null;
   ESPORTSX: boolean | null;
@@ -93,7 +92,6 @@ export const AuthContextProvider = ({
     tid: null,
     school: null,
     registered: {
-      CADATHON: null,
       HACKS9: null,
       HACKSX: null,
       ESPORTSX: null,
@@ -118,13 +116,10 @@ export const AuthContextProvider = ({
   const teamRef = collection(db, "team");
   const emailTemplates = collection(db, "email-templates");
 
-  // Current Event (UGA Cadathon):
-  const registerRef = collection(db, "CADATHON-user-registration-details");
-  const registerMail = collection(db, "CADATHON-registrationMail");
-  const eSportsRef = collection(db, "eSports-cadathon-user-registration-details");
-
-  const registerRef_UH11 = collection(db, "UH11-user-registration-details");
-  const registerMail_UH11 = collection(db, "UH11-registrationMail");
+  // Current Event (Hacks 11):
+  const registerRef = collection(db, "UH11-user-registration-details");
+  const registerMail = collection(db, "UH11-registrationMail");
+  const eSportsRef = collection(db, "eSports11-user-registration-details");
 
   const registerRef_UHX = collection(db, "UHX-user-registration-details");
   const registerMail_UHX = collection(db, "UHX-registrationMail");
@@ -230,7 +225,7 @@ export const AuthContextProvider = ({
       });
     }
 
-    // Write registration doc for Cadathon
+    // Write registration doc for UH11
     await setDoc(doc(registerRef, user.uid ? user.uid : ""), {
       uid: user.uid,
       gender: data.gender,
@@ -266,7 +261,7 @@ export const AuthContextProvider = ({
 
     // Update user's registered status and school
     await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.CADATHON": true,
+      "registered.HACKS11": true,
       school: data.school.value,
       user_type: Users.hacker,
       points: 0,
@@ -279,22 +274,22 @@ export const AuthContextProvider = ({
    * Stores a mail document, which triggers an email to the user.
    */
   const triggerRegistrationEmail = async (data: RegisterForm) => {
-    const cadathonRegistrationDoc = await getDoc(doc(emailTemplates, "cadathon"));
+    const uh11RegistrationDoc = await getDoc(doc(emailTemplates, "uh11"));
 
-    if (cadathonRegistrationDoc.exists()) {
-      const emailHTML = cadathonRegistrationDoc.data().html;
+    if (uh11RegistrationDoc.exists()) {
+      const emailHTML = uh11RegistrationDoc.data().html;
 
       await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for UGA Cadathon",
+          subject: "Thank you for registering for UGAHacks 12",
           text: "",
           html: emailHTML,
         },
       });
     } else {
       console.error(
-        'Document "cadathon" not found in the "email-templates" collection.',
+        'Document "uh12" not found in the "email-templates" collection.',
       );
     }
   };
@@ -307,9 +302,9 @@ export const AuthContextProvider = ({
   const triggerESportsRegistrationEmail = async (data: eSportsForm) => {
     if (!user?.uid || !user?.email) throw new Error("User not authenticated");
 
-    const templateDoc = await getDoc(doc(emailTemplates, "esportsCadathonRegistration"));
+    const templateDoc = await getDoc(doc(emailTemplates, "esports12Registration"));
     if (!templateDoc.exists()) {
-      throw new Error('Missing email template: email-templates/esportsCadathonRegistration');
+      throw new Error('Missing email template: email-templates/esports12Registration');
     }
 
     const emailHTML = templateDoc.data().html;
@@ -317,14 +312,14 @@ export const AuthContextProvider = ({
     await addDoc(registerMail, {
       to: user.email,
       message: {
-        subject: "Thank you for registering for eSports at UGA Cadathon",
+        subject: "Thank you for registering for eSports 12",
         text: "",
         html: emailHTML,
       },
       // optional debug metadata
       createdAt: serverTimestamp(),
       uid: user.uid,
-      type: "esportsCadathon",
+      type: "esports11",
     });
   };
 
@@ -352,7 +347,7 @@ export const AuthContextProvider = ({
     });
 
     await updateDoc(doc(userRef, user.uid), {
-      "registered.ESPORTS_CADATHON": true,
+      "registered.ESPORTS11": true,
     });
 
     setUserInformation(user.uid);

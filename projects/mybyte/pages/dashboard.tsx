@@ -10,35 +10,35 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import { EventRegistered, useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
 
-const Cadathon: EventDetail = {
-  key: Events.cadathon,
+const Hacks11: EventDetail = {
+  key: Events.hacks11,
   page: "/register",
-  image: "/Cadathon_Registration_Banner.png",
-  startDate: new Date("10/24/2024"),
-  endDate: new Date("10/24/2024"),
-  deadline: new Date("10/24/2024"),
+  image: "/UH11_Registration_Banner.png",
+  startDate: new Date("02/05/2026"),
+  endDate: new Date("02/07/2026"),
+  deadline: new Date("02/05/2026"),
 };
 
-const ESportsCadathon: EventDetail = {
-  key: Events.e_sports_cadathon,
+const ESports11: EventDetail = {
+  key: Events.e_sports_11,
   page: "/esports",
-  image: "/eSports_Cadathon_banner.png",
-  startDate: new Date("10/24/2024"),
-  endDate: new Date("10/24/2024"),
-  deadline: new Date("10/24/2024"),
+  image: "/eSports11_banner.png",
+  startDate: new Date("02/05/2027"),
+  endDate: new Date("02/07/2027"),
+  deadline: new Date("02/05/2027"),
 };
 
 const events = [
   {
     event: (re: EventRegistered) => {
-      let cadathonDup = new Date(Cadathon.deadline);
-      cadathonDup.setDate(Cadathon.deadline.getDate() + 1);
-      if (cadathonDup < new Date()) {
-        return <EventRect disabled={true} event={Cadathon} />;
-      } else if (!re?.CADATHON) {
-        return <EventRect disabled={false} event={Cadathon} />;
+      let uh11Dup = new Date(Hacks11.deadline);
+      uh11Dup.setDate(Hacks11.deadline.getDate() + 1);
+      if (uh11Dup < new Date()) {
+        return <EventRect disabled={true} event={Hacks12} />;
+      } else if (!re.HACKS11) {
+        return <EventRect disabled={false} event={Hacks12} />; // Manually disable hacks9 now that deadline has passed
       } else {
-        return <EventRect disabled={true} event={Cadathon} />;
+        return <EventRect disabled={true} event={Hacks12} />;
       }
     },
     id: () => {
@@ -47,14 +47,14 @@ const events = [
   },
   {
     event: (re: EventRegistered) => {
-      let esportDup = new Date(ESportsCadathon.deadline);
-      esportDup.setDate(ESportsCadathon.deadline.getDate() + 1);
+      let esportDup = new Date(ESports11.deadline);
+      esportDup.setDate(ESports11.deadline.getDate() + 1);
       if (esportDup < new Date()) {
-        return <EventRect disabled={true} event={ESportsCadathon} />;
-      } else if (!re?.ESPORTS_CADATHON) {
-        return <EventRect disabled={false} event={ESportsCadathon} />;
+        return <EventRect disabled={true} event={ESports12} />;
+      } else if (!re.ESPORTS11) {
+        return <EventRect disabled={false} event={ESports12} />; // Manually disable hacks9 now that deadline has passed
       } else {
-        return <EventRect disabled={true} event={ESportsCadathon} />;
+        return <EventRect disabled={true} event={ESports12} />;
       }
     },
     id: () => {
@@ -65,7 +65,7 @@ const events = [
 
 // Valid Open Events (pretty name):
 const eventMap = new Map<string, string>();
-eventMap.set("CADATHON", "UGA Cadathon");
+eventMap.set("HACKS12", "UGAHacks 12");
 
 function openEventsRegistered(allRegisteredEvents: string[]) {
   let events = "";
@@ -79,13 +79,13 @@ function openEventsRegistered(allRegisteredEvents: string[]) {
 
 const DashboardPage = () => {
   const { user, userInfo } = useAuth();
-  const registeredEvents: EventRegistered = userInfo?.registered || {};
+  // console.log(user.uid + " is logged in"); debugging
+  const registeredEvents: EventRegistered = userInfo.registered;
   const registeredEventKeys = Object.keys(registeredEvents);
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    setIsMobile(window.innerWidth <= 520);
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 520);
     };
@@ -100,11 +100,11 @@ const DashboardPage = () => {
   const [alert, setAlert] = useState({ show: false, message: "", color: "" });
 
   const registrationCheck = (ev: EventDetail) => {
-    if (ev.key === Events.e_sports_cadathon && !registeredEvents?.CADATHON) {
+    if (ev.key === Events.e_sports_11 && !registeredEvents.HACKS11) {
       setAlert({
         show: true,
         message:
-          "Please register for UGA Cadathon before registering for side events",
+          "Please register for UGAHacks 12 before registering for eSports 12",
         color: "bg-[#212121]",
       });
     }
@@ -115,6 +115,7 @@ const DashboardPage = () => {
         color: "bg-[#50C878]",
       });
     } else if (ev.deadline < new Date()) {
+      // Manually disable hacks9 now that deadline has passed
       setAlert({
         show: true,
         message: "Registration for this event has closed.",
@@ -143,12 +144,12 @@ const DashboardPage = () => {
         <div className="flex py-2 mx-auto flex-initial w-full">
           <div className="text-gray-800 px-16 py-3 mt-4 mx-3 inter">
             <h2 className="text-3xl font-semibold">
-              Welcome, {userInfo?.first_name + " " + userInfo?.last_name}
+              Welcome, {userInfo.first_name + " " + userInfo.last_name}
             </h2>
             <div className="text-xl pt-5 pb-5 text-left font-mono container w-3/4">
               <p>
-                This is the UGA Cadathon registration portal, feel free to register
-                for any events below.
+                This is the UGAHacks registration portal, feel free to register
+                for any events below. Happy hacking!
               </p>
             </div>
             <div className="flex mt-5 items-center gap-10 justify-content-between">
@@ -160,7 +161,7 @@ const DashboardPage = () => {
                   <QRCodeCanvas
                     id="qrCode"
                     size={200}
-                    value={user?.uid || ""}
+                    value={user.uid}
                     level={"H"}
                     className="rounded-md"
                   />
@@ -170,18 +171,18 @@ const DashboardPage = () => {
                 <h2>
                   Name:{" "}
                   <span className="font-bold">
-                    {userInfo?.first_name} {userInfo?.last_name}
+                    {userInfo.first_name} {userInfo.last_name}
                   </span>
                 </h2>
                 <h2>
                   School:{" "}
                   <span className="font-bold">
-                    {userInfo?.school != null ? userInfo.school : "N/A"}
+                    {userInfo.school != null ? userInfo.school : "N/A"}
                   </span>
                 </h2>
                 <h2>
                   Points:{" "}
-                  <span className="font-bold">{(userInfo?.points || 0) + "pts"}</span>
+                  <span className="font-bold">{userInfo.points + "pts"}</span>
                 </h2>
                 <h2>
                   Next Registered Event(s):{" "}
@@ -215,7 +216,7 @@ const DashboardPage = () => {
                       </button>
                     );
                   }
-                  return <React.Fragment key={i} />;
+                  return <></>;
                 })}
               </div>
             </div>
