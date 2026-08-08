@@ -42,10 +42,14 @@ const QrRead: React.FC = () => {
   const [statusMessage, setStatusMessage] =
     useState<string>("Waiting for scan");
   const [events, setEvents] = useState<Event[]>([]);
+  const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [scanStatus, setScanStatus] = useState<ScanVisualStatus>("idle");
   const [scanLog, setScanLog] = useState<ScanLogItem[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
+  const selectedEventIdRef = useRef<string>("");
+  selectedEventIdRef.current = selectedEventId;
 
   const flashTimeoutRef = useRef<number | null>(null);
 
@@ -150,15 +154,11 @@ const QrRead: React.FC = () => {
       if (!uid) throw "No QR Code has been scanned!";
       if (uid.includes("/")) throw "Not valid User QR-Code";
 
-      const selectEl = document.getElementById(
-        "what-for",
-      ) as HTMLSelectElement | null;
-
-      if (!selectEl?.value) {
+      eventId = selectedEventIdRef.current;
+      if (!eventId || eventId === "invalid") {
         throw "Please select an event.";
       }
 
-      eventId = selectEl.value;
       const event = events.find((e) => e.id === eventId);
       if (!event) throw "Event not found";
 
@@ -337,9 +337,11 @@ const QrRead: React.FC = () => {
               </label>
               <select
                 id="what-for"
+                value={selectedEventId}
+                onChange={(e) => setSelectedEventId(e.target.value)}
                 className="bg-slate-900 border border-slate-700 text-slate-50 text-sm rounded-lg block w-full p-2.5"
               >
-                <option key="" value="invalid">
+                <option value="">
                   SELECT AN EVENT
                 </option>
                 {events.map((event) => (

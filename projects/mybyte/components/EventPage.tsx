@@ -13,9 +13,9 @@ const EventPage = () => {
 
   const application_path: ApplicationPaths = {
     application_type: "Participant",
-    deadline: "December 31st, 2022",
+    deadline: "October 24th, 2026",
     page: "/register",
-    disabled: Events.hacks9 in userInfo.registered,
+    disabled: Events.cadathon in userInfo.registered,
     image: "/byte_mini.png",
   };
 
@@ -38,7 +38,7 @@ const EventPage = () => {
         <div className="text-gray-600 px-12 py-24 mt-24 mx-auto">
           <h2 className="text-2xl font-semibold">Hey {firstName}, this is </h2>
           STATUS:{" "}
-          {Events.hacks9 in registeredEvents
+          {Events.cadathon in registeredEvents
             ? EventStatus.Registered
             : EventStatus.NotRegistered}
         </div>

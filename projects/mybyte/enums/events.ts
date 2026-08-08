@@ -7,4 +7,6 @@ export enum Events {
   e_sports_11 = "ESPORTS11",
   hacks12 = "HACKS12",
   e_sports_12 = "ESPORTS12",
+  cadathon = "CADATHON",
+  e_sports_cadathon = "ESPORTS_CADATHON",
 }
