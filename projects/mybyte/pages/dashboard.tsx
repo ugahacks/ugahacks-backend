@@ -143,7 +143,7 @@ const DashboardPage = () => {
         <div className="flex py-2 mx-auto flex-initial w-full">
           <div className="text-gray-800 px-16 py-3 mt-4 mx-3 inter">
             <h2 className="text-3xl font-semibold">
-              Welcome, {userInfo?.first_name + " " + userInfo?.last_name}
+              Welcome, {userInfo.first_name && userInfo.last_name ? `${userInfo.first_name} ${userInfo.last_name}` : "User"}
             </h2>
             <div className="text-xl pt-5 pb-5 text-left font-mono container w-3/4">
               <p>
@@ -170,7 +170,7 @@ const DashboardPage = () => {
                 <h2>
                   Name:{" "}
                   <span className="font-bold">
-                    {userInfo?.first_name} {userInfo?.last_name}
+                    {userInfo.first_name && userInfo.last_name ? `${userInfo.first_name} ${userInfo.last_name}` : "N/A"}
                   </span>
                 </h2>
                 <h2>
