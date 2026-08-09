@@ -14,9 +14,9 @@ const Hacks11: EventDetail = {
   key: Events.hacks11,
   page: "/register",
   image: "/UH11_Registration_Banner.png",
-  startDate: new Date("02/05/2026"),
-  endDate: new Date("02/07/2026"),
-  deadline: new Date("02/05/2026"),
+  startDate: new Date("02/05/2027"),
+  endDate: new Date("02/07/2027"),
+  deadline: new Date("02/05/2027"),
 };
 
 const ESports11: EventDetail = {
@@ -34,11 +34,11 @@ const events = [
       let uh11Dup = new Date(Hacks11.deadline);
       uh11Dup.setDate(Hacks11.deadline.getDate() + 1);
       if (uh11Dup < new Date()) {
-        return <EventRect disabled={true} event={Hacks12} />;
+        return <EventRect disabled={true} event={Hacks11} />;
       } else if (!re.HACKS11) {
-        return <EventRect disabled={false} event={Hacks12} />; // Manually disable hacks9 now that deadline has passed
+        return <EventRect disabled={false} event={Hacks11} />; // Manually disable hacks9 now that deadline has passed
       } else {
-        return <EventRect disabled={true} event={Hacks12} />;
+        return <EventRect disabled={true} event={Hacks11} />;
       }
     },
     id: () => {
@@ -50,11 +50,11 @@ const events = [
       let esportDup = new Date(ESports11.deadline);
       esportDup.setDate(ESports11.deadline.getDate() + 1);
       if (esportDup < new Date()) {
-        return <EventRect disabled={true} event={ESports12} />;
+        return <EventRect disabled={true} event={ESports11} />;
       } else if (!re.ESPORTS11) {
-        return <EventRect disabled={false} event={ESports12} />; // Manually disable hacks9 now that deadline has passed
+        return <EventRect disabled={false} event={ESports11} />; // Manually disable hacks9 now that deadline has passed
       } else {
-        return <EventRect disabled={true} event={ESports12} />;
+        return <EventRect disabled={true} event={ESports11} />;
       }
     },
     id: () => {
