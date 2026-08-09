@@ -265,14 +265,24 @@ export const AuthContextProvider = ({
     });
 
     // Update user's registered status and school
-    await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.CADATHON": true,
-      school: data.school.value,
-      user_type: Users.hacker,
-      points: 0,
-    });
-
-    await setUserInformation(user.uid);
+    // around line ~267 after setDoc(doc(registerRef, ...), {...})
+-    // Update user's registered status and school
+-    await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
+-      "registered.CADATHON": true,
+-      school: data.school.value,
+-      user_type: Users.hacker,
+-      points: 0,
+-    });
++    // Update user's registered status, school, and ensure name fields are set on the user doc
++    await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
++      "registered.CADATHON": true,
++      school: data.school.value,
++      user_type: Users.hacker,
++      points: 0,
++      first_name: data.firstName,   // Sync first name
++      last_name: data.lastName,     // Sync last name
++      name: `${data.firstName} ${data.lastName}`, // Full name (optional but useful)
++    });
   };
 
   /**
