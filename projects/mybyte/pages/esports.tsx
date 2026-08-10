@@ -1,4 +1,4 @@
-import Image from "next/image";
+/*import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -494,4 +494,4 @@ export default function ESportsRegister() {
       </div>
     </ProtectedRoute>
   );
-}
+}*/

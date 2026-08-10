@@ -1,4 +1,4 @@
-import Image from "next/image";
+/*import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ConfettiAnimation from "../components/Confetti";
@@ -82,4 +82,4 @@ export default function ESportsRegistrationSuccess() {
       )}
     </div>
   );
-}
+}*/

@@ -14,18 +14,18 @@ const Hacks11: EventDetail = {
   key: Events.hacks11,
   page: "/register",
   image: "/UH11_Registration_Banner.png",
-  startDate: new Date("02/06/2026"),
-  endDate: new Date("02/08/2026"),
-  deadline: new Date("02/01/2026"),
+  startDate: new Date("02/06/2027"),
+  endDate: new Date("02/08/2027"),
+  deadline: new Date("02/01/2027"),
 };
 
 const ESports11: EventDetail = {
   key: Events.e_sports_11,
   page: "/esports",
   image: "/eSports11_banner.png",
-  startDate: new Date("02/07/2026"),
-  endDate: new Date("02/07/2026"),
-  deadline: new Date("02/07/2026"),
+  startDate: new Date("02/07/2027"),
+  endDate: new Date("02/07/2027"),
+  deadline: new Date("02/07/2027"),
 };
 
 const events = [
@@ -36,7 +36,7 @@ const events = [
       if (uh11Dup < new Date()) {
         return <EventRect disabled={true} event={Hacks11} />;
       } else if (!re.HACKS11) {
-        return <EventRect disabled={false} event={Hacks11} />; // Manually disable hacks9 now that deadline has passed
+        return <EventRect disabled={false} event={Hacks11} />;
       } else {
         return <EventRect disabled={true} event={Hacks11} />;
       }
@@ -45,27 +45,14 @@ const events = [
       return true;
     },
   },
-  {
-    event: (re: EventRegistered) => {
-      let esportDup = new Date(ESports11.deadline);
-      esportDup.setDate(ESports11.deadline.getDate() + 1);
-      if (esportDup < new Date()) {
-        return <EventRect disabled={true} event={ESports11} />;
-      } else if (!re.ESPORTS11) {
-        return <EventRect disabled={false} event={ESports11} />; // Manually disable hacks9 now that deadline has passed
-      } else {
-        return <EventRect disabled={true} event={ESports11} />;
-      }
-    },
-    id: () => {
-      return true;
-    },
-  },
+  // Remove the ESports11 event object below to show only one button
 ];
 
 // Valid Open Events (pretty name):
 const eventMap = new Map<string, string>();
 eventMap.set("HACKS11", "UGAHacks 11");
+eventMap.set("ESPORTS11", "eSports 11");  // Add this for the second event
+// Add more events as needed
 
 function openEventsRegistered(allRegisteredEvents: string[]) {
   let events = "";
