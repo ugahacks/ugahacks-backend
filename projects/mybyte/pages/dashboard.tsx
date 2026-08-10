@@ -23,9 +23,9 @@ const ESports11: EventDetail = {
   key: Events.e_sports_11,
   page: "/esports",
   image: "/eSports11_banner.png",
-  startDate: new Date("02/07/2027"),
-  endDate: new Date("02/07/2027"),
-  deadline: new Date("02/07/2027"),
+  startDate: new Date("08/05/2026"),
+  endDate: new Date("10/25/2026"),
+  deadline: new Date("10/24/2026"),
 };
 
 const events = [
