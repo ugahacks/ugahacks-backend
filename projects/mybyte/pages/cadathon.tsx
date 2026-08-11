@@ -1,14 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
-import Select from "react-select";
 import Typewriter from "typewriter-effect";
 import { useAuth } from "../context/AuthContext";
 
-import { RegisterForm } from "../interfaces/registerForm";
+import { CadathonRegisterForm } from "../interfaces/cadathonRegisterForm";
 
 import {
   DietaryRestrictions,
@@ -21,22 +19,22 @@ import {
 import { Card } from "@material-tailwind/react";
 import "react-phone-number-input/style.css";
 import Circle from "../components/Circle";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function CadathonRegister() {
   const router = useRouter();
   const {
-    storeUserRegistrationInformation,
-    triggerRegistrationEmail,
+    storeCadathonRegistrationInformation,
+    triggerCadathonRegistrationEmail,
   } = useAuth();
 
   const {
     control,
     resetField,
-    watch,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterForm>({
+  } = useForm<CadathonRegisterForm>({
     defaultValues: {
       phoneNumber: "",
       inputMajor: "",
@@ -45,22 +43,16 @@ export default function CadathonRegister() {
     },
   });
 
-  const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
+  const onSubmit: SubmitHandler<CadathonRegisterForm> = async (data) => {
     try {
-      await storeUserRegistrationInformation(data);
-      await triggerRegistrationEmail();
+      await storeCadathonRegistrationInformation(data);
+      await triggerCadathonRegistrationEmail();
       router.push("/registrationSuccess");
     } catch (error) {
       console.error("Registration failed:", error);
-      // The button will automatically re-enable when isSubmitting becomes false
     }
   };
-  //const onSubmit: SubmitHandler<RegisterForm> = data => console.log(data);
 
-  // ref: http://stackoverflow.com/a/1293163/2343
-  // This will parse a delimited string into an array of
-  // arrays. The default delimiter is the comma, but this
-  // can be overriden in the second argument.
   const [otherMajor, setOtherMajor] = useState(false);
   const [otherDietaryRestrictions, setOtherDietaryRestrictions] =
     useState(false);
@@ -98,27 +90,20 @@ export default function CadathonRegister() {
 
   useEffect(() => {
     const handleResize = () => {
-      // Adjust the threshold as needed
-      const isSmallScreen = window.innerWidth <= 825; // Adjust the width as needed
-
-      // Update the state based on the window width
+      const isSmallScreen = window.innerWidth <= 825;
       setShouldRender(!isSmallScreen);
     };
 
-    // Attach the event listener
     window.addEventListener("resize", handleResize);
-
-    // Initial check on mount
     handleResize();
 
-    // Cleanup the event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
-    <div className="w-screen overflow-x-hidden">
+    <ProtectedRoute className="w-screen overflow-x-hidden">
       <div className="flex overflow-hidden">
         {shouldRender ? (
           <div className="moving-gradient-register w-[50vw] flex-1 pl-8 pt-12 font-mono overflow-hidden text-white">
@@ -236,7 +221,7 @@ export default function CadathonRegister() {
                             </div>
                           </div>
 
-                         {/* Preferred Name */}
+                          {/* Preferred Name */}
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
                               Preferred Name
@@ -262,7 +247,7 @@ export default function CadathonRegister() {
                           <div className="w-full md:w-full px-3 mb-6">
                             <label
                               className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
-                              htmlFor="grid-text-1"
+                              htmlFor="cadathon-email"
                             >
                               Email (.edu)
                               <span className="text-red-600">*</span>
@@ -279,7 +264,7 @@ export default function CadathonRegister() {
                                     "Needs to be a valid school email (.edu, .ca, .ac.uk, or .usthb.dz)",
                                 },
                               })}
-                              id="grid-text-1"
+                              id="cadathon-email"
                               type="text"
                               placeholder="byte@uga.edu"
                               maxLength={100}
@@ -516,36 +501,22 @@ export default function CadathonRegister() {
                                 <>
                                   <label
                                     className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2"
-                                    htmlFor="grid-text-1"
+                                    htmlFor="cadathon-first-time"
                                   >
-                                    First Time at a Cackathon?
+                                    First Time at a Cadathon?
                                   </label>
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                     <input
                                       type="checkbox"
                                       value=""
-                                      id="grid-text-1"
+                                      id="cadathon-first-time"
                                       className="sr-only peer"
-                                      onChange={() => {
-                                        onChange(!value);
-                                        let span =
-                                          document.getElementById(
-                                            "grid-text-1-span",
-                                          );
-                                        if (span === null) return;
-                                        let text = span.innerText;
-                                        span.innerText = text.includes("No")
-                                          ? "Yes"
-                                          : "No";
-                                      }}
+                                      onChange={() => onChange(!value)}
                                       checked={value}
                                     />
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-300 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
-                                    <span
-                                      className="ml-3 text-sm"
-                                      id="grid-text-1-span"
-                                    >
-                                      No
+                                    <span className="ml-3 text-sm">
+                                      {value ? "Yes" : "No"}
                                     </span>
                                   </label>
                                 </>
@@ -691,7 +662,7 @@ export default function CadathonRegister() {
                               )}
                             </div>
                           </div>
-        
+
                           <div className={!shouldRender ? "pb-56" : "pb-20"}>
                             <button
                               className={`border rounded w-full transition-colors p-2 ${isSubmitting
@@ -714,6 +685,6 @@ export default function CadathonRegister() {
           </div>
         </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }
