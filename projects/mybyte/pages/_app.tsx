@@ -6,7 +6,7 @@ import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { pathname: page } = useRouter();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   const gray_bg_routes = [
     "/login",
     "/signup",
@@ -22,11 +22,19 @@ function MyApp({ Component, pageProps }: AppProps) {
     "/team",
   ];
 
+  const no_navbar_routes = [
+    "/info"
+  ];
+
   return (
     <AuthContextProvider>
+      {no_navbar_routes.includes(page) ? (
+        <Component {...pageProps} />
+      ) : (
       <Navbar>
         <Component {...pageProps} />
       </Navbar>
+      )}
     </AuthContextProvider>
   );
 }

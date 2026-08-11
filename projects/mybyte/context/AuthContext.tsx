@@ -43,6 +43,7 @@ import { eSportsForm } from "../interfaces/eSportsForm";
 import { getPoints } from "../interfaces/event";
 import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { RegisterForm } from "../interfaces/registerForm";
+import { CadathonRegisterForm } from "../interfaces/cadathonRegisterForm";
 
 export interface UserType {
   email: string | null;
@@ -268,6 +269,93 @@ export const AuthContextProvider = ({
     });
 
     await setUserInformation(user.uid);
+  };
+
+  /**
+   * Stores Cadathon registration details in firestore.
+   * @param data data from form fields on /cadathon page
+   */
+  const storeCadathonRegistrationInformation = async (data: CadathonRegisterForm) => {
+    const storage = getStorage();
+    const file = data.resume?.[0];
+
+    let downloadURL: string | null = null;
+
+    if (file) {
+      const storageRef = ref(storage, "cadathon-resume/" + user.uid + "/" + file.name);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      downloadURL = await new Promise<string>((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          () => {},
+          (error) => reject(error),
+          async () => {
+            try {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve(url);
+            } catch (e) {
+              reject(e);
+            }
+          }
+        );
+      });
+    }
+
+    // Write registration doc for Cadathon
+    await setDoc(doc(collection(db, "cadathon-user-registration-details"), user.uid ? user.uid : ""), {
+      uid: user.uid,
+      gender: data.gender,
+      phoneNumber: data.phoneNumber,
+      year: data.year,
+      major: data.major,
+      inputMajor: data.inputMajor,
+      minor: data.minor,
+      email: data.email,
+      participated: data.participated,
+      hopeToSee: data.hopeToSee,
+      dietaryRestrictions: data.dietaryRestrictions,
+      inputDietaryRestrictions: data.inputDietaryRestrictions,
+      shirtSize: data.shirtSize,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      preferredName: data.preferredName,
+      resumeLink: downloadURL,
+      submitted_time: serverTimestamp(),
+    });
+
+    // Update user's registered status
+    await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
+      "registered.CADATHON": true,
+      user_type: Users.hacker,
+      points: 0,
+    });
+
+    await setUserInformation(user.uid);
+  };
+
+  /**
+   * Stores a mail document, which triggers an email for Cadathon registration.
+   */
+  const triggerCadathonRegistrationEmail = async () => {
+    const cadathonRegistrationDoc = await getDoc(doc(emailTemplates, "cadathon"));
+
+    if (cadathonRegistrationDoc.exists()) {
+      const emailHTML = cadathonRegistrationDoc.data().html;
+
+      await setDoc(doc(collection(db, "cadathon-registrationMail"), user.uid ? user.uid : ""), {
+        to: user.email,
+        message: {
+          subject: "Thank you for registering for the Cadathon",
+          text: "",
+          html: emailHTML,
+        },
+      });
+    } else {
+      console.error(
+        'Document "cadathon" not found in the "email-templates" collection.'
+      );
+    }
   };
 
   /**
@@ -1096,6 +1184,8 @@ export const AuthContextProvider = ({
         getTShirtSizeOfUser,
         triggerRegistrationEmail,
         triggerESportsRegistrationEmail,
+        storeCadathonRegistrationInformation,
+        triggerCadathonRegistrationEmail,
       }}
     >
       {loading ? null : children}

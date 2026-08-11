@@ -35,5 +35,6 @@ export interface RegisterForm {
   resumeLink: string;
   age: number;
   levelsOfStudy: LevelsOfStudy;
+  preferredName?: string; // not collected by register.tsx (UH11); keep optional
   // excitement: Number; // Scale of 1- 100
 }
