@@ -4,9 +4,11 @@ import React, { useEffect, useState } from "react";
 import ConfettiAnimation from "../components/Confetti";
 
 export default function RegistrationSuccess() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    setIsMobile(window.innerWidth <= 520);
+
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 520);
     };
@@ -34,7 +36,7 @@ export default function RegistrationSuccess() {
               <div className="px-4 mt-4 text-center text-lg sm:px-12">
                 <h1 className="text-4xl">Congratulations!</h1>
                 <p className="pt-2">
-                  You have successfully registered for UGAHacks 11! Let&apos;s make some magic happen 🪄
+                  You have successfully registered for UGA Cadathon! Let&apos;s build something great 📐
                 </p>
               </div>
             </div>
@@ -61,7 +63,7 @@ export default function RegistrationSuccess() {
               <div className="px-8 mt-8 text-center text-xl">
                 <h1 className="text-6xl">Congratulations!</h1>
                 <h2 className="text-xl pt-4">
-                  You have successfully registered for UGAHacks 11! Let&apos;s make some magic happen 🪄
+                  You have successfully registered for UGA Cadathon! Let&apos;s build something great 📐
                 </h2>
               </div>
             </div>

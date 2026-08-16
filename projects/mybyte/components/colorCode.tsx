@@ -28,7 +28,7 @@ function assignColor(evt: EventStatus): string {
 
 function colorCode(props: any): JSX.Element {
     const which =
-        Events.hacks11 in props.registered
+        props.registered?.[Events.cadathon] === true
             ? EventStatus.Registered
             : EventStatus.NotRegistered;
     return <span className={assignColor(which)}>{which}</span>;

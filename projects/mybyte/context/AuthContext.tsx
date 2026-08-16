@@ -50,6 +50,7 @@ export interface UserType {
 }
 
 export interface EventRegistered {
+  CADATHON: boolean | null;
   HACKS9: boolean | null;
   HACKSX: boolean | null;
   ESPORTSX: boolean | null;
@@ -92,6 +93,7 @@ export const AuthContextProvider = ({
     tid: null,
     school: null,
     registered: {
+      CADATHON: null,
       HACKS9: null,
       HACKSX: null,
       ESPORTSX: null,
@@ -116,10 +118,13 @@ export const AuthContextProvider = ({
   const teamRef = collection(db, "team");
   const emailTemplates = collection(db, "email-templates");
 
-  // Current Event (Hacks 11):
-  const registerRef = collection(db, "UH11-user-registration-details");
-  const registerMail = collection(db, "UH11-registrationMail");
-  const eSportsRef = collection(db, "eSports11-user-registration-details");
+  // Current Event (UGA Cadathon):
+  const registerRef = collection(db, "CADathon1-user-registration-details");
+  const registerMail = collection(db, "CADATHON-registrationMail");
+  const eSportsRef = collection(db, "eSports-cadathon-user-registration-details");
+
+  const registerRef_UH11 = collection(db, "UH11-user-registration-details");
+  const registerMail_UH11 = collection(db, "UH11-registrationMail");
 
   const registerRef_UHX = collection(db, "UHX-user-registration-details");
   const registerMail_UHX = collection(db, "UHX-registrationMail");
@@ -198,40 +203,15 @@ export const AuthContextProvider = ({
    * @param data data from form fields on /register page
    */
   const storeUserRegistrationInformation = async (data: RegisterForm) => {
-    const storage = getStorage();
-    const file = data.resume?.[0];
-
-    let downloadURL: string | null = null;
-
-    if (file) {
-      const storageRef = ref(storage, "resume/" + user.uid + "/" + file.name);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      // Wait for upload to finish and get the download URL (or throw on error)
-      downloadURL = await new Promise<string>((resolve, reject) => {
-        uploadTask.on(
-          "state_changed",
-          () => { },
-          (error) => reject(error),
-          async () => {
-            try {
-              const url = await getDownloadURL(uploadTask.snapshot.ref);
-              resolve(url);
-            } catch (e) {
-              reject(e);
-            }
-          },
-        );
-      });
+    if (!user?.uid) {
+      throw new Error("User not authenticated");
     }
 
-    // Write registration doc for UH11
-    await setDoc(doc(registerRef, user.uid ? user.uid : ""), {
+    // Write registration doc for Cadathon
+    await setDoc(doc(registerRef, user.uid), {
       uid: user.uid,
       gender: data.gender,
-      race: data.race,
       phoneNumber: data.phoneNumber,
-      countryResidence: data.countryResidence.label,
       year: data.year,
       major: data.major,
       inputMajor: data.inputMajor,
@@ -242,54 +222,51 @@ export const AuthContextProvider = ({
       dietaryRestrictions: data.dietaryRestrictions,
       inputDietaryRestrictions: data.inputDietaryRestrictions,
       shirtSize: data.shirtSize,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      preferredName: data.preferredName,
       codeOfConduct: data.codeOfConduct,
       eventLogisticsInfo: data.eventLogisticsInfo,
       mlhCommunication: data.mlhCommunication,
-      age: data.age,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      levelOfStudy: data.levelsOfStudy,
-      school: data.school.value,
-      inputSchool: data.inputSchool,
-      elCreditInterest: data.elCreditInterest,
       accepted: null,
       checkedIn: false,
       checkedOut: false,
-      resumeLink: downloadURL, // can be null if no file uploaded
       submitted_time: serverTimestamp(),
     });
 
-    // Update user's registered status and school
-    await updateDoc(doc(userRef, user.uid ? user.uid : ""), {
-      "registered.HACKS11": true,
-      school: data.school.value,
-      user_type: Users.hacker,
-      points: 0,
-    });
+    try {
+      await updateDoc(doc(userRef, user.uid), {
+        "registered.CADATHON": true,
+      });
+    } catch (error) {
+      console.warn("Unable to update user registration status", error);
+    }
 
-    await setUserInformation(user.uid);
+    await setUserInformation(user.uid).catch((error) => {
+      console.warn("Unable to refresh user information", error);
+    });
   };
 
   /**
    * Stores a mail document, which triggers an email to the user.
    */
   const triggerRegistrationEmail = async (data: RegisterForm) => {
-    const uh11RegistrationDoc = await getDoc(doc(emailTemplates, "uh11"));
+    const cadathonRegistrationDoc = await getDoc(doc(emailTemplates, "cadathon"));
 
-    if (uh11RegistrationDoc.exists()) {
-      const emailHTML = uh11RegistrationDoc.data().html;
+    if (cadathonRegistrationDoc.exists()) {
+      const emailHTML = cadathonRegistrationDoc.data().html;
 
       await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for UGAHacks 12",
+          subject: "Thank you for registering for UGA Cadathon",
           text: "",
           html: emailHTML,
         },
       });
     } else {
       console.error(
-        'Document "uh12" not found in the "email-templates" collection.',
+        'Document "cadathon" not found in the "email-templates" collection.',
       );
     }
   };
@@ -302,9 +279,9 @@ export const AuthContextProvider = ({
   const triggerESportsRegistrationEmail = async (data: eSportsForm) => {
     if (!user?.uid || !user?.email) throw new Error("User not authenticated");
 
-    const templateDoc = await getDoc(doc(emailTemplates, "esports12Registration"));
+    const templateDoc = await getDoc(doc(emailTemplates, "esportsCadathonRegistration"));
     if (!templateDoc.exists()) {
-      throw new Error('Missing email template: email-templates/esports12Registration');
+      throw new Error('Missing email template: email-templates/esportsCadathonRegistration');
     }
 
     const emailHTML = templateDoc.data().html;
@@ -312,14 +289,14 @@ export const AuthContextProvider = ({
     await addDoc(registerMail, {
       to: user.email,
       message: {
-        subject: "Thank you for registering for eSports 12",
+        subject: "Thank you for registering for eSports at UGA Cadathon",
         text: "",
         html: emailHTML,
       },
       // optional debug metadata
       createdAt: serverTimestamp(),
       uid: user.uid,
-      type: "esports11",
+      type: "esportsCadathon",
     });
   };
 
@@ -347,7 +324,7 @@ export const AuthContextProvider = ({
     });
 
     await updateDoc(doc(userRef, user.uid), {
-      "registered.ESPORTS11": true,
+      "registered.ESPORTS_CADATHON": true,
     });
 
     setUserInformation(user.uid);
@@ -419,7 +396,7 @@ export const AuthContextProvider = ({
   };
 
   /**
-   * Parses their full name and splits it into two seperate strings, first_name and last_name
+   * Parses their full name and splits it into first and last name strings.
    * @param full_name full name of google user
    */
   function getFirstAndLastNameFromGoogleName(
@@ -430,10 +407,30 @@ export const AuthContextProvider = ({
       return ["", ""];
     }
 
-    let first_name, last_name, rest;
-    [first_name, last_name, ...rest] = full_name.split(" ");
+    const [first_name = "", last_name = ""] = full_name.trim().split(/\s+/);
 
     return [first_name, last_name];
+  }
+
+  function getFirstAndLastNameFromUserData(
+    data: DocumentData,
+  ): [string | null, string | null] {
+    const firstName = data.firstName ?? data.first_name ?? null;
+    const lastName = data.lastName ?? data.last_name ?? null;
+
+    if (firstName || lastName) {
+      return [firstName, lastName];
+    }
+
+    const [parsedFirstName, parsedLastName] =
+      getFirstAndLastNameFromGoogleName(data.name ?? null);
+
+    return [parsedFirstName || null, parsedLastName || null];
+  }
+
+  function getFullNameFromUserData(data: DocumentData): string | null {
+    const [firstName, lastName] = getFirstAndLastNameFromUserData(data);
+    return [firstName, lastName].filter(Boolean).join(" ") || null;
   }
 
   /**
@@ -458,8 +455,8 @@ export const AuthContextProvider = ({
 
       await setDoc(doc(userRef, user.uid), {
         uid: user.uid,
-        first_name: first_name,
-        last_name: last_name,
+        firstName: first_name,
+        lastName: last_name,
         name: name,
         authProvider: "local",
         email: email,
@@ -525,8 +522,8 @@ export const AuthContextProvider = ({
       if (!docSnap.exists()) {
         await setDoc(doc(userRef, google_user.uid), {
           uid: google_user.uid,
-          first_name: first_name,
-          last_name: last_name,
+          firstName: first_name,
+          lastName: last_name,
           name: google_user.displayName,
           authProvider: "google",
           email: google_user.email,
@@ -642,8 +639,8 @@ export const AuthContextProvider = ({
 
   /**
    * Updates/stores a user's first and last name
-   * @param first_name user's first_name
-   * @param last_name user's first_name
+   * @param first_name user's first name
+   * @param last_name user's last name
    */
   const storeFirstAndLastName = async (
     first_name: string,
@@ -653,8 +650,8 @@ export const AuthContextProvider = ({
       const docRef = doc(userRef, user.uid ? user.uid : "");
 
       await updateDoc(docRef, {
-        first_name: first_name,
-        last_name: last_name,
+        firstName: first_name,
+        lastName: last_name,
       });
       setUserInformation(user.uid);
     } catch (err: any) {
@@ -663,18 +660,19 @@ export const AuthContextProvider = ({
   };
 
   /**
-   * Looks up if current user has a field for first_name and last_name in /users collection
-   * @param first_name user's first_name
-   * @param last_name user's first_name
+   * Looks up if current user has first and last name fields in /users.
    */
   const hasFirstAndLastName = async () => {
     const docRef = doc(userRef, user.uid ? user.uid : "1");
     const docSnap = await getDoc(docRef);
 
-    if (
-      docSnap.exists() &&
-      (docSnap.data().first_name === "" || docSnap.data().last_name === "")
-    ) {
+    if (!docSnap.exists()) {
+      return false;
+    }
+
+    const [firstName, lastName] = getFirstAndLastNameFromUserData(docSnap.data());
+
+    if (!firstName || !lastName) {
       return false;
     }
 
@@ -682,9 +680,8 @@ export const AuthContextProvider = ({
   };
 
   /**
-   * Get's user's first_name from /user collection
-   * @param first_name user's first_name
-   * @returns a string of their first_name
+   * Gets user's first name from /users.
+   * @returns a string of their first name
    */
   const getFirstName = async () => {
     const docRef = doc(userRef, user.uid ? user.uid : "0");
@@ -694,7 +691,8 @@ export const AuthContextProvider = ({
       return null;
     }
 
-    return docSnap.data().first_name;
+    const [firstName] = getFirstAndLastNameFromUserData(docSnap.data());
+    return firstName;
   };
 
   /**
@@ -710,7 +708,7 @@ export const AuthContextProvider = ({
       return null;
     }
 
-    return docSnap.data().name;
+    return getFullNameFromUserData(docSnap.data());
   };
 
   /**
@@ -944,18 +942,25 @@ export const AuthContextProvider = ({
       return null;
     }
 
-    const points = await getPoints(docSnap.data().uid);
+    const userData = docSnap.data();
+    let points = 0;
+    try {
+      points = await getPoints(userData.uid);
+    } catch (error) {
+      console.warn("Unable to load points for user", error);
+    }
+    const [firstName, lastName] = getFirstAndLastNameFromUserData(userData);
 
     setUserInfo({
-      first_name: docSnap.data().first_name,
-      last_name: docSnap.data().last_name,
+      first_name: firstName,
+      last_name: lastName,
       points,
-      tid: docSnap.data().tid,
-      school: docSnap.data().school,
-      registered: docSnap.data().registered,
-      user_type: docSnap.data().user_type,
+      tid: userData.tid,
+      school: userData.school,
+      registered: userData.registered,
+      user_type: userData.user_type,
     });
-    setType(docSnap.data().user_type);
+    setType(userData.user_type);
   };
 
   /**

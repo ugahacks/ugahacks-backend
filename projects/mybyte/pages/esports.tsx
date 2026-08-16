@@ -1,4 +1,4 @@
-import Image from "next/image";
+/*import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -41,7 +41,7 @@ export default function ESportsRegister() {
     watch,
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<eSportsForm>({
     defaultValues: {
       firstName: "",
@@ -58,11 +58,14 @@ export default function ESportsRegister() {
   });
 
   const onSubmit: SubmitHandler<eSportsForm> = async (data) => {
-    await storeESportsRegistrationInformation(data);
-    await triggerESportsRegistrationEmail(data);
-    router.push("/eSportsRegistrationSuccess");
+    try {
+      await storeESportsRegistrationInformation(data);
+      await triggerESportsRegistrationEmail(data);
+      router.push("/eSportsRegistrationSuccess");
+    } catch (error) {
+      console.error("eSports Registration failed:", error);
+    }
   };
-
 
   const [textCount1, setTextCount1] = useState(0);
   const [textCount2, setTextCount2] = useState(0);
@@ -74,7 +77,7 @@ export default function ESportsRegister() {
 
   useEffect(() => {
     const handleResize = () => {
-      const isSmallScreen = window.innerWidth <= 825; // Adjust the width as needed
+      const isSmallScreen = window.innerWidth <= 825;
       setShouldRender(!isSmallScreen);
     };
     window.addEventListener("resize", handleResize);
@@ -100,10 +103,10 @@ export default function ESportsRegister() {
                 />
               </h1>
               <div className="pl-1 text-md w-4/5">
-              <p className="pb-3">
+                <p className="pb-3">
                   We&apos;re excited that you are participating in the eSports
-                  tournament at UGAHacks 12 👾. Join us on Saturday the 7th
-                  from 1-7pm for Super Smash Bros. Ultimate and Mario Kart 8!
+                  side tournament at UGA Cadathon 👾! Join us on Thursday, October 24th
+                  for Super Smash Bros. Ultimate and Mario Kart 8!
                 </p>
                 <p className="text-md">
                   If you have any questions, please send us an email at{" "}
@@ -141,7 +144,7 @@ export default function ESportsRegister() {
                                 <span className="text-red-600">*</span>
                               </label>
                               <input
-                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                                 {...register("firstName", {
                                   required: "Please enter your first name",
                                   pattern: {
@@ -174,7 +177,7 @@ export default function ESportsRegister() {
                                 <span className="text-red-600">*</span>
                               </label>
                               <input
-                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                                 {...register("lastName", {
                                   required: "Please enter your last name",
                                   pattern: {
@@ -209,7 +212,7 @@ export default function ESportsRegister() {
                               <span className="text-red-600">*</span>
                             </label>
                             <input
-                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500"
+                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
                               {...register("gamerTag", {
                                 required: "Please enter your gamer tag",
                                 pattern: {
@@ -242,7 +245,7 @@ export default function ESportsRegister() {
                               Phone Number
                               <span className="text-red-600">*</span>
                             </label>
-                            <div className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none  focus:border-gray-500">
+                            <div className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500">
                               <Controller
                                 name="phoneNumber"
                                 control={control}
@@ -301,7 +304,7 @@ export default function ESportsRegister() {
                                   </option>
                                 ))}
                               </select>
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -338,7 +341,7 @@ export default function ESportsRegister() {
                                   </option>
                                 ))}
                               </select>
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
+                              <div className="pointer-events-none absolute top-0 mt-3 right-0 flex items-center px-2 text-gray-600">
                                 <svg
                                   className="fill-current h-4 w-4"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -349,45 +352,6 @@ export default function ESportsRegister() {
                               </div>
                             </div>
                           </div>
-
-                          {/* <div className="w-full md:w-full px-3 mb-6">
-                            <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                              Select the second choice of the game you’d like to
-                              compete in a tournament for (if you only want your
-                              first choice leave this blank):
-                            </label>
-                            <div className="flex-shrink w-full inline-block relative">
-                              <select
-                                className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                {...register("selectedGameTwo", {
-                                  required: false,
-                                })}
-                              >
-                                <option value="Place your second choice">
-                                  Select your second choice
-                                </option>
-                                {Object.keys(Games).map((key) => (
-                                  <option key={key} value={key}>
-                                    {Games[key as keyof typeof Games]}
-                                  </option>
-                                ))}
-                              </select>
-                              <div className="pointer-events-none absolute top-0 mt-3  right-0 flex items-center px-2 text-gray-600">
-                                <svg
-                                  className="fill-current h-4 w-4"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                </svg>
-                              </div>
-                              {errors.selectedGameTwo && (
-                                <p className={errorStyles}>
-                                  {errors.selectedGameTwo.message}
-                                </p>
-                              )}
-                            </div>
-                          </div> */}
 
                           <div className="w-full md:w-full px-3 mb-6">
                             <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
@@ -477,7 +441,7 @@ export default function ESportsRegister() {
                                 <>
                                   <label
                                     className="block tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                    htmlFor="grid-text-1"
+                                    htmlFor="grid-text-tardy"
                                   >
                                     <em>Tardy Agreement: </em>“I understand that
                                     if I am more than 5 minutes late to my time
@@ -488,6 +452,7 @@ export default function ESportsRegister() {
                                   <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                     <input
                                       type="checkbox"
+                                      id="grid-text-tardy"
                                       className="sr-only peer"
                                       checked={!!field.value}
                                       onChange={(e) => field.onChange(e.target.checked)}
@@ -506,10 +471,15 @@ export default function ESportsRegister() {
 
                           <div className={!shouldRender ? "pb-56" : "pb-20"}>
                             <button
-                              className="border rounded w-full border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors p-2"
+                              className={`border rounded w-full transition-colors p-2 ${
+                                isSubmitting
+                                  ? "border-gray-300 bg-gray-300 text-gray-500 cursor-not-allowed"
+                                  : "border-gray-100 bg-gray-100 hover:bg-primary-500 hover:border-primary-500 hover:text-white"
+                              }`}
                               type="submit"
+                              disabled={isSubmitting}
                             >
-                              Register!
+                              {isSubmitting ? "Registering..." : "Register!"}
                             </button>
                           </div>
                         </div>
@@ -524,4 +494,4 @@ export default function ESportsRegister() {
       </div>
     </ProtectedRoute>
   );
-}
+}*/

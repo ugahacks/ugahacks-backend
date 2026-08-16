@@ -1,12 +1,14 @@
-import Image from "next/image";
+/*import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ConfettiAnimation from "../components/Confetti";
 
 export default function ESportsRegistrationSuccess() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    setIsMobile(window.innerWidth <= 520);
+
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 520);
     };
@@ -34,7 +36,7 @@ export default function ESportsRegistrationSuccess() {
               <div className="px-4 mt-4 text-center text-lg sm:px-12">
                 <h1 className="text-4xl">Congratulations!</h1>
                 <p className="pt-2">
-                  You have successfully registered for eSports 12! See you soon!
+                  You have successfully registered for eSports at UGA Cadathon! See you soon!
                   😃
                 </p>
               </div>
@@ -62,7 +64,7 @@ export default function ESportsRegistrationSuccess() {
               <div className="px-12 mt-8 text-center text-xl">
                 <h1 className="text-6xl">Congratulations!</h1>
                 <h2 className="text-xl pt-4">
-                  You have successfully registered for eSports 12!
+                  You have successfully registered for eSports at UGA Cadathon!
                 </h2>
                 <h2 className="text-xl">See ya soon! 😃</h2>
               </div>
@@ -80,4 +82,4 @@ export default function ESportsRegistrationSuccess() {
       )}
     </div>
   );
-}
+}*/

@@ -21,7 +21,7 @@ export interface Event {
   active: boolean;
 }
 
-export const eventsRef = collection(db, "UH11-events");
+export const eventsRef = collection(db, "CADATHON-events");
 
 export const getEvents = async (active: boolean = true): Promise<Event[]> => {
   let q: Query<DocumentData>;
@@ -81,7 +81,7 @@ export const getPoints = async (userId: string) => {
   let points = 0;
   for (const event of events) {
     const q = query(
-      collection(db, "UH11-events", event.id, "attendance"),
+      collection(db, "CADATHON-events", event.id, "attendance"),
       where("uid", "==", userId),
     );
     const snapshot = await getDocs(q);
