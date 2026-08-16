@@ -10,8 +10,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import { EventRegistered, useAuth } from "../context/AuthContext";
 import { Events } from "../enums/events";
 
-const Hacks11: EventDetail = {
-  key: Events.hacks11,
+const Cadathon: EventDetail = {
+  key: Events.cadathon,
   page: "/register",
   image: "/UH11_Registration_Banner.png",
   startDate: new Date("08/05/2026"),
@@ -31,14 +31,14 @@ const ESports11: EventDetail = {
 const events = [
   {
     event: (re: EventRegistered) => {
-      let uh11Dup = new Date(Hacks11.deadline);
-      uh11Dup.setDate(Hacks11.deadline.getDate() + 1);
-      if (uh11Dup < new Date()) {
-        return <EventRect disabled={true} event={Hacks11} />;
-      } else if (!re.HACKS11) {
-        return <EventRect disabled={false} event={Hacks11} />;
+      let cadathonDup = new Date(Cadathon.deadline);
+      cadathonDup.setDate(Cadathon.deadline.getDate() + 1);
+      if (cadathonDup < new Date()) {
+        return <EventRect disabled={true} event={Cadathon} />;
+      } else if (!re.CADATHON) {
+        return <EventRect disabled={false} event={Cadathon} />;
       } else {
-        return <EventRect disabled={true} event={Hacks11} />;
+        return <EventRect disabled={true} event={Cadathon} />;
       }
     },
     id: () => {
@@ -50,7 +50,7 @@ const events = [
 
 // Valid Open Events (pretty name):
 const eventMap = new Map<string, string>();
-eventMap.set("HACKS11", "UGAHacks 11");
+eventMap.set(Events.cadathon, "UGA Cadathon");
 eventMap.set("ESPORTS11", "eSports 11");  // Add this for the second event
 // Add more events as needed
 
@@ -64,13 +64,21 @@ function openEventsRegistered(allRegisteredEvents: string[]) {
   return events;
 }
 
+function isRegisteredForEvent(registeredEvents: EventRegistered, key: Events) {
+  return Boolean(registeredEvents?.[key as keyof EventRegistered]);
+}
+
 const DashboardPage = () => {
   const { user, userInfo } = useAuth();
   // console.log(user.uid + " is logged in"); debugging
   const registeredEvents: EventRegistered = userInfo.registered;
-  const registeredEventKeys = Object.keys(registeredEvents);
+  const registeredEventKeys = Object.entries(registeredEvents)
+    .filter(([, registered]) => registered === true)
+    .map(([event]) => event);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" && window.innerWidth <= 768,
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -95,7 +103,7 @@ const DashboardPage = () => {
         color: "bg-[#212121]",
       });
     }
-    if (ev.key in registeredEvents) {
+    if (isRegisteredForEvent(registeredEvents, ev.key)) {
       setAlert({
         show: true,
         message: "You are already registered for this event",
@@ -131,12 +139,14 @@ const DashboardPage = () => {
         <div className="flex py-2 mx-auto flex-initial w-full">
           <div className="text-gray-800 px-16 py-3 mt-4 mx-3 inter">
             <h2 className="text-3xl font-semibold">
-              Welcome, {userInfo.first_name && userInfo.last_name ? `${userInfo.first_name} ${userInfo.last_name}` : "User"}
+              Welcome,{" "}
+              {[userInfo.first_name, userInfo.last_name].filter(Boolean).join(" ") ||
+                "User"}
             </h2>
             <div className="text-xl pt-5 pb-5 text-left font-mono container w-3/4">
               <p>
-                This is the UGAHacks registration portal, feel free to register
-                for any events below. Happy hacking!
+                This is the UGA Cadathon registration portal, feel free to
+                register for any events below.
               </p>
             </div>
             <div className="flex mt-5 items-center gap-10 justify-content-between">
@@ -158,7 +168,9 @@ const DashboardPage = () => {
                 <h2>
                   Name:{" "}
                   <span className="font-bold">
-                    {userInfo.first_name && userInfo.last_name ? `${userInfo.first_name} ${userInfo.last_name}` : "N/A"}
+                    {[userInfo.first_name, userInfo.last_name]
+                      .filter(Boolean)
+                      .join(" ") || "N/A"}
                   </span>
                 </h2>
                 <h2>

@@ -15,14 +15,14 @@ const EventPage = () => {
     application_type: "Participant",
     deadline: "October 24th, 2024",
     page: "/register",
-    disabled: Events.cadathon in userInfo.registered,
+    disabled: userInfo.registered?.[Events.cadathon] === true,
     image: "/byte_mini.png",
   };
 
   useEffect(() => {
     async function get_first_name() {
       const first_name = await getFirstName();
-      setFirstName(first_name);
+      setFirstName(first_name ?? "");
     }
     async function get_registered_events() {
       const registered_events = await getRegisteredEvents();
@@ -38,7 +38,7 @@ const EventPage = () => {
         <div className="text-gray-600 px-12 py-24 mt-24 mx-auto">
           <h2 className="text-2xl font-semibold">Hey {firstName}, this is </h2>
           STATUS:{" "}
-          {Events.cadathon in registeredEvents
+          {(registeredEvents as Record<string, boolean | null>)?.[Events.cadathon] === true
             ? EventStatus.Registered
             : EventStatus.NotRegistered}
         </div>

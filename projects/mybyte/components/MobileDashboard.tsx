@@ -1,8 +1,7 @@
-import Image from "next/image";
 import { QRCodeCanvas } from "qrcode.react";
 import React, { useState } from "react";
 import EventRect, { EventDetail } from "../components/EventRect";
-import { EventRegistered, useAuth } from "../context/AuthContext";
+import { EventRegistered } from "../context/AuthContext";
 import { Events } from "../enums/events";
 import AlertCard from "./AlertCard";
 
@@ -23,6 +22,10 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
   events,
   eventMap,
 }) => {
+  function isRegisteredForEvent(registeredEvents: EventRegistered, key: Events) {
+    return Boolean(registeredEvents?.[key as keyof EventRegistered]);
+  }
+
   function openEventsRegistered(allRegisteredEvents: string[]) {
     let events = "";
     allRegisteredEvents.forEach((e: string) => {
@@ -33,7 +36,6 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
   }
 
   const [alert, setAlert] = useState({ show: false, message: "", color: "" });
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const registrationCheck = (ev: EventDetail) => {
     if (ev.key === Events.e_sports_11 && !registeredEvents.CADATHON) {
@@ -43,7 +45,7 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
           "Please register for UGA Cadathon before registering for side events",
         color: "bg-[#212121]",
       });
-    } else if (ev.key in registeredEvents) {
+    } else if (isRegisteredForEvent(registeredEvents, ev.key)) {
       setAlert({
         show: true,
         message: "You are already registered for this event",
@@ -94,7 +96,7 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
           <h2>
             Name:{" "}
             <span className="font-bold">
-              {userInfo.first_name} {userInfo.last_name}
+              {fullName || "N/A"}
             </span>
           </h2>
           <h2>
