@@ -1,4 +1,4 @@
-/*import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ConfettiAnimation from "../components/Confetti";
@@ -37,7 +37,7 @@ export default function ESportsRegistrationSuccess() {
                 <h1 className="text-4xl">Congratulations!</h1>
                 <p className="pt-2">
                   You have successfully registered for eSports at UGA Cadathon! See you soon!
-                  😃
+                  
                 </p>
               </div>
             </div>
@@ -66,7 +66,7 @@ export default function ESportsRegistrationSuccess() {
                 <h2 className="text-xl pt-4">
                   You have successfully registered for eSports at UGA Cadathon!
                 </h2>
-                <h2 className="text-xl">See ya soon! 😃</h2>
+                <h2 className="text-xl">See ya soon!</h2>
               </div>
             </div>
 
@@ -82,4 +82,4 @@ export default function ESportsRegistrationSuccess() {
       )}
     </div>
   );
-}*/
+}
