@@ -76,8 +76,8 @@ const MobileDashboard: React.FC<MobileDashboardProps> = ({
         </h2>
         <div className="text-sm pt-3 pb-5 font-mono container">
           <p>
-            This is the UGA Cadathon registration portal, feel free to register for
-            any events below.
+            This is the UGAHacks registration portal, feel free to register for
+            any events below. Happy Hacking!
           </p>
         </div>
         <div>
