@@ -28,7 +28,7 @@ export default function RegistrationSuccess() {
           <div className="container mx-auto mt-6 rounded-md">
             <div className="flex flex-col items-center">
               <Image
-                src="/bytebusteyesclosed.PNG"
+                src="/Racerbyte.png"
                 alt="Magical Byte stirring a witch pot"
                 width={200}
                 height={200}
@@ -55,7 +55,7 @@ export default function RegistrationSuccess() {
           <div className="sign-up-form container mx-auto max-w-min mt-6 rounded-md">
             <div className="flex flex-col items-center">
               <Image
-                src="/bytebusteyesclosed.PNG"
+                src="/Racerbyte.png"
                 alt="Magical Byte stirring a witch pot"
                 width={300}
                 height={100}
