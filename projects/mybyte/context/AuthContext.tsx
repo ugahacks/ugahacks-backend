@@ -724,7 +724,7 @@ export const AuthContextProvider = ({
       return null;
     }
 
-    return docSnap.data().registered;
+    return await verifyRegistrationStatus(userid, docSnap.data().registered);
   };
 
   /**
@@ -740,7 +740,7 @@ export const AuthContextProvider = ({
       return null;
     }
 
-    return docSnap.data().registered;
+    return await verifyRegistrationStatus(user.uid || "", docSnap.data().registered);
   };
 
   /**
@@ -934,6 +934,47 @@ export const AuthContextProvider = ({
     return false;
   };
 
+  const verifyRegistrationStatus = async (uid: string, registeredData: any) => {
+    if (!registeredData || !uid) return registeredData || {};
+    
+    let mismatch = false;
+    const syncedRegistered = { ...registeredData };
+
+    if (syncedRegistered.CADATHON) {
+      try {
+        const cadathonDoc = await getDoc(doc(registerRef, uid));
+        if (!cadathonDoc.exists()) {
+          syncedRegistered.CADATHON = false;
+          mismatch = true;
+        }
+      } catch (e) {
+        console.warn("Error checking CADATHON", e);
+      }
+    }
+
+    if (syncedRegistered.ESPORTS_CADATHON) {
+      try {
+        const esportsDoc = await getDoc(doc(eSportsRef, uid));
+        if (!esportsDoc.exists()) {
+          syncedRegistered.ESPORTS_CADATHON = false;
+          mismatch = true;
+        }
+      } catch (e) {
+        console.warn("Error checking ESPORTS_CADATHON", e);
+      }
+    }
+
+    if (mismatch) {
+      try {
+        await updateDoc(doc(userRef, uid), { registered: syncedRegistered });
+      } catch (e) {
+        console.warn("Error syncing registration", e);
+      }
+    }
+
+    return syncedRegistered;
+  };
+
   const setUserInformation = async (uid: string | null) => {
     const docRef = doc(userRef, uid ? uid : "");
     const docSnap = await getDoc(docRef);
@@ -951,13 +992,15 @@ export const AuthContextProvider = ({
     }
     const [firstName, lastName] = getFirstAndLastNameFromUserData(userData);
 
+    const syncedRegistered = await verifyRegistrationStatus(uid || "", userData.registered);
+
     setUserInfo({
       first_name: firstName,
       last_name: lastName,
       points,
       tid: userData.tid,
       school: userData.school,
-      registered: userData.registered,
+      registered: syncedRegistered,
       user_type: userData.user_type,
     });
     setType(userData.user_type);
