@@ -1,0 +1,222 @@
+[33mcommit e849099d198dd51b6b638c9d35d1881f2df28016[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mcadathonWebsite[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Merge: 1f7bba9 b226ada
+Author: Krishna Mohan <167227544+km49142@users.noreply.github.com>
+Date:   Sat Jul 25 21:18:38 2026 -0400
+
+    Merge pull request #258 from ugahacks/varshinivenkatasamy-patch-8-1
+    
+    Update register.tsx
+
+[33mcommit 1f7bba94e70bbfda2c302a6db6992fdbc5274189[m
+Merge: 31f54d3 1f761bd
+Author: Krishna Mohan <167227544+km49142@users.noreply.github.com>
+Date:   Sat Jul 25 21:18:12 2026 -0400
+
+    Merge pull request #255 from ugahacks/varshinivenkatasamy-patch-5
+    
+    Update event dates and references for UGAHacks
+
+[33mcommit 31f54d3e4e194a18b737c2463c3b026dc5d9208d[m
+Merge: c674e9a b12a1ce
+Author: Krishna Mohan <167227544+km49142@users.noreply.github.com>
+Date:   Sat Jul 25 21:17:35 2026 -0400
+
+    Merge pull request #254 from ugahacks/varshinivenkatasamy-patch-4
+    
+    Add new event types for hacks12 and e_sports_12
+
+[33mcommit c674e9a7891808d4ee600c311ac06aade402056a[m
+Merge: bbecbcb 7d0760c
+Author: Krishna Mohan <167227544+km49142@users.noreply.github.com>
+Date:   Tue Jul 21 21:25:48 2026 -0400
+
+    Merge pull request #253 from ugahacks/varshinivenkatasamy-patch-3
+    
+    Update registration email subjects for UGAHacks and eSports
+
+[33mcommit bbecbcb0b27a1820d5c2057909487f741f13a232[m
+Merge: 022335f b4d3358
+Author: Krishna Mohan <167227544+km49142@users.noreply.github.com>
+Date:   Tue Jul 21 21:25:28 2026 -0400
+
+    Merge pull request #252 from ugahacks/varshinivenkatasamy-patch-2
+    
+    Update email templates for UGAHacks
+
+[33mcommit 022335f5462d053223245aa0d8ff2494e6265c9b[m
+Merge: 8855b2f a97e0db
+Author: Krishna Mohan <167227544+km49142@users.noreply.github.com>
+Date:   Tue Jul 21 21:24:55 2026 -0400
+
+    Merge pull request #251 from ugahacks/varshinivenkatasamy-patch-1
+    
+    Update alert message for UGAHacks registration
+
+[33mcommit b226ada4009c953b79ef6097e69f669459a24dd8[m
+Author: varshinivenkatasamy <varshini6785@gmail.com>
+Date:   Sun Jul 12 18:44:29 2026 -0400
+
+    Update register.tsx
+
+[33mcommit 8855b2f1bd73fd54cb97a996488d5b962651c95e[m
+Merge: bb06638 018b805
+Author: Krishna Mohan <167227544+km49142@users.noreply.github.com>
+Date:   Tue Jul 7 21:19:15 2026 -0400
+
+    Merge pull request #256 from ugahacks/varshinivenkatasamy-patch-6
+    
+    Update registration message for eSports 12
+
+[33mcommit bb06638456ae40a91f49a384c793b8553bd8b499[m
+Merge: afa286a 289b57d
+Author: Krishna Mohan <167227544+km49142@users.noreply.github.com>
+Date:   Tue Jul 7 21:18:30 2026 -0400
+
+    Merge pull request #257 from ugahacks/varshinivenkatasamy-patch-7
+    
+    Update tournament details for UGAHacks
+
+[33mcommit 289b57d429f0baa1089deef13ce8cdbe3b5e6ac0[m[33m ([m[1;31morigin/varshinivenkatasamy-patch-7[m[33m)[m
+Author: varshinivenkatasamy <varshini6785@gmail.com>
+Date:   Mon Jul 6 16:45:08 2026 -0400
+
+    Update tournament details for UGAHacks
+
+[33mcommit 018b8056f962e38b774c126ecb2597a2706844d8[m[33m ([m[1;31morigin/varshinivenkatasamy-patch-6[m[33m)[m
+Author: varshinivenkatasamy <varshini6785@gmail.com>
+Date:   Mon Jul 6 16:43:41 2026 -0400
+
+    Update registration message for eSports 12
+
+[33mcommit 1f761bd83f036ddf309760c14803d63bc5864988[m
+Author: varshinivenkatasamy <varshini6785@gmail.com>
+Date:   Mon Jul 6 16:42:35 2026 -0400
+
+    Update event dates and references for UGAHacks
+
+[33mcommit b12a1ce2a6ca117497417fd37535f1ff7c218328[m[33m ([m[1;31morigin/varshinivenkatasamy-patch-4[m[33m)[m
+Author: varshinivenkatasamy <varshini6785@gmail.com>
+Date:   Mon Jul 6 16:39:15 2026 -0400
+
+    Add new event types for hacks12 and e_sports_12
+
+[33mcommit 7d0760c67367197ca13fdb1ae4b701eae756f810[m[33m ([m[1;31morigin/varshinivenkatasamy-patch-3[m[33m)[m
+Author: varshinivenkatasamy <varshini6785@gmail.com>
+Date:   Mon Jul 6 16:37:28 2026 -0400
+
+    Update registration email subjects for UGAHacks and eSports
+
+[33mcommit b4d3358a63a87bb5410618488bea0d961e76f4d4[m[33m ([m[1;31morigin/varshinivenkatasamy-patch-2[m[33m)[m
+Author: varshinivenkatasamy <varshini6785@gmail.com>
+Date:   Mon Jul 6 16:32:01 2026 -0400
+
+    Update email templates for UGAHacks
+
+[33mcommit a97e0db50c76d70e735f1418c502c09de20ada9e[m
+Author: varshinivenkatasamy <varshini6785@gmail.com>
+Date:   Mon Jul 6 16:23:31 2026 -0400
+
+    Update alert message for UGAHacks registration
+    
+    updating dates
+
+[33mcommit afa286a60edd5b66e8a52583961927f904a6d36f[m[33m ([m[1;31morigin/blacklist-system[m[33m)[m
+Merge: 3b7e52e 49f7149
+Author: Ryan Majd <131102091+TheRyanMajd@users.noreply.github.com>
+Date:   Tue Feb 10 20:04:55 2026 -0500
+
+    Merge pull request #250 from ugahacks/copilot/update-readme-for-qr-operations
+    
+    Add comprehensive MyByte system documentation
+
+[33mcommit 49f714950de448c1a8c158d36a4e925c55f1e65b[m
+Author: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>
+Date:   Tue Feb 10 21:25:28 2026 +0000
+
+    Add comprehensive MyByte documentation for QR scanning, registration, and system architecture
+    
+    Co-authored-by: TheRyanMajd <131102091+TheRyanMajd@users.noreply.github.com>
+
+[33mcommit 9773d379d87e6b6ca77eb6cff77aa9902af9292b[m
+Author: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>
+Date:   Tue Feb 10 21:17:10 2026 +0000
+
+    Initial plan
+
+[33mcommit 3b7e52e90b8c6c3fee80280856dd0e4fd4f0f8fc[m
+Merge: 1e9ca27 be7268c
+Author: Ryan Majd <131102091+TheRyanMajd@users.noreply.github.com>
+Date:   Tue Feb 10 13:28:56 2026 -0500
+
+    Merge pull request #246 from ugahacks/Sir-Ryan-Majd
+    
+    Update code owner from @genki-aik to @theryanmajd
+
+[33mcommit 1e9ca277479162a369794e3de95b485c277a3333[m
+Merge: 88cdd4c d199f7a
+Author: Stephen Sulimani <stephensulimani@gmail.com>
+Date:   Fri Feb 6 19:37:23 2026 -0500
+
+    Merge pull request #247 from ugahacks/fix/qr_scan_ui_fix
+    
+    :wrench: changed UI for QR scanner to prevent f&^k ups
+
+[33mcommit d199f7a8b91a22467b2c4032458ed994cdd0ea33[m[33m ([m[1;31morigin/fix/qr_scan_ui_fix[m[33m)[m
+Author: Stephen Sulimani <stephensulimani@gmail.com>
+Date:   Fri Feb 6 19:36:25 2026 -0500
+
+    :wrench: changed UI for QR scanner to prevent f&^k ups
+
+[33mcommit 88cdd4c09d4599951fd49d1d7962a22bfb0c7924[m
+Author: Ryan Majd <131102091+TheRyanMajd@users.noreply.github.com>
+Date:   Fri Feb 6 18:11:04 2026 -0500
+
+    Add Pusan National University to schools list
+
+[33mcommit be7268cb4a4c736abcdd2b0ff00aae66fba46a43[m
+Author: Stephen Sulimani <stephensulimani@gmail.com>
+Date:   Fri Feb 6 16:52:12 2026 -0500
+
+    Update code owner from @genki-aik to @theryanmajd
+
+[33mcommit 88a5b577205731d9f830680bf17d1def63d081df[m
+Merge: b2a52cf ccbad96
+Author: Ryan Majd <131102091+TheRyanMajd@users.noreply.github.com>
+Date:   Fri Feb 6 15:45:52 2026 -0500
+
+    Merge pull request #245 from ugahacks/feat/danny_is_lazy
+    
+    :tada: made qr scanning better + faster
+
+[33mcommit ccbad966600b74462b3c667a621927bbb1bb08a3[m[33m ([m[1;31morigin/feat/danny_is_lazy[m[33m)[m
+Author: Stephen Sulimani <stephensulimani@gmail.com>
+Date:   Fri Feb 6 15:41:27 2026 -0500
+
+    :tada: made qr scanning better + faster
+
+[33mcommit b2a52cf9f7c93bd66d4225605f1432175c070ef9[m
+Merge: eb3ad83 7d37948
+Author: Ryan Majd <131102091+TheRyanMajd@users.noreply.github.com>
+Date:   Thu Feb 5 20:37:31 2026 -0500
+
+    Merge pull request #243 from ugahacks/fix/point_store_bandaid
+    
+    Point Store BandAid Fix
+
+[33mcommit eb3ad83eac8ba1f27d06ba144dc20a7ff2fb16bf[m
+Merge: 44aff8e 93c1d6d
+Author: Ryan Majd <131102091+TheRyanMajd@users.noreply.github.com>
+Date:   Thu Feb 5 20:06:20 2026 -0500
+
+    Merge pull request #242 from ugahacks/fix/negative_qr_scanning
+    
+    :hammer: throws error if event will cause user to be under 0 points
+
+[33mcommit 44aff8e960022e9e36e58856d749f3bdb0254ca8[m
+Merge: 858ce82 86940db
+Author: Ryan Majd <131102091+TheRyanMajd@users.noreply.github.com>
+Date:   Thu Feb 5 19:44:21 2026 -0500
+
+    Merge pull request #238 from ugahacks/bug/schools_refetch
+    
+    Fixed issue with constant refetching of school
