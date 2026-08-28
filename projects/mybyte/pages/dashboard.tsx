@@ -167,8 +167,8 @@ const DashboardPage = () => {
             </h2>
             <div className="text-xl pt-5 pb-5 text-left font-mono container w-3/4">
               <p>
-                This is the UGA Cadathon registration portal, feel free to
-                register for any events below. Please note that these events are for UGA students ONLY!
+                This is the UGA Cadathon/Hacks registration portal, feel free to
+                register for any events below. 
               </p>
             </div>
             <div className="flex mt-5 items-center gap-10 justify-content-between">

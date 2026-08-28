@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Controller,
   SubmitErrorHandler,
@@ -33,15 +33,6 @@ import ProtectedRoute from "../components/ProtectedRoute";
 
 type EventType = "cadathon" | "ugahacks12";
 
-type Option = { value: string; label: string };
-
-const PREFER_NOT_TO_ANSWER = {
-  value: "prefer_not_to_answer",
-  label: "Prefer not to answer",
-};
-
-const NONE_OPTION = { value: "none", label: "None" };
-
 export default function Register() {
   const router = useRouter();
   const eventType = (router.query.event as EventType) || "cadathon";
@@ -51,6 +42,7 @@ export default function Register() {
 
   const {
     storeUserRegistrationInformation,
+    userInfo,
     triggerRegistrationEmail,
   } = useAuth();
 
@@ -59,8 +51,6 @@ export default function Register() {
     resetField,
     register,
     handleSubmit,
-    watch,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<RegisterForm>({
     defaultValues: {
@@ -78,7 +68,6 @@ export default function Register() {
       email: "",
       gender: undefined as any,
       year: undefined as any,
-      graduationYear: "",
       major: undefined as any,
       minor: "",
       shirtSize: undefined as any,
@@ -88,44 +77,27 @@ export default function Register() {
       school: null as any,
       race: undefined as any,
       levelsOfStudy: undefined as any,
-      highestEducationLevel: "",
       countryResidence: null as any,
       elCreditInterest: undefined as any,
-      linkedinUrl: "",
-      dietaryRestrictions: [] as any,
       resume: undefined as any,
-    } as any,
+    },
   });
 
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [otherMajor, setOtherMajor] = useState(false);
   const [otherSchool, setOtherSchool] = useState(false);
-  const [otherDietaryRestrictions, setOtherDietaryRestrictions] = useState(false);
+  const [otherDietaryRestrictions, setOtherDietaryRestrictions] =
+    useState(false);
   const [textCount, setTextCount] = useState(0);
   const [shouldRender, setShouldRender] = useState(true);
-  const [schoolOptions, setSchoolOptions] = useState<Option[]>([]);
+  const [schoolOptions, setSchoolOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
 
-  const countryOptions = useMemo(
-    () => [...countryList().getData(), PREFER_NOT_TO_ANSWER],
-    [],
-  );
-
-  const dietaryOptions = useMemo<Option[]>(
-    () => [
-      NONE_OPTION,
-      ...Object.keys(DietaryRestrictions).map((key) => ({
-        value: key,
-        label: DietaryRestrictions[key as keyof typeof DietaryRestrictions],
-      })),
-      { value: "other", label: "Other" },
-    ],
-    [],
-  );
-
-  const watchedDietary = watch("dietaryRestrictions" as any);
+  const countryOptions = React.useMemo(() => countryList().getData(), []);
 
   useEffect(() => {
-    const opts: Option[] = [];
+    const opts: { value: string; label: string }[] = [];
 
     fetch("/schools.csv")
       .then((resp) => resp.text())
@@ -135,12 +107,11 @@ export default function Register() {
           const school = row.trim();
           if (school) opts.push({ value: school, label: school });
         });
-        opts.push(PREFER_NOT_TO_ANSWER);
         opts.push({ value: "other", label: "Other" });
         setSchoolOptions(opts);
       })
       .catch(() => {
-        setSchoolOptions([PREFER_NOT_TO_ANSWER, { value: "other", label: "Other" }]);
+        setSchoolOptions([{ value: "other", label: "Other" }]);
       });
   }, []);
 
@@ -157,23 +128,6 @@ export default function Register() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  useEffect(() => {
-    const selected = (watchedDietary || []) as Option[];
-    const hasOther = selected.some((o) => o?.value === "other");
-    const hasNone = selected.some((o) => o?.value === "none");
-
-    setOtherDietaryRestrictions(hasOther);
-
-    if (!hasOther) {
-      resetField("inputDietaryRestrictions");
-    }
-
-    if (hasNone && selected.length > 1) {
-      const cleaned = selected.filter((o) => o.value !== "none");
-      setValue("dietaryRestrictions" as any, cleaned as any, { shouldValidate: true });
-    }
-  }, [watchedDietary, resetField, setValue]);
 
   const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
     setSubmitError(null);
@@ -234,6 +188,18 @@ export default function Register() {
     },
   });
 
+  register("dietaryRestrictions", {
+    onChange: (e) => {
+      const value = e.target.value;
+      if (value === "other") {
+        setOtherDietaryRestrictions(true);
+      } else {
+        setOtherDietaryRestrictions(false);
+        resetField("inputDietaryRestrictions");
+      }
+    },
+  });
+
   return (
     <ProtectedRoute className="w-screen">
       <div className="flex overflow-hidden">
@@ -251,7 +217,7 @@ export default function Register() {
                 <p className="pb-3">
                   {isUGAHacks12
                     ? "We're excited that you are participating in UGAHacks 12! We would love to see you at the event!"
-                    : "We're excited that you are participating in the UGA Cadathon! We would love to see you at the event!"}
+                    : "We're excited that you are participating in the UGA Cadathon! We would love to see you at the event! **This is ONLY for UGA Students**"}
                 </p>
                 <p className="text-md">
                   If you have any questions, please send us an email at{" "}
@@ -277,10 +243,110 @@ export default function Register() {
               <div className="min-h-screen font-inter my-4">
                 <div className="mx-auto flex flex-column justify-between">
                   <div className="inputs max-w-[90%] px-6 mx-auto shrink-0 grow">
-                    <form className="mt-3 pt-4" onSubmit={handleSubmit(onSubmit, onInvalid)}>
+                    <form
+                      className="mt-3 pt-4"
+                      onSubmit={handleSubmit(onSubmit, onInvalid)}
+                    >
                       <div className="flex flex-wrap -mx-3 mb-6">
                         <div className="personal w-full">
-                          {/* ... keep your existing shared fields here (name/email/etc) ... */}
+                          <div className="flex items-center justify-between mt-4">
+                            <div className="w-full md:w-1/2 px-3 mb-6">
+                              <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                                First Name
+                                <span className="text-red-600">*</span>
+                              </label>
+                              <input
+                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                                {...register("firstName", {
+                                  required: "Please enter your first name",
+                                  pattern: {
+                                    value: /^[a-z ,.'-]+$/i,
+                                    message: "Contains invalid characters",
+                                  },
+                                })}
+                                type="text"
+                                placeholder="first name"
+                                maxLength={50}
+                              />
+                              {errors.firstName && (
+                                <p className={errorStyles}>
+                                  {errors.firstName.message}
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="w-full md:w-1/2 px-3 mb-6">
+                              <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                                Last Name
+                                <span className="text-red-600">*</span>
+                              </label>
+                              <input
+                                className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                                {...register("lastName", {
+                                  required: "Please enter your last name",
+                                  pattern: {
+                                    value: /^[a-z ,.'-]+$/i,
+                                    message: "Contains invalid characters",
+                                  },
+                                })}
+                                type="text"
+                                placeholder="last name"
+                                maxLength={50}
+                              />
+                              {errors.lastName && (
+                                <p className={errorStyles}>
+                                  {errors.lastName.message}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="w-full md:w-1/2 px-3 mb-6">
+                            <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                              Preferred Name
+                            </label>
+                            <input
+                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                              {...register("preferredName", {
+                                pattern: {
+                                  value: /^[a-z ,.'-]+$/i,
+                                  message: "Contains invalid characters",
+                                },
+                              })}
+                              type="text"
+                              placeholder="preferred name"
+                              maxLength={50}
+                            />
+                            {errors.preferredName && (
+                              <p className={errorStyles}>
+                                {errors.preferredName.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="w-full md:w-full px-3 mb-6">
+                            <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                              Email
+                              <span className="text-red-600">*</span>
+                            </label>
+                            <input
+                              className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                              {...register("email", {
+                                required: "Please enter your email",
+                                pattern: {
+                                  value:
+                                    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu|\.ca|\.ac\.uk|\.ac\.kr|\.usthb\.dz)$/,
+                                  message: "Needs to be a valid school email",
+                                },
+                              })}
+                              type="text"
+                              placeholder="byte@uga.edu"
+                              maxLength={100}
+                            />
+                            {errors.email && (
+                              <p className={errorStyles}>{errors.email.message}</p>
+                            )}
+                          </div>
 
                           {isUGAHacks12 && (
                             <>
@@ -291,7 +357,9 @@ export default function Register() {
                                 <div className="flex-shrink w-full inline-block relative">
                                   <select
                                     className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                    {...register("gender", { required: "Select gender" })}
+                                    {...register("gender", {
+                                      required: "Select gender",
+                                    })}
                                   >
                                     <option value="">Select your gender</option>
                                     {Object.keys(Genders).map((key) => (
@@ -299,17 +367,19 @@ export default function Register() {
                                         {Genders[key as keyof typeof Genders]}
                                       </option>
                                     ))}
-                                    <option value={PREFER_NOT_TO_ANSWER.value}>
-                                      {PREFER_NOT_TO_ANSWER.label}
-                                    </option>
                                   </select>
-                                  {errors.gender && <p className={errorStyles}>{errors.gender.message}</p>}
+                                  {errors.gender && (
+                                    <p className={errorStyles}>
+                                      {errors.gender.message}
+                                    </p>
+                                  )}
                                 </div>
                               </div>
 
                               <div className="w-full md:w-full px-3 mb-6">
                                 <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  Race/Ethnicity<span className="text-red-600">*</span>
+                                  Race/Ethnicity
+                                  <span className="text-red-600">*</span>
                                 </label>
                                 <div className="flex-shrink w-full inline-block relative">
                                   <select
@@ -318,15 +388,14 @@ export default function Register() {
                                       required: "Select your race/ethnicity",
                                     })}
                                   >
-                                    <option value="">Select your race/ethnicity</option>
+                                    <option value="">
+                                      Select your race/ethnicity
+                                    </option>
                                     {Object.keys(Races).map((key) => (
                                       <option key={key} value={key}>
                                         {Races[key as keyof typeof Races]}
                                       </option>
                                     ))}
-                                    <option value={PREFER_NOT_TO_ANSWER.value}>
-                                      {PREFER_NOT_TO_ANSWER.label}
-                                    </option>
                                   </select>
                                 </div>
                               </div>
@@ -336,7 +405,7 @@ export default function Register() {
                                   Age<span className="text-red-600">*</span>
                                 </label>
                                 <Controller
-                                  name={"age" as any}
+                                  name="age" as any
                                   rules={{
                                     required: "Please provide an age",
                                     min: { value: 13, message: "Age cannot be below 13." },
@@ -356,221 +425,15 @@ export default function Register() {
                                 />
                               </div>
 
-                              {/* NEW: School / University */}
                               <div className="w-full md:w-full px-3 mb-6">
                                 <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  School / University<span className="text-red-600">*</span>
+                                  Country of Residence
                                 </label>
                                 <Controller
-                                  name={"school" as any}
-                                  rules={{ required: "Please select your school/university" }}
-                                  render={({ field: { name, onChange, value } }) => (
-                                    <Select
-                                      className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                      options={schoolOptions}
-                                      value={value}
-                                      onChange={(newValue) => {
-                                        if (newValue) {
-                                          onChange(newValue);
-                                          setOtherSchool((newValue as Option).value === "other");
-                                        }
-                                      }}
-                                      name={name}
-                                    />
-                                  )}
-                                  control={control}
-                                />
-                                {otherSchool && (
-                                  <input
-                                    className="mt-2 appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none"
-                                    {...register("inputSchool", {
-                                      required: "Please enter your school/university",
-                                      pattern: {
-                                        value: /^[a-z ,.'-]+$/i,
-                                        message: "Contains invalid characters",
-                                      },
-                                    })}
-                                    type="text"
-                                    maxLength={100}
-                                    placeholder="Type your school/university here"
-                                  />
-                                )}
-                                {errors.school && <p className={errorStyles}>{errors.school.message as any}</p>}
-                              </div>
-
-                              {/* NEW: Level of Study */}
-                              <div className="w-full md:w-full px-3 mb-6">
-                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  Level of Study<span className="text-red-600">*</span>
-                                </label>
-                                <select
-                                  className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                  {...register("levelsOfStudy" as any, {
-                                    required: "Please select your level of study",
-                                  })}
-                                >
-                                  <option value="">Select your level of study</option>
-                                  {Object.keys(LevelsOfStudy).map((key) => (
-                                    <option key={key} value={key}>
-                                      {LevelsOfStudy[key as keyof typeof LevelsOfStudy]}
-                                    </option>
-                                  ))}
-                                  <option value={PREFER_NOT_TO_ANSWER.value}>
-                                    {PREFER_NOT_TO_ANSWER.label}
-                                  </option>
-                                </select>
-                              </div>
-                              <div className="w-full md:w-full px-3 mb-6">
-  <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-    Major / Field of Study
-    <span className="text-red-600">*</span>
-  </label>
-  <div className="flex-shrink w-full inline-block relative">
-    <select
-      className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-      {...register("major", {
-        required: "Please select a major / field of study",
-      })}
-    >
-      <option value="">Select your major / field of study</option>
-      {Object.keys(Majors).map((key) => (
-        <option key={key} value={key}>
-          {Majors[key as keyof typeof Majors]}
-        </option>
-      ))}
-    </select>
-    {otherMajor && (
-      <input
-        className="mt-2 appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none"
-        {...register("inputMajor", {
-          required: "Please enter your major / field of study",
-          pattern: {
-            value: /^[a-z ,.'-]+$/i,
-            message: "Contains invalid characters",
-          },
-        })}
-        type="text"
-        maxLength={100}
-        placeholder="Type your major / field of study here"
-      />
-    )}
-  </div>
-  {errors.major && <p className={errorStyles}>{errors.major.message}</p>}
-</div>
-
-{/* Resume */}
-<div className="w-full md:w-1/2 px-3 mb-6">
-  <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
-    Resume<span className="text-red-600">*</span>
-  </label>
-  <p className="text-xs text-gray-500 mb-2">
-    Please upload your resume. This will be shared with employers for recruiting reference.
-  </p>
-  <input
-    className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
-    {...register("resume" as any, {
-      required: "Resume is required",
-      validate: {
-        fileType: (files: FileList) =>
-          !files?.length ||
-          ["application/pdf"].includes(files[0]?.type) ||
-          "Resume must be a PDF file",
-        fileSize: (files: FileList) =>
-          !files?.length ||
-          files[0]?.size <= 5 * 1024 * 1024 ||
-          "Resume must be 5MB or smaller",
-      },
-    })}
-    type="file"
-    accept=".pdf,application/pdf"
-  />
-  {errors.resume && <p className={errorStyles}>{errors.resume.message as any}</p>}
-</div>
-
-{/* T-Shirt Size */}
-<div className="w-full md:w-full px-3 mb-6">
-  <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-    T-Shirt Size
-    <span className="text-red-600">*</span>
-  </label>
-  <div className="flex-shrink w-full inline-block relative">
-    <select
-      className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-      {...register("shirtSize", {
-        required: "Please select a shirt size",
-      })}
-    >
-      <option value="">Select your shirt size</option>
-      {Object.keys(ShirtSizes).map((key) => (
-        <option key={key} value={key}>
-          {ShirtSizes[key as keyof typeof ShirtSizes]}
-        </option>
-      ))}
-    </select>
-  </div>
-  {errors.shirtSize && <p className={errorStyles}>{errors.shirtSize.message}</p>}
-</div>
-
-                              {/* NEW: Graduation Year */}
-                              <div className="w-full md:w-full px-3 mb-6">
-                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  Graduation Year
-                                </label>
-                                <input
-                                  type="number"
-                                  min={new Date().getFullYear() - 10}
-                                  max={new Date().getFullYear() + 15}
-                                  className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                  {...register("graduationYear" as any, {
-                                    validate: (v) =>
-                                      !v ||
-                                      (/^\d{4}$/.test(String(v)) &&
-                                        Number(v) >= new Date().getFullYear() - 10 &&
-                                        Number(v) <= new Date().getFullYear() + 15) ||
-                                      "Please enter a valid 4-digit graduation year",
-                                  })}
-                                />
-                              </div>
-
-                              {/* NEW: LinkedIn URL */}
-                              <div className="w-full md:w-full px-3 mb-6">
-                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  LinkedIn URL
-                                </label>
-                                <input
-                                  type="url"
-                                  placeholder="https://www.linkedin.com/in/your-profile"
-                                  className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                  {...register("linkedinUrl" as any, {
-                                    validate: (v) =>
-                                      !v ||
-                                      /^https?:\/\/(www\.)?linkedin\.com\/.*$/i.test(v) ||
-                                      "Please enter a valid LinkedIn URL",
-                                  })}
-                                />
-                              </div>
-
-                              {/* NEW: Highest Level of Formal Education */}
-                              <div className="w-full md:w-full px-3 mb-6">
-                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  Highest Level of Formal Education
-                                </label>
-                                <input
-                                  type="text"
-                                  maxLength={100}
-                                  placeholder="e.g. High school diploma, Bachelor's degree"
-                                  className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                  {...register("highestEducationLevel" as any)}
-                                />
-                              </div>
-
-                              <div className="w-full md:w-full px-3 mb-6">
-                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  Country of Residence<span className="text-red-600">*</span>
-                                </label>
-                                <Controller
-                                  name={"countryResidence" as any}
-                                  rules={{ required: "Please select a country of residence" }}
+                                  name="countryResidence" as any
+                                  rules={{
+                                    required: "Please select a country of residence",
+                                  }}
                                   render={({ field: { name, onChange, value } }) => (
                                     <Select
                                       className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
@@ -584,73 +447,270 @@ export default function Register() {
                                 />
                               </div>
 
-                              <div className="w-full md:w-full px-3 mb-6">
+                              <div className="w-full md:w-1/2 px-3 mb-6">
                                 <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  Dietary Restrictions<span className="text-red-600">*</span>
+                                  Phone Number
+                                  <span className="text-red-600">*</span>
                                 </label>
-                                <Controller
-                                  name={"dietaryRestrictions" as any}
-                                  control={control}
-                                  rules={{
-                                    validate: (value) =>
-                                      (Array.isArray(value) && value.length > 0) ||
-                                      "Please select at least one dietary option",
-                                  }}
-                                  render={({ field: { name, onChange, value } }) => (
-                                    <Select
-                                      isMulti
-                                      name={name}
-                                      options={dietaryOptions}
-                                      value={value || []}
-                                      onChange={(newValue) => onChange(newValue)}
-                                      className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                    />
-                                  )}
-                                />
-                                {otherDietaryRestrictions && (
-                                  <input
-                                    className="mt-2 appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none"
-                                    {...register("inputDietaryRestrictions", {
-                                      required: "Please specify your dietary restrictions",
-                                      pattern: {
-                                        value: /^[a-z ,.'-]+$/i,
-                                        message: "Contains invalid characters",
-                                      },
-                                    })}
-                                    type="text"
-                                    maxLength={100}
-                                    placeholder="Type your dietary restrictions here"
+                                <div className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500">
+                                  <Controller
+                                    name="phoneNumber"
+                                    control={control}
+                                    rules={{
+                                      validate: (value) =>
+                                        isValidPhoneNumber(value) ||
+                                        "Invalid phone number",
+                                      required: "Please enter your phone number",
+                                    }}
+                                    render={({ field: { onChange, value } }) => (
+                                      <PhoneInput
+                                        value={value}
+                                        onChange={(val) => onChange(val ?? "")}
+                                        defaultCountry="US"
+                                        id="phoneNumber"
+                                      />
+                                    )}
                                   />
-                                )}
-                                {errors.dietaryRestrictions && (
+                                </div>
+                                {errors.phoneNumber && (
                                   <p className={errorStyles}>
-                                    {errors.dietaryRestrictions.message as any}
+                                    {errors.phoneNumber.message}
                                   </p>
                                 )}
                               </div>
 
-                              {/* MLH OFFICIAL WORDING (replace with latest exact MLH copy if needed) */}
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Year<span className="text-red-600">*</span>
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("year", {
+                                      required: "Please select a year",
+                                    })}
+                                  >
+                                    <option value="">Select your year</option>
+                                    {Object.keys(StudentYears).map((key) => (
+                                      <option key={key} value={key}>
+                                        {StudentYears[key as keyof typeof StudentYears]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Current Major
+                                  <span className="text-red-600">*</span>
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("major", {
+                                      required: "Please select a major",
+                                    })}
+                                  >
+                                    <option value="">Select your major</option>
+                                    {Object.keys(Majors).map((key) => (
+                                      <option key={key} value={key}>
+                                        {Majors[key as keyof typeof Majors]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  {otherMajor && (
+                                    <input
+                                      className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                                      {...register("inputMajor", {
+                                        required: "Please enter your major",
+                                        pattern: {
+                                          value: /^[a-z ,.'-]+$/i,
+                                          message: "Contains invalid characters",
+                                        },
+                                      })}
+                                      type="text"
+                                      maxLength={100}
+                                      placeholder="Type your major here"
+                                    />
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="w-full md:w-1/2 px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Minor/Concentrations/Certificates
+                                </label>
+                                <input
+                                  className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                                  {...register("minor")}
+                                  type="text"
+                                  maxLength={100}
+                                />
+                              </div>
+
+                              <div className="w-full md:w-1/2 px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                                  Resume (for employers)<span className="text-red-600">*</span>
+                                </label>
+                                <input
+                                  className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                                  {...register("resume" as any, {
+                                    required: "Resume is required",
+                                  })}
+                                  type="file"
+                                />
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <Controller
+                                  control={control}
+                                  name="participated"
+                                  render={({ field: { onChange, value } }) => (
+                                    <>
+                                      <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                                        Is this your first time participating in UGAHacks?
+                                      </label>
+                                      <div className="flex gap-6 text-gray-700">
+                                        <label className="inline-flex items-center gap-2">
+                                          <input
+                                            type="radio"
+                                            checked={value === true}
+                                            onChange={() => onChange(true)}
+                                          />
+                                          Yes
+                                        </label>
+                                        <label className="inline-flex items-center gap-2">
+                                          <input
+                                            type="radio"
+                                            checked={value === false}
+                                            onChange={() => onChange(false)}
+                                          />
+                                          No
+                                        </label>
+                                      </div>
+                                    </>
+                                  )}
+                                />
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  What do you expect out of UGAHacks?
+                                  <span className="text-red-600">*</span>
+                                </label>
+                                <textarea
+                                  className="bg-gray-100 rounded-md leading-normal resize-none w-full h-20 py-2 px-3 shadow-inner border border-gray-400 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
+                                  {...register("hopeToSee", {
+                                    required: "Please enter a response",
+                                  })}
+                                  maxLength={250}
+                                  onChange={(e) => setTextCount(e.target.value.length)}
+                                />
+                                <p>{textCount}/250</p>
+                                {errors.hopeToSee && (
+                                  <p className={errorStyles}>
+                                    {errors.hopeToSee.message}
+                                  </p>
+                                )}
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Interested in EL Credit (For UGA students ONLY)?
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("elCreditInterest" as any, {
+                                      required: "Please select whether you're interested",
+                                    })}
+                                  >
+                                    <option value="">Select EL interest</option>
+                                    {Object.keys(ELInterest).map((key) => (
+                                      <option key={key} value={key}>
+                                        {ELInterest[key as keyof typeof ELInterest]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Dietary Restrictions?
+                                  <span className="text-red-600">*</span>
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("dietaryRestrictions", {
+                                      required: "Please select your dietary restrictions",
+                                    })}
+                                  >
+                                    <option value="">Select your dietary restrictions</option>
+                                    {Object.keys(DietaryRestrictions).map((key) => (
+                                      <option key={key} value={key}>
+                                        {DietaryRestrictions[key as keyof typeof DietaryRestrictions]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  {otherDietaryRestrictions && (
+                                    <input
+                                      className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                                      {...register("inputDietaryRestrictions", {
+                                        required: "Please select your dietary restrictions",
+                                        pattern: {
+                                          value: /^[a-z ,.'-]+$/i,
+                                          message: "Contains invalid characters",
+                                        },
+                                      })}
+                                      type="text"
+                                      maxLength={100}
+                                      placeholder="Type your dietary restrictions here"
+                                    />
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  T-Shirt Size
+                                  <span className="text-red-600">*</span>
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("shirtSize", {
+                                      required: "Please select a shirt size",
+                                    })}
+                                  >
+                                    <option value="">Select your shirt size</option>
+                                    {Object.keys(ShirtSizes).map((key) => (
+                                      <option key={key} value={key}>
+                                        {ShirtSizes[key as keyof typeof ShirtSizes]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+
                               <div className="w-full md:w-full px-3 mb-6">
                                 <Controller
                                   control={control}
                                   name="codeOfConduct"
                                   rules={{
                                     required:
-                                      "Please indicate you have read and agree to the MLH Code of Conduct",
+                                      "Please indicate you have read and agreed to the MLH code of conduct",
                                   }}
                                   render={({ field: { onChange, value } }) => (
                                     <>
+                                                                    <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  We are currently in the process of partnering with MLH. The following 3 checkboxes are for this partnership. If we do not end up partnering with MLH, your information will not be shared.
+                                </label>
                                       <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                        I have read and agree to the{" "}
-                                        <a
-                                          href="https://mlh.io/code-of-conduct"
-                                          target="_blank"
-                                          rel="noreferrer"
-                                          className="underline"
-                                        >
-                                          MLH Code of Conduct
-                                        </a>
-                                        .
+                                        <em>MLH Code of Conduct: </em>
+                                        I have read and agree to the MLH Code of Conduct.
                                       </label>
                                       <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                         <input
@@ -672,21 +732,13 @@ export default function Register() {
                                   name="eventLogisticsInfo"
                                   rules={{
                                     required:
-                                      "Please indicate you agree to event logistics and data sharing with MLH",
+                                      "Please indicate you have read and agree to the MLH privacy policy",
                                   }}
                                   render={({ field: { onChange, value } }) => (
                                     <>
                                       <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                        I authorize you to share my registration/application information with Major League Hacking for event administration, ranking, and MLH administration in-line with the{" "}
-                                        <a
-                                          href="https://mlh.io/privacy"
-                                          target="_blank"
-                                          rel="noreferrer"
-                                          className="underline"
-                                        >
-                                          MLH Privacy Policy
-                                        </a>
-                                        . I further agree to the terms of both the MLH Contest Terms and Conditions and the MLH Privacy Policy.
+                                        
+                                        I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and administration (including the creation of linked accounts on MLH and DEV (dev.to)) in line with the MLH Privacy Policy. I further agree to the terms of both the MLH Contest Terms and Conditions (https://github.com/MLH/mlh-policies/blob/main/contest-terms.md) and the MLH Privacy Policy
                                       </label>
                                       <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                         <input
@@ -709,7 +761,8 @@ export default function Register() {
                                   render={({ field: { onChange, value } }) => (
                                     <>
                                       <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                        I authorize MLH to send me occasional emails about relevant events, career opportunities, and community announcements.
+                                        <em>Communication from MLH: </em>
+                                        I authorize MLH + DEV to send me occasional emails about relevant events, career opportunities, and community announcements.
                                       </label>
                                       <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                         <input
@@ -729,7 +782,269 @@ export default function Register() {
 
                           {isCadathon && (
                             <>
-                              {/* keep your existing Cadathon fields unchanged */}
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Gender<span className="text-red-600">*</span>
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("gender", {
+                                      required: "Select gender",
+                                    })}
+                                  >
+                                    <option value="">Select your gender</option>
+                                    {Object.keys(Genders).map((key) => (
+                                      <option key={key} value={key}>
+                                        {Genders[key as keyof typeof Genders]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Phone Number
+                                  <span className="text-red-600">*</span>
+                                </label>
+                                <div className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500">
+                                  <Controller
+                                    name="phoneNumber"
+                                    control={control}
+                                    rules={{
+                                      validate: (value) =>
+                                        isValidPhoneNumber(value) ||
+                                        "Invalid phone number",
+                                      required: "Please enter your phone number",
+                                    }}
+                                    render={({ field: { onChange, value } }) => (
+                                      <PhoneInput
+                                        value={value}
+                                        onChange={(val: string | undefined) =>
+                                          onChange(val ?? "")
+                                        }
+                                        defaultCountry="US"
+                                        id="phoneNumber"
+                                      />
+                                    )}
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Year<span className="text-red-600">*</span>
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("year", {
+                                      required: "Please select a year",
+                                    })}
+                                  >
+                                    <option value="">Select your year</option>
+                                    {Object.keys(StudentYears).map((key) => (
+                                      <option key={key} value={key}>
+                                        {StudentYears[key as keyof typeof StudentYears]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  School<span className="text-red-600">*</span>
+                                </label>
+                                <Controller
+                                  name="school" as any
+                                  rules={{ required: "Please select your school" }}
+                                  render={({ field: { name, onChange, value } }) => (
+                                    <Select
+                                      className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                      options={schoolOptions}
+                                      value={value}
+                                      onChange={(newValue) => newValue && onChange(newValue)}
+                                      name={name}
+                                    />
+                                  )}
+                                  control={control}
+                                />
+                                {otherSchool && (
+                                  <input
+                                    className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500 mt-2"
+                                    {...register("inputSchool", {
+                                      required: "Please enter your school",
+                                      pattern: {
+                                        value: /^[a-z ,.'-]+$/i,
+                                        message: "Contains invalid characters",
+                                      },
+                                    })}
+                                    type="text"
+                                    maxLength={100}
+                                    placeholder="Type your school here"
+                                  />
+                                )}
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Current Major
+                                  <span className="text-red-600">*</span>
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("major", {
+                                      required: "Please select a major",
+                                    })}
+                                  >
+                                    <option value="">Select your major</option>
+                                    {Object.keys(Majors).map((key) => (
+                                      <option key={key} value={key}>
+                                        {Majors[key as keyof typeof Majors]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  {otherMajor && (
+                                    <input
+                                      className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500 mt-2"
+                                      {...register("inputMajor", {
+                                        required: "Please enter your major",
+                                        pattern: {
+                                          value: /^[a-z ,.'-]+$/i,
+                                          message: "Contains invalid characters",
+                                        },
+                                      })}
+                                      type="text"
+                                      maxLength={100}
+                                      placeholder="Type your major here"
+                                    />
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="w-full md:w-1/2 px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Minor
+                                </label>
+                                <input
+                                  className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                                  {...register("minor")}
+                                  type="text"
+                                  maxLength={100}
+                                />
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <Controller
+                                  control={control}
+                                  name="participated"
+                                  render={({ field: { onChange, value } }) => (
+                                    <>
+                                      <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
+                                        Is this your first time participating in a Cadathon?
+                                      </label>
+                                      <div className="flex gap-6 text-gray-700">
+                                        <label className="inline-flex items-center gap-2">
+                                          <input
+                                            type="radio"
+                                            checked={value === true}
+                                            onChange={() => onChange(true)}
+                                          />
+                                          Yes
+                                        </label>
+                                        <label className="inline-flex items-center gap-2">
+                                          <input
+                                            type="radio"
+                                            checked={value === false}
+                                            onChange={() => onChange(false)}
+                                          />
+                                          No
+                                        </label>
+                                      </div>
+                                    </>
+                                  )}
+                                />
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  What do you expect out of this Cadathon?
+                                  <span className="text-red-600">*</span>
+                                </label>
+                                <textarea
+                                  className="bg-gray-100 rounded-md leading-normal resize-none w-full h-20 py-2 px-3 shadow-inner border border-gray-400 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
+                                  {...register("hopeToSee", {
+                                    required: "Please enter a response",
+                                  })}
+                                  maxLength={250}
+                                  onChange={(e) => setTextCount(e.target.value.length)}
+                                />
+                                <p>{textCount}/250</p>
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  Dietary Restrictions?
+                                  <span className="text-red-600">*</span>
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("dietaryRestrictions", {
+                                      required: "Please select your dietary restrictions",
+                                    })}
+                                  >
+                                    <option value="">
+                                      Select your dietary restrictions
+                                    </option>
+                                    {Object.keys(DietaryRestrictions).map((key) => (
+                                      <option key={key} value={key}>
+                                        {DietaryRestrictions[key as keyof typeof DietaryRestrictions]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  {otherDietaryRestrictions && (
+                                    <input
+                                      className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500 mt-2"
+                                      {...register("inputDietaryRestrictions", {
+                                        required: "Please select your dietary restrictions",
+                                        pattern: {
+                                          value: /^[a-z ,.'-]+$/i,
+                                          message: "Contains invalid characters",
+                                        },
+                                      })}
+                                      type="text"
+                                      maxLength={100}
+                                      placeholder="Type your dietary restrictions here"
+                                    />
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  T-Shirt Size
+                                  <span className="text-red-600">*</span>
+                                </label>
+                                <div className="flex-shrink w-full inline-block relative">
+                                  <select
+                                    className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                    {...register("shirtSize", {
+                                      required: "Please select a shirt size",
+                                    })}
+                                  >
+                                    <option value="">Select your shirt size</option>
+                                    {Object.keys(ShirtSizes).map((key) => (
+                                      <option key={key} value={key}>
+                                        {ShirtSizes[key as keyof typeof ShirtSizes]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
                             </>
                           )}
 
