@@ -537,6 +537,42 @@ export default function Register() {
                                 </div>
                               </div>
 
+                              
+                              <div className="w-full md:w-full px-3 mb-6">
+                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                  School<span className="text-red-600">*</span>
+                                </label>
+                                <Controller
+                                  name="school" as any
+                                  rules={{ required: "Please select your school" }}
+                                  render={({ field: { name, onChange, value } }) => (
+                                    <Select
+                                      className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
+                                      options={schoolOptions}
+                                      value={value}
+                                      onChange={(newValue) => newValue && onChange(newValue)}
+                                      name={name}
+                                    />
+                                  )}
+                                  control={control}
+                                />
+                                {otherSchool && (
+                                  <input
+                                    className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500 mt-2"
+                                    {...register("inputSchool", {
+                                      required: "Please enter your school",
+                                      pattern: {
+                                        value: /^[a-z ,.'-]+$/i,
+                                        message: "Contains invalid characters",
+                                      },
+                                    })}
+                                    type="text"
+                                    maxLength={100}
+                                    placeholder="Type your school here"
+                                  />
+                                )}
+                              </div>
+
                               <div className="w-full md:w-1/2 px-3 mb-6">
                                 <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                                   Minor/Concentrations/Certificates
@@ -852,42 +888,9 @@ export default function Register() {
                                   </select>
                                 </div>
                               </div>
+                              
 
-                              <div className="w-full md:w-full px-3 mb-6">
-                                <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  School<span className="text-red-600">*</span>
-                                </label>
-                                <Controller
-                                  name="school" as any
-                                  rules={{ required: "Please select your school" }}
-                                  render={({ field: { name, onChange, value } }) => (
-                                    <Select
-                                      className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                      options={schoolOptions}
-                                      value={value}
-                                      onChange={(newValue) => newValue && onChange(newValue)}
-                                      name={name}
-                                    />
-                                  )}
-                                  control={control}
-                                />
-                                {otherSchool && (
-                                  <input
-                                    className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500 mt-2"
-                                    {...register("inputSchool", {
-                                      required: "Please enter your school",
-                                      pattern: {
-                                        value: /^[a-z ,.'-]+$/i,
-                                        message: "Contains invalid characters",
-                                      },
-                                    })}
-                                    type="text"
-                                    maxLength={100}
-                                    placeholder="Type your school here"
-                                  />
-                                )}
-                              </div>
-
+                              
                               <div className="w-full md:w-full px-3 mb-6">
                                 <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
                                   Current Major
