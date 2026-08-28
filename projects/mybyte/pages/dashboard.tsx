@@ -12,11 +12,20 @@ import { Events } from "../enums/events";
 
 const Cadathon: EventDetail = {
   key: Events.cadathon,
-  page: "/register",
+  page: "/register?event=cadathon",
   image: "/UH11_Registration_Banner.png",
   startDate: new Date("08/05/2026"),
   endDate: new Date("10/25/2026"),
   deadline: new Date("10/24/2026"),
+};
+
+const Hacks12: EventDetail = {
+  key: Events.hacks12,
+  page: "/register?event=ugahacks12",
+  image: "/ugahacks12.png",
+  startDate: new Date("02/05/2027"),
+  endDate: new Date("02/07/2027"),
+  deadline: new Date("02/04/2027"),
 };
 
 const ESports11: EventDetail = {
@@ -27,6 +36,7 @@ const ESports11: EventDetail = {
   endDate: new Date("10/25/2026"),
   deadline: new Date("10/24/2026"),
 };
+
 
 const events = [
   {
@@ -41,16 +51,28 @@ const events = [
         return <EventRect disabled={true} event={Cadathon} />;
       }
     },
-    id: () => {
-      return true;
-    },
+    id: () => true,
   },
-  // Remove the ESports11 event object below to show only one button
+  {
+    event: (re: EventRegistered) => {
+      let hacks12Dup = new Date(Hacks12.deadline);
+      hacks12Dup.setDate(Hacks12.deadline.getDate() + 1);
+      if (hacks12Dup < new Date()) {
+        return <EventRect disabled={true} event={Hacks12} />;
+      } else if (!re.HACKS12) {
+        return <EventRect disabled={false} event={Hacks12} />;
+      } else {
+        return <EventRect disabled={true} event={Hacks12} />;
+      }
+    },
+    id: () => true,
+  },
 ];
 
 // Valid Open Events (pretty name):
 const eventMap = new Map<string, string>();
 eventMap.set(Events.cadathon, "UGA Cadathon");
+eventMap.set(Events.hacks12, "UGAHacks 12");
 eventMap.set("ESPORTS11", "eSports 11");  // Add this for the second event
 // Add more events as needed
 
