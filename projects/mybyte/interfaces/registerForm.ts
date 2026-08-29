@@ -1,7 +1,10 @@
 import {
   DietaryRestrictions,
+  ELInterest,
   Genders,
+  LevelsOfStudy,
   Majors,
+  Races,
   ShirtSizes,
   StudentYears,
 } from "../enums/registerEnums";
@@ -25,4 +28,14 @@ export interface RegisterForm {
   codeOfConduct: boolean; // MLH Code of COnduct: I have agreed , YES OR NO
   eventLogisticsInfo: boolean; // Yes
   mlhCommunication: boolean;
+
+  school?: any;
+  inputSchool?: string;
+  age?: number;
+  race?: Races;
+  levelsOfStudy?: LevelsOfStudy;
+  countryResidence?: any;
+  elCreditInterest?: ELInterest;
+  resume?: any;
+  eventType?: string;
 }

@@ -383,7 +383,7 @@ export default function Register() {
                                 <div className="flex-shrink w-full inline-block relative">
                                   <select
                                     className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                    {...register("race" as any, {
+                                    {...register("race", {
                                       required: "Select your race/ethnicity",
                                     })}
                                   >
@@ -404,7 +404,7 @@ export default function Register() {
                                   Age<span className="text-red-600">*</span>
                                 </label>
                                 <Controller
-                                  name="age" as any
+                                  name="age"
                                   rules={{
                                     required: "Please provide an age",
                                     min: { value: 13, message: "Age cannot be below 13." },
@@ -429,7 +429,7 @@ export default function Register() {
                                   Country of Residence
                                 </label>
                                 <Controller
-                                  name="countryResidence" as any
+                                  name="countryResidence"
                                   rules={{
                                     required: "Please select a country of residence",
                                   }}
@@ -542,7 +542,7 @@ export default function Register() {
                                   School<span className="text-red-600">*</span>
                                 </label>
                                 <Controller
-                                  name="school" as any
+                                  name="school"
                                   rules={{ required: "Please select your school" }}
                                   render={({ field: { name, onChange, value } }) => (
                                     <Select
@@ -660,7 +660,7 @@ export default function Register() {
                                 <div className="flex-shrink w-full inline-block relative">
                                   <select
                                     className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                    {...register("elCreditInterest" as any, {
+                                    {...register("elCreditInterest", {
                                       required: "Please select whether you're interested",
                                     })}
                                   >
