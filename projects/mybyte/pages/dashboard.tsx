@@ -22,7 +22,7 @@ const Cadathon: EventDetail = {
 const Hacks12: EventDetail = {
   key: Events.hacks12,
   page: "/register?event=ugahacks12",
-  image: "/ugahacks12.png",
+  image: "/picc.png",
   startDate: new Date("02/05/2027"),
   endDate: new Date("02/07/2027"),
   deadline: new Date("02/04/2027"),

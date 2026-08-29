@@ -58,7 +58,7 @@ export default function Register() {
       preferredName: "",
       inputMajor: "",
       inputDietaryRestrictions: "",
-      participated: false,
+      participated: undefined,
       mlhCommunication: false,
       codeOfConduct: false,
       eventLogisticsInfo: false,
@@ -590,12 +590,15 @@ export default function Register() {
                                   Resume (for employers)<span className="text-red-600">*</span>
                                 </label>
                                 <input
-                                  className="appearance-none block w-full bg-white text-gray-700 border border-gray-400 shadow-inner rounded-md py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
-                                  {...register("resume" as any, {
-                                    required: "Resume is required",
-                                  })}
-                                  type="file"
-                                />
+  type="file"
+  accept=".pdf,.doc,.docx"
+  className="block w-full text-sm text-gray-700
+             file:mr-4 file:py-2 file:px-4
+             file:rounded-md file:border-0
+             file:text-sm file:font-semibold
+             file:bg-gray-100 file:text-gray-700
+             hover:file:bg-gray-200"
+/>
                               </div>
 
                               <div className="w-full md:w-full px-3 mb-6">
@@ -749,14 +752,15 @@ export default function Register() {
                                         I have read and agree to the MLH Code of Conduct.
                                       </label>
                                       <label className="relative inline-flex items-center mb-4 cursor-pointer">
-                                        <input
-                                          type="checkbox"
-                                          className="sr-only peer"
-                                          onChange={() => onChange(!value)}
-                                          checked={!!value}
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-primary-600"></div>
-                                      </label>
+  <input
+    type="checkbox"
+    className="sr-only peer"
+    onChange={() => onChange(!value)}
+    checked={!!value}
+  />
+  <div className="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-primary-600 transition-colors duration-300"></div>
+  <div className="absolute left-1 w-5 h-5 bg-white rounded-full peer-checked:left-7 transition-all duration-300"></div>
+</label>
                                     </>
                                   )}
                                 />
@@ -776,15 +780,16 @@ export default function Register() {
                                         
                                         I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and administration (including the creation of linked accounts on MLH and DEV (dev.to)) in line with the MLH Privacy Policy. I further agree to the terms of both the MLH Contest Terms and Conditions (https://github.com/MLH/mlh-policies/blob/main/contest-terms.md) and the MLH Privacy Policy
                                       </label>
-                                      <label className="relative inline-flex items-center mb-4 cursor-pointer">
-                                        <input
-                                          type="checkbox"
-                                          className="sr-only peer"
-                                          onChange={() => onChange(!value)}
-                                          checked={!!value}
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-primary-600"></div>
-                                      </label>
+<label className="relative inline-flex items-center mb-4 cursor-pointer">
+  <input
+    type="checkbox"
+    className="sr-only peer"
+    onChange={() => onChange(!value)}
+    checked={!!value}
+  />
+  <div className="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-primary-600 transition-colors duration-300"></div>
+  <div className="absolute left-1 w-5 h-5 bg-white rounded-full peer-checked:left-7 transition-all duration-300"></div>
+</label>
                                     </>
                                   )}
                                 />
@@ -801,14 +806,15 @@ export default function Register() {
                                         I authorize MLH + DEV to send me occasional emails about relevant events, career opportunities, and community announcements.
                                       </label>
                                       <label className="relative inline-flex items-center mb-4 cursor-pointer">
-                                        <input
-                                          type="checkbox"
-                                          className="sr-only peer"
-                                          onChange={() => onChange(!value)}
-                                          checked={!!value}
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-primary-600"></div>
-                                      </label>
+  <input
+    type="checkbox"
+    className="sr-only peer"
+    onChange={() => onChange(!value)}
+    checked={!!value}
+  />
+  <div className="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-primary-600 transition-colors duration-300"></div>
+  <div className="absolute left-1 w-5 h-5 bg-white rounded-full peer-checked:left-7 transition-all duration-300"></div>
+</label>
                                     </>
                                   )}
                                 />
