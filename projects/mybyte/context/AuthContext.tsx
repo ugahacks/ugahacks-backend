@@ -56,7 +56,7 @@ export interface EventRegistered {
   ESPORTSX: boolean | null;
   HACKS11: boolean | null;
   ESPORTS11: boolean | null;
-  HACKS12?: boolean;
+  HACKS12: boolean | null;
 }
 
 export interface EventCheckIn extends EventRegistered { }
