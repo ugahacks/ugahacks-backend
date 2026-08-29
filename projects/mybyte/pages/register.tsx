@@ -71,7 +71,6 @@ export default function Register() {
       major: undefined as any,
       minor: "",
       shirtSize: undefined as any,
-      eventType,
       age: 18 as any,
       inputSchool: "",
       school: null as any,
@@ -80,7 +79,7 @@ export default function Register() {
       countryResidence: null as any,
       elCreditInterest: undefined as any,
       resume: undefined as any,
-    },
+    } as any,
   });
 
   const [submitError, setSubmitError] = useState<string | null>(null);
