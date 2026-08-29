@@ -56,6 +56,7 @@ export interface EventRegistered {
   ESPORTSX: boolean | null;
   HACKS11: boolean | null;
   ESPORTS11: boolean | null;
+  HACKS12?: boolean;
 }
 
 export interface EventCheckIn extends EventRegistered { }
@@ -99,6 +100,7 @@ export const AuthContextProvider = ({
       ESPORTSX: null,
       HACKS11: null,
       ESPORTS11: null,
+      HACKS12: null,
     },
     user_type: null,
   });
