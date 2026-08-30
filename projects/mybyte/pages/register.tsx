@@ -35,14 +35,17 @@ type EventType = "cadathon" | "ugahacks12";
 
 export default function Register() {
   const router = useRouter();
-  const eventType = (router.query.event as EventType) || "cadathon";
+  const eventParam = Array.isArray(router.query.event)
+    ? router.query.event[0]
+    : router.query.event;
+  const eventType: EventType =
+    eventParam === "cadathon" ? "cadathon" : "ugahacks12";
   const isUGAHacks12 = eventType === "ugahacks12";
   const isCadathon = eventType === "cadathon";
   const eventLabel = isUGAHacks12 ? "UGAHacks 12" : "the UGA Cadathon";
 
   const {
     storeUserRegistrationInformation,
-    userInfo,
     triggerRegistrationEmail,
   } = useAuth();
 
@@ -131,17 +134,19 @@ export default function Register() {
   const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
     setSubmitError(null);
     try {
-      await storeUserRegistrationInformation({
+      const registrationData = {
         ...data,
-        eventType: eventType as any,
-      } as any);
+        eventType,
+      };
 
-      await triggerRegistrationEmail({
-        ...data,
-        eventType: eventType as any,
-      } as any);
+      await storeUserRegistrationInformation(registrationData as RegisterForm);
+      try {
+        await triggerRegistrationEmail(registrationData as RegisterForm);
+      } catch (error) {
+        console.error("Registration email failed:", error);
+      }
 
-      router.push("/registrationSuccess");
+      router.push(`/registrationSuccess?event=${eventType}`);
     } catch (error) {
       console.error("Registration failed:", error);
       setSubmitError(
@@ -154,6 +159,7 @@ export default function Register() {
 
   const onInvalid: SubmitErrorHandler<RegisterForm> = (formErrors) => {
     const invalidFields = Object.keys(formErrors);
+    console.warn(`${eventLabel} registration validation failed:`, formErrors);
     setSubmitError(
       invalidFields.length
         ? `Please complete these fields: ${invalidFields.join(", ")}.`

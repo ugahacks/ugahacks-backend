@@ -1,10 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ConfettiAnimation from "../components/Confetti";
 
 export default function RegistrationSuccess() {
+  const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
+  const eventParam = Array.isArray(router.query.event)
+    ? router.query.event[0]
+    : router.query.event;
+  const eventName =
+    eventParam === "cadathon" ? "UGA Cadathon" : "UGAHacks 12";
 
   useEffect(() => {
     setIsMobile(window.innerWidth <= 520);
@@ -36,7 +43,7 @@ export default function RegistrationSuccess() {
               <div className="px-4 mt-4 text-center text-lg sm:px-12">
                 <h1 className="text-4xl">Congratulations!</h1>
                 <p className="pt-2">
-                  You have successfully registered for UGA Cadathon! Let&apos;s build something great 📐
+                  You have successfully registered for {eventName}! Let&apos;s build something great 📐
                 </p>
               </div>
             </div>
@@ -63,7 +70,7 @@ export default function RegistrationSuccess() {
               <div className="px-8 mt-8 text-center text-xl">
                 <h1 className="text-6xl">Congratulations!</h1>
                 <h2 className="text-xl pt-4">
-                  You have successfully registered for UGA Cadathon! Let&apos;s build something great 📐
+                  You have successfully registered for {eventName}! Let&apos;s build something great 📐
                 </h2>
               </div>
             </div>
