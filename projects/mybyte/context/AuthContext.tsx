@@ -215,24 +215,24 @@ export const AuthContextProvider = ({
     if (data.eventType === "cadathon") {
       await setDoc(doc(cadathonRegisterRef, user.uid), {
         uid: user.uid,
-        gender: data.gender,
-        phoneNumber: data.phoneNumber,
-        year: data.year,
-        major: data.major,
-        inputMajor: data.inputMajor,
-        minor: data.minor,
-        email: data.email,
-        participated: data.participated,
-        hopeToSee: data.hopeToSee,
-        dietaryRestrictions: data.dietaryRestrictions,
-        inputDietaryRestrictions: data.inputDietaryRestrictions,
-        shirtSize: data.shirtSize,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        preferredName: data.preferredName,
-        codeOfConduct: data.codeOfConduct,
-        eventLogisticsInfo: data.eventLogisticsInfo,
-        mlhCommunication: data.mlhCommunication,
+        gender: data.gender ?? "",
+        phoneNumber: data.phoneNumber ?? "",
+        year: data.year ?? "",
+        major: data.major ?? "",
+        inputMajor: data.inputMajor ?? "",
+        minor: data.minor ?? "",
+        email: data.email ?? "",
+        participated: typeof data.participated === "boolean" ? data.participated : false,
+        hopeToSee: data.hopeToSee ?? "",
+        dietaryRestrictions: data.dietaryRestrictions ?? "",
+        inputDietaryRestrictions: data.inputDietaryRestrictions ?? "",
+        shirtSize: data.shirtSize ?? "",
+        firstName: data.firstName ?? "",
+        lastName: data.lastName ?? "",
+        preferredName: data.preferredName ?? "",
+        codeOfConduct: !!data.codeOfConduct,
+        eventLogisticsInfo: !!data.eventLogisticsInfo,
+        mlhCommunication: !!data.mlhCommunication,
         accepted: null,
         checkedIn: false,
         checkedOut: false,
@@ -278,32 +278,50 @@ export const AuthContextProvider = ({
       });
     }
 
+    const deriveLevelOfStudy = (regData: RegisterForm): string => {
+      if (regData.levelsOfStudy) return String(regData.levelsOfStudy);
+      if (regData.levelOfStudy) return String(regData.levelOfStudy);
+      const y = String(regData.year || "").toLowerCase();
+      if (
+        y === "freshman" ||
+        y === "sophomore" ||
+        y === "junior" ||
+        y === "senior"
+      ) {
+        return "Undergraduate";
+      }
+      if (y === "masters" || y === "phd") {
+        return "Graduate";
+      }
+      return "";
+    };
+
     await setDoc(doc(registerRef, user.uid), {
       uid: user.uid,
-      gender: data.gender,
-      race: data.race,
-      phoneNumber: data.phoneNumber,
+      gender: data.gender ?? "",
+      race: data.race ?? "",
+      phoneNumber: data.phoneNumber ?? "",
       countryResidence: data.countryResidence?.label ?? "",
-      year: data.year,
-      major: data.major,
-      inputMajor: data.inputMajor,
-      minor: data.minor,
-      email: data.email,
-      participated: data.participated,
-      hopeToSee: data.hopeToSee,
-      dietaryRestrictions: data.dietaryRestrictions,
-      inputDietaryRestrictions: data.inputDietaryRestrictions,
-      shirtSize: data.shirtSize,
-      codeOfConduct: data.codeOfConduct,
-      eventLogisticsInfo: data.eventLogisticsInfo,
-      mlhCommunication: data.mlhCommunication,
-      age: data.age,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      levelOfStudy: data.levelsOfStudy,
+      year: data.year ?? "",
+      major: data.major ?? "",
+      inputMajor: data.inputMajor ?? "",
+      minor: data.minor ?? "",
+      email: data.email ?? "",
+      participated: typeof data.participated === "boolean" ? data.participated : false,
+      hopeToSee: data.hopeToSee ?? "",
+      dietaryRestrictions: data.dietaryRestrictions ?? "",
+      inputDietaryRestrictions: data.inputDietaryRestrictions ?? "",
+      shirtSize: data.shirtSize ?? "",
+      codeOfConduct: !!data.codeOfConduct,
+      eventLogisticsInfo: !!data.eventLogisticsInfo,
+      mlhCommunication: !!data.mlhCommunication,
+      age: data.age ?? null,
+      firstName: data.firstName ?? "",
+      lastName: data.lastName ?? "",
+      levelOfStudy: deriveLevelOfStudy(data),
       school: data.school?.value ?? "",
-      inputSchool: data.inputSchool,
-      elCreditInterest: data.elCreditInterest,
+      inputSchool: data.inputSchool ?? "",
+      elCreditInterest: data.elCreditInterest ?? "",
       accepted: null,
       checkedIn: false,
       checkedOut: false,
@@ -311,12 +329,16 @@ export const AuthContextProvider = ({
       submitted_time: serverTimestamp(),
     });
 
-    await updateDoc(doc(userRef, user.uid), {
-      "registered.HACKS12": true,
-      school: data.school?.value ?? "",
-      user_type: Users.hacker,
-      points: 0,
-    });
+    try {
+      await updateDoc(doc(userRef, user.uid), {
+        "registered.HACKS12": true,
+        school: data.school?.value ?? "",
+        user_type: Users.hacker,
+        points: 0,
+      });
+    } catch (error) {
+      console.warn("Unable to update user registration status", error);
+    }
 
     await setUserInformation(user.uid).catch((error) => {
       console.warn("Unable to refresh user information", error);

@@ -7,6 +7,7 @@ import {
   Races,
   ShirtSizes,
   StudentYears,
+  StudentYearsUH12,
 } from "../enums/registerEnums";
 
 export interface RegisterForm {
@@ -15,7 +16,7 @@ export interface RegisterForm {
   preferredName: string;
   gender: Genders;
   phoneNumber: string; // Worry about validation with '-'
-  year: StudentYears;
+  year: StudentYears | StudentYearsUH12;
   major: Majors;
   inputMajor: string;
   minor: string;
@@ -33,7 +34,8 @@ export interface RegisterForm {
   inputSchool?: string;
   age?: number;
   race?: Races;
-  levelsOfStudy?: LevelsOfStudy;
+  levelsOfStudy?: LevelsOfStudy | string;
+  levelOfStudy?: string;
   countryResidence?: any;
   elCreditInterest?: ELInterest;
   resume?: any;

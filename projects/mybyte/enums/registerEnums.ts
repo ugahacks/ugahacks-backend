@@ -41,6 +41,17 @@ export enum StudentYears {
   fifth = "5th Year",
   sixth = "6th Year",
   masters = "Masters",
+  phd = "PhD",
+  other = "Other",
+}
+
+export enum StudentYearsUH12 {
+  freshman = "Freshman",
+  sophomore = "Sophomore",
+  junior = "Junior",
+  senior = "Senior",
+  masters = "Masters",
+  phd = "PhD",
   other = "Other",
 }
 

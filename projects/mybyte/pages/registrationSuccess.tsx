@@ -10,8 +10,10 @@ export default function RegistrationSuccess() {
   const eventParam = Array.isArray(router.query.event)
     ? router.query.event[0]
     : router.query.event;
-  const eventName =
-    eventParam === "cadathon" ? "UGA Cadathon" : "UGAHacks 12";
+  const isCadathon = eventParam === "cadathon";
+  const eventName = isCadathon ? "UGA Cadathon" : "UGAHacks 12";
+  const imageSrc = isCadathon ? "/Racerbyte.png" : "/Detectivebyte.png";
+  const imageAlt = isCadathon ? "Racer Byte" : "Detective Byte";
 
   useEffect(() => {
     setIsMobile(window.innerWidth <= 520);
@@ -35,8 +37,8 @@ export default function RegistrationSuccess() {
           <div className="container mx-auto mt-6 rounded-md">
             <div className="flex flex-col items-center">
               <Image
-                src="/Racerbyte.png"
-                alt="Magical Byte stirring a witch pot"
+                src={imageSrc}
+                alt={imageAlt}
                 width={200}
                 height={200}
               />
@@ -62,10 +64,10 @@ export default function RegistrationSuccess() {
           <div className="sign-up-form container mx-auto max-w-min mt-6 rounded-md">
             <div className="flex flex-col items-center">
               <Image
-                src="/Racerbyte.png"
-                alt="Magical Byte stirring a witch pot"
+                src={imageSrc}
+                alt={imageAlt}
                 width={300}
-                height={100}
+                height={300}
               />
               <div className="px-8 mt-8 text-center text-xl">
                 <h1 className="text-6xl">Congratulations!</h1>
