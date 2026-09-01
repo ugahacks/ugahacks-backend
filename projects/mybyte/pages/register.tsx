@@ -24,6 +24,7 @@ import {
   Races,
   ShirtSizes,
   StudentYears,
+  StudentYearsUH12,
 } from "../enums/registerEnums";
 
 import { Card } from "@material-tailwind/react";
@@ -35,14 +36,17 @@ type EventType = "cadathon" | "ugahacks12";
 
 export default function Register() {
   const router = useRouter();
-  const eventType = (router.query.event as EventType) || "cadathon";
+  const eventParam = Array.isArray(router.query.event)
+    ? router.query.event[0]
+    : router.query.event;
+  const eventType: EventType =
+    eventParam === "cadathon" ? "cadathon" : "ugahacks12";
   const isUGAHacks12 = eventType === "ugahacks12";
   const isCadathon = eventType === "cadathon";
   const eventLabel = isUGAHacks12 ? "UGAHacks 12" : "the UGA Cadathon";
 
   const {
     storeUserRegistrationInformation,
-    userInfo,
     triggerRegistrationEmail,
   } = useAuth();
 
@@ -75,7 +79,8 @@ export default function Register() {
       inputSchool: "",
       school: null as any,
       race: undefined as any,
-      levelsOfStudy: undefined as any,
+      levelsOfStudy: "",
+      levelOfStudy: "",
       countryResidence: null as any,
       elCreditInterest: undefined as any,
       resume: undefined as any,
@@ -131,17 +136,19 @@ export default function Register() {
   const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
     setSubmitError(null);
     try {
-      await storeUserRegistrationInformation({
+      const registrationData = {
         ...data,
-        eventType: eventType as any,
-      } as any);
+        eventType,
+      };
 
-      await triggerRegistrationEmail({
-        ...data,
-        eventType: eventType as any,
-      } as any);
+      await storeUserRegistrationInformation(registrationData as RegisterForm);
+      try {
+        await triggerRegistrationEmail(registrationData as RegisterForm);
+      } catch (error) {
+        console.error("Registration email failed:", error);
+      }
 
-      router.push("/registrationSuccess");
+      router.push(`/registrationSuccess?event=${eventType}`);
     } catch (error) {
       console.error("Registration failed:", error);
       setSubmitError(
@@ -154,6 +161,7 @@ export default function Register() {
 
   const onInvalid: SubmitErrorHandler<RegisterForm> = (formErrors) => {
     const invalidFields = Object.keys(formErrors);
+    console.warn(`${eventLabel} registration validation failed:`, formErrors);
     setSubmitError(
       invalidFields.length
         ? `Please complete these fields: ${invalidFields.join(", ")}.`
@@ -490,13 +498,18 @@ export default function Register() {
                                     })}
                                   >
                                     <option value="">Select your year</option>
-                                    {Object.keys(StudentYears).map((key) => (
+                                    {Object.keys(StudentYearsUH12).map((key) => (
                                       <option key={key} value={key}>
-                                        {StudentYears[key as keyof typeof StudentYears]}
+                                        {StudentYearsUH12[key as keyof typeof StudentYearsUH12]}
                                       </option>
                                     ))}
                                   </select>
                                 </div>
+                                {errors.year && (
+                                  <p className={errorStyles}>
+                                    {errors.year.message}
+                                  </p>
+                                )}
                               </div>
 
                               <div className="w-full md:w-full px-3 mb-6">
@@ -604,13 +617,19 @@ export default function Register() {
                                 <Controller
                                   control={control}
                                   name="participated"
+                                  rules={{
+                                    validate: (value) =>
+                                      typeof value === "boolean" ||
+                                      "Please indicate if this is your first time participating in UGAHacks",
+                                  }}
                                   render={({ field: { onChange, value } }) => (
                                     <>
                                       <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
                                         Is this your first time participating in UGAHacks?
+                                        <span className="text-red-600">*</span>
                                       </label>
                                       <div className="flex gap-6 text-gray-700">
-                                        <label className="inline-flex items-center gap-2">
+                                        <label className="inline-flex items-center gap-2 cursor-pointer">
                                           <input
                                             type="radio"
                                             checked={value === true}
@@ -618,7 +637,7 @@ export default function Register() {
                                           />
                                           Yes
                                         </label>
-                                        <label className="inline-flex items-center gap-2">
+                                        <label className="inline-flex items-center gap-2 cursor-pointer">
                                           <input
                                             type="radio"
                                             checked={value === false}
@@ -627,6 +646,11 @@ export default function Register() {
                                           No
                                         </label>
                                       </div>
+                                      {errors.participated && (
+                                        <p className={errorStyles}>
+                                          {errors.participated.message}
+                                        </p>
+                                      )}
                                     </>
                                   )}
                                 />
@@ -660,9 +684,7 @@ export default function Register() {
                                 <div className="flex-shrink w-full inline-block relative">
                                   <select
                                     className="block appearance-none text-gray-600 w-full bg-white border border-gray-400 shadow-inner px-4 py-2 pr-8 rounded"
-                                    {...register("elCreditInterest", {
-                                      required: "Please select whether you're interested",
-                                    })}
+                                    {...register("elCreditInterest")}
                                   >
                                     <option value="">Select EL interest</option>
                                     {Object.keys(ELInterest).map((key) => (
@@ -738,28 +760,34 @@ export default function Register() {
                                   control={control}
                                   name="codeOfConduct"
                                   rules={{
-                                    required:
-                                      "Please indicate you have read and agreed to the MLH code of conduct",
+                                    validate: (value) =>
+                                      value === true ||
+                                      "Please indicate you have read and agreed to the MLH Code of Conduct",
                                   }}
                                   render={({ field: { onChange, value } }) => (
                                     <>
-                                                                    <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
-                                  We are currently in the process of partnering with MLH. The following 3 checkboxes are for this partnership. If we do not end up partnering with MLH, your information will not be shared.
-                                </label>
+                                      <label className="block tracking-wide text-gray-700 text-xs font-extrabold mb-2">
+                                        We are currently in the process of partnering with MLH. The following 3 checkboxes are for this partnership. If we do not end up partnering with MLH, your information will not be shared.
+                                      </label>
                                       <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
                                         <em>MLH Code of Conduct: </em>
-                                        I have read and agree to the MLH Code of Conduct.
+                                        I have read and agree to the MLH Code of Conduct.<span className="text-red-600">*</span>
                                       </label>
                                       <label className="relative inline-flex items-center mb-4 cursor-pointer">
-  <input
-    type="checkbox"
-    className="sr-only peer"
-    onChange={() => onChange(!value)}
-    checked={!!value}
-  />
-  <div className="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-primary-600 transition-colors duration-300"></div>
-  <div className="absolute left-1 w-5 h-5 bg-white rounded-full peer-checked:left-7 transition-all duration-300"></div>
-</label>
+                                        <input
+                                          type="checkbox"
+                                          className="sr-only peer"
+                                          onChange={() => onChange(!value)}
+                                          checked={!!value}
+                                        />
+                                        <div className="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-primary-600 transition-colors duration-300"></div>
+                                        <div className="absolute left-1 w-5 h-5 bg-white rounded-full peer-checked:left-7 transition-all duration-300"></div>
+                                      </label>
+                                      {errors.codeOfConduct && (
+                                        <p className={errorStyles}>
+                                          {errors.codeOfConduct.message}
+                                        </p>
+                                      )}
                                     </>
                                   )}
                                 />
@@ -770,25 +798,30 @@ export default function Register() {
                                   control={control}
                                   name="eventLogisticsInfo"
                                   rules={{
-                                    required:
-                                      "Please indicate you have read and agree to the MLH privacy policy",
+                                    validate: (value) =>
+                                      value === true ||
+                                      "Please indicate you agree to the MLH Contest Terms and Conditions and Privacy Policy",
                                   }}
                                   render={({ field: { onChange, value } }) => (
                                     <>
                                       <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                        
-                                        I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and administration (including the creation of linked accounts on MLH and DEV (dev.to)) in line with the MLH Privacy Policy. I further agree to the terms of both the MLH Contest Terms and Conditions (https://github.com/MLH/mlh-policies/blob/main/contest-terms.md) and the MLH Privacy Policy
+                                        I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and administration (including the creation of linked accounts on MLH and DEV (dev.to)) in line with the MLH Privacy Policy. I further agree to the terms of both the MLH Contest Terms and Conditions (https://github.com/MLH/mlh-policies/blob/main/contest-terms.md) and the MLH Privacy Policy.<span className="text-red-600">*</span>
                                       </label>
-<label className="relative inline-flex items-center mb-4 cursor-pointer">
-  <input
-    type="checkbox"
-    className="sr-only peer"
-    onChange={() => onChange(!value)}
-    checked={!!value}
-  />
-  <div className="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-primary-600 transition-colors duration-300"></div>
-  <div className="absolute left-1 w-5 h-5 bg-white rounded-full peer-checked:left-7 transition-all duration-300"></div>
-</label>
+                                      <label className="relative inline-flex items-center mb-4 cursor-pointer">
+                                        <input
+                                          type="checkbox"
+                                          className="sr-only peer"
+                                          onChange={() => onChange(!value)}
+                                          checked={!!value}
+                                        />
+                                        <div className="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-primary-600 transition-colors duration-300"></div>
+                                        <div className="absolute left-1 w-5 h-5 bg-white rounded-full peer-checked:left-7 transition-all duration-300"></div>
+                                      </label>
+                                      {errors.eventLogisticsInfo && (
+                                        <p className={errorStyles}>
+                                          {errors.eventLogisticsInfo.message}
+                                        </p>
+                                      )}
                                     </>
                                   )}
                                 />
@@ -798,22 +831,32 @@ export default function Register() {
                                 <Controller
                                   control={control}
                                   name="mlhCommunication"
+                                  rules={{
+                                    validate: (value) =>
+                                      value === true ||
+                                      "Please authorize MLH communication to proceed",
+                                  }}
                                   render={({ field: { onChange, value } }) => (
                                     <>
                                       <label className="block tracking-wide text-gray-700 text-xs font-bold mb-2">
                                         <em>Communication from MLH: </em>
-                                        I authorize MLH + DEV to send me occasional emails about relevant events, career opportunities, and community announcements.
+                                        I authorize MLH + DEV to send me occasional emails about relevant events, career opportunities, and community announcements.<span className="text-red-600">*</span>
                                       </label>
                                       <label className="relative inline-flex items-center mb-4 cursor-pointer">
-  <input
-    type="checkbox"
-    className="sr-only peer"
-    onChange={() => onChange(!value)}
-    checked={!!value}
-  />
-  <div className="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-primary-600 transition-colors duration-300"></div>
-  <div className="absolute left-1 w-5 h-5 bg-white rounded-full peer-checked:left-7 transition-all duration-300"></div>
-</label>
+                                        <input
+                                          type="checkbox"
+                                          className="sr-only peer"
+                                          onChange={() => onChange(!value)}
+                                          checked={!!value}
+                                        />
+                                        <div className="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:bg-primary-600 transition-colors duration-300"></div>
+                                        <div className="absolute left-1 w-5 h-5 bg-white rounded-full peer-checked:left-7 transition-all duration-300"></div>
+                                      </label>
+                                      {errors.mlhCommunication && (
+                                        <p className={errorStyles}>
+                                          {errors.mlhCommunication.message}
+                                        </p>
+                                      )}
                                     </>
                                   )}
                                 />

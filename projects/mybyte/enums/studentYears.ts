@@ -6,5 +6,6 @@ export enum StudentYears {
     fifth = "5th Year",
     sixth = "6th Year",
     masters = "Masters",
+    phd = "PhD",
     other = "Other"
 }

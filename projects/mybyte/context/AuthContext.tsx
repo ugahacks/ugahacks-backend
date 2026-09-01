@@ -55,8 +55,8 @@ export interface EventRegistered {
   HACKSX: boolean | null;
   ESPORTSX: boolean | null;
   HACKS11: boolean | null;
-  ESPORTS11: boolean | null;
   HACKS12: boolean | null;
+  ESPORTS11: boolean | null;
 }
 
 export interface EventCheckIn extends EventRegistered { }
@@ -99,8 +99,8 @@ export const AuthContextProvider = ({
       HACKSX: null,
       ESPORTSX: null,
       HACKS11: null,
-      ESPORTS11: null,
       HACKS12: null,
+      ESPORTS11: null,
     },
     user_type: null,
   });
@@ -120,8 +120,11 @@ export const AuthContextProvider = ({
   const teamRef = collection(db, "team");
   const emailTemplates = collection(db, "email-templates");
 
-  // Current Event (UGA Cadathon):
-  const registerRef = collection(db, "CADathon1-user-registration-details");
+  // Current Event (UGAHacks 12):
+  const registerRef = collection(db, "UH12-user-registration-details");
+  const registerMail_UH12 = collection(db, "UH12-registrationMail");
+
+  const cadathonRegisterRef = collection(db, "CADathon1-user-registration-details");
   const registerMail = collection(db, "CADATHON-registrationMail");
   const eSportsRef = collection(db, "eSports-cadathon-user-registration-details");
 
@@ -209,36 +212,129 @@ export const AuthContextProvider = ({
       throw new Error("User not authenticated");
     }
 
-    // Write registration doc for Cadathon
+    if (data.eventType === "cadathon") {
+      await setDoc(doc(cadathonRegisterRef, user.uid), {
+        uid: user.uid,
+        gender: data.gender ?? "",
+        phoneNumber: data.phoneNumber ?? "",
+        year: data.year ?? "",
+        major: data.major ?? "",
+        inputMajor: data.inputMajor ?? "",
+        minor: data.minor ?? "",
+        email: data.email ?? "",
+        participated: typeof data.participated === "boolean" ? data.participated : false,
+        hopeToSee: data.hopeToSee ?? "",
+        dietaryRestrictions: data.dietaryRestrictions ?? "",
+        inputDietaryRestrictions: data.inputDietaryRestrictions ?? "",
+        shirtSize: data.shirtSize ?? "",
+        firstName: data.firstName ?? "",
+        lastName: data.lastName ?? "",
+        preferredName: data.preferredName ?? "",
+        codeOfConduct: !!data.codeOfConduct,
+        eventLogisticsInfo: !!data.eventLogisticsInfo,
+        mlhCommunication: !!data.mlhCommunication,
+        accepted: null,
+        checkedIn: false,
+        checkedOut: false,
+        submitted_time: serverTimestamp(),
+      });
+
+      try {
+        await updateDoc(doc(userRef, user.uid), {
+          "registered.CADATHON": true,
+        });
+      } catch (error) {
+        console.warn("Unable to update user registration status", error);
+      }
+
+      await setUserInformation(user.uid).catch((error) => {
+        console.warn("Unable to refresh user information", error);
+      });
+      return;
+    }
+
+    const storage = getStorage();
+    const file = data.resume?.[0];
+    let downloadURL: string | null = null;
+
+    if (file) {
+      const storageRef = ref(storage, "resume/" + user.uid + "/" + file.name);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      downloadURL = await new Promise<string>((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          () => {},
+          (error) => reject(error),
+          async () => {
+            try {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve(url);
+            } catch (error) {
+              reject(error);
+            }
+          },
+        );
+      });
+    }
+
+    const deriveLevelOfStudy = (regData: RegisterForm): string => {
+      if (regData.levelsOfStudy) return String(regData.levelsOfStudy);
+      if (regData.levelOfStudy) return String(regData.levelOfStudy);
+      const y = String(regData.year || "").toLowerCase();
+      if (
+        y === "freshman" ||
+        y === "sophomore" ||
+        y === "junior" ||
+        y === "senior"
+      ) {
+        return "Undergraduate";
+      }
+      if (y === "masters" || y === "phd") {
+        return "Graduate";
+      }
+      return "";
+    };
+
     await setDoc(doc(registerRef, user.uid), {
       uid: user.uid,
-      gender: data.gender,
-      phoneNumber: data.phoneNumber,
-      year: data.year,
-      major: data.major,
-      inputMajor: data.inputMajor,
-      minor: data.minor,
-      email: data.email,
-      participated: data.participated,
-      hopeToSee: data.hopeToSee,
-      dietaryRestrictions: data.dietaryRestrictions,
-      inputDietaryRestrictions: data.inputDietaryRestrictions,
-      shirtSize: data.shirtSize,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      preferredName: data.preferredName,
-      codeOfConduct: data.codeOfConduct,
-      eventLogisticsInfo: data.eventLogisticsInfo,
-      mlhCommunication: data.mlhCommunication,
+      gender: data.gender ?? "",
+      race: data.race ?? "",
+      phoneNumber: data.phoneNumber ?? "",
+      countryResidence: data.countryResidence?.label ?? "",
+      year: data.year ?? "",
+      major: data.major ?? "",
+      inputMajor: data.inputMajor ?? "",
+      minor: data.minor ?? "",
+      email: data.email ?? "",
+      participated: typeof data.participated === "boolean" ? data.participated : false,
+      hopeToSee: data.hopeToSee ?? "",
+      dietaryRestrictions: data.dietaryRestrictions ?? "",
+      inputDietaryRestrictions: data.inputDietaryRestrictions ?? "",
+      shirtSize: data.shirtSize ?? "",
+      codeOfConduct: !!data.codeOfConduct,
+      eventLogisticsInfo: !!data.eventLogisticsInfo,
+      mlhCommunication: !!data.mlhCommunication,
+      age: data.age ?? null,
+      firstName: data.firstName ?? "",
+      lastName: data.lastName ?? "",
+      levelOfStudy: deriveLevelOfStudy(data),
+      school: data.school?.value ?? "",
+      inputSchool: data.inputSchool ?? "",
+      elCreditInterest: data.elCreditInterest ?? "",
       accepted: null,
       checkedIn: false,
       checkedOut: false,
+      resumeLink: downloadURL,
       submitted_time: serverTimestamp(),
     });
 
     try {
       await updateDoc(doc(userRef, user.uid), {
-        "registered.CADATHON": true,
+        "registered.HACKS12": true,
+        school: data.school?.value ?? "",
+        user_type: Users.hacker,
+        points: 0,
       });
     } catch (error) {
       console.warn("Unable to update user registration status", error);
@@ -253,22 +349,27 @@ export const AuthContextProvider = ({
    * Stores a mail document, which triggers an email to the user.
    */
   const triggerRegistrationEmail = async (data: RegisterForm) => {
-    const cadathonRegistrationDoc = await getDoc(doc(emailTemplates, "cadathon"));
+    const isCadathonRegistration = data.eventType === "cadathon";
+    const templateName = isCadathonRegistration ? "cadathon" : "uh12";
+    const registrationDoc = await getDoc(doc(emailTemplates, templateName));
 
-    if (cadathonRegistrationDoc.exists()) {
-      const emailHTML = cadathonRegistrationDoc.data().html;
+    if (registrationDoc.exists()) {
+      const emailHTML = registrationDoc.data().html;
+      const mailRef = isCadathonRegistration ? registerMail : registerMail_UH12;
 
-      await setDoc(doc(registerMail, user.uid ? user.uid : ""), {
+      await setDoc(doc(mailRef, user.uid ? user.uid : ""), {
         to: user.email,
         message: {
-          subject: "Thank you for registering for UGA Cadathon",
+          subject: isCadathonRegistration
+            ? "Thank you for registering for UGA Cadathon"
+            : "Thank you for registering for UGAHacks 12",
           text: "",
           html: emailHTML,
         },
       });
     } else {
       console.error(
-        'Document "cadathon" not found in the "email-templates" collection.',
+        `Document "${templateName}" not found in the "email-templates" collection.`,
       );
     }
   };
@@ -944,13 +1045,25 @@ export const AuthContextProvider = ({
 
     if (syncedRegistered.CADATHON) {
       try {
-        const cadathonDoc = await getDoc(doc(registerRef, uid));
+        const cadathonDoc = await getDoc(doc(cadathonRegisterRef, uid));
         if (!cadathonDoc.exists()) {
           syncedRegistered.CADATHON = false;
           mismatch = true;
         }
       } catch (e) {
         console.warn("Error checking CADATHON", e);
+      }
+    }
+
+    if (syncedRegistered.HACKS12) {
+      try {
+        const hacks12Doc = await getDoc(doc(registerRef, uid));
+        if (!hacks12Doc.exists()) {
+          syncedRegistered.HACKS12 = false;
+          mismatch = true;
+        }
+      } catch (e) {
+        console.warn("Error checking HACKS12", e);
       }
     }
 

@@ -15,20 +15,22 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     steps:
-      - name: Update Yarn
-        run: yarn set version berry
-
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Cache
-        uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: "18"
-          cache: "yarn"
+          node-version: "24"
+
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@4.12.0 --activate
+          yarn --version
 
       - name: Install project dependencies
-        run: yarn install
+        run: yarn install --immutable
 
       - name: Lint
         run: |
