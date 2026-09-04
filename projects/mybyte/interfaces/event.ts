@@ -8,6 +8,7 @@ import {
   Query,
   query,
   setDoc,
+  Timestamp,
   where,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
@@ -16,7 +17,7 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  timestamp: Date;
+  timestamp: Timestamp;
   points: number;
   active: boolean;
 }
