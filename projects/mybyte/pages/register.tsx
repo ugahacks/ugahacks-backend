@@ -342,7 +342,7 @@ export default function Register() {
                                 required: "Please enter your email",
                                 pattern: {
                                   value:
-                                    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu|\.ca|\.ac\.uk|\.ac\.kr|\.usthb\.dz)$/,
+                                    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.edu|\.edu\.tr|\.edu\.ar|\.ca|\.ac\.uk|\.ac\.kr|\.usthb\.dz)$/,
                                   message: "Needs to be a valid school email",
                                 },
                               })}
