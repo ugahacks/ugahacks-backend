@@ -6,7 +6,7 @@ import {
   indexedDBLocalPersistence,
   initializeAuth,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { FirestoreSettings, initializeFirestore } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,9 +24,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 // Not getAuth(): its popup/redirect resolver loads apis.google.com and an
-// authDomain iframe on page load in Safari/iOS, and a stalled request (e.g.
-// under iCloud Private Relay) blocks the first auth state. The resolver is
-// passed to signInWithPopup instead.
+// authDomain iframe on page load in Safari/iOS, and a stalled request blocks
+// the first auth state. The resolver is passed to signInWithPopup instead.
 export const auth = initializeAuth(app, {
   persistence: [
     indexedDBLocalPersistence,
@@ -34,4 +33,10 @@ export const auth = initializeAuth(app, {
     browserSessionPersistence,
   ],
 });
-export const db = getFirestore(app);
+// Safari 26.4+ stalls Firestore reads over the default fetch-streams
+// transport (https://github.com/firebase/firebase-js-sdk/issues/9789).
+// useFetchStreams isn't in the public settings type, hence the cast.
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+  useFetchStreams: false,
+} as FirestoreSettings);
