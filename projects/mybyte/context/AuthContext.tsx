@@ -20,6 +20,7 @@ import {
   Query,
   query,
   QuerySnapshot,
+  runTransaction,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -145,19 +146,28 @@ export const AuthContextProvider = ({
   const googleProvider = new GoogleAuthProvider();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (curr_user) => {
-      if (curr_user) {
-        setUser({
-          email: curr_user.email,
-          uid: curr_user.uid,
-        });
-        setUserInformation(curr_user.uid);
-      } else {
-        setUser({ email: null, uid: null });
-        setType(null);
+    const unsubscribe = onAuthStateChanged(auth, async (curr_user) => {
+      setLoading(true);
+      setType(null);
+      try {
+        if (curr_user) {
+          setUser({
+            email: curr_user.email,
+            uid: curr_user.uid,
+          });
+          await setUserInformation(curr_user.uid);
+        } else {
+          setUser({ email: null, uid: null });
+        }
+      } catch (error) {
+        console.error("Unable to load user information", error);
+      } finally {
+        // Ignore a completed lookup if the signed-in account has changed.
+        if (auth.currentUser?.uid === curr_user?.uid) {
+          setLoading(false);
+        }
       }
     });
-    setLoading(false);
 
     return () => unsubscribe();
   }, []);
@@ -330,11 +340,18 @@ export const AuthContextProvider = ({
     });
 
     try {
-      await updateDoc(doc(userRef, user.uid), {
-        "registered.HACKS12": true,
-        school: data.school?.value ?? "",
-        user_type: Users.hacker,
-        points: 0,
+      const userDocRef = doc(userRef, user.uid);
+      await runTransaction(db, async (transaction) => {
+        const userDoc = await transaction.get(userDocRef);
+        transaction.update(userDocRef, {
+          "registered.HACKS12": true,
+          school: data.school?.value ?? "",
+          // Registration must not replace an existing staff role.
+          ...(userDoc.data()?.user_type == null
+            ? { user_type: Users.hacker }
+            : {}),
+          points: 0,
+        });
       });
     } catch (error) {
       console.warn("Unable to update user registration status", error);
@@ -1098,7 +1115,10 @@ export const AuthContextProvider = ({
       return null;
     }
 
+    if (auth.currentUser?.uid !== uid) return null;
+
     const userData = docSnap.data();
+    setType(userData.user_type ?? null);
     let points = 0;
     try {
       points = await getPoints(userData.uid);
@@ -1108,6 +1128,7 @@ export const AuthContextProvider = ({
     const [firstName, lastName] = getFirstAndLastNameFromUserData(userData);
 
     const syncedRegistered = await verifyRegistrationStatus(uid || "", userData.registered);
+    if (auth.currentUser?.uid !== uid) return null;
 
     setUserInfo({
       first_name: firstName,
@@ -1118,7 +1139,6 @@ export const AuthContextProvider = ({
       registered: syncedRegistered,
       user_type: userData.user_type,
     });
-    setType(userData.user_type);
   };
 
   /**

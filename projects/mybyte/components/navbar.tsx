@@ -172,13 +172,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                         </li>
                       ) : null} */}
 
-                      {/* TODO: Why are we doing the first_name check */}
-
-                      {userInfo.first_name != null &&
-                        userInfo.first_name != "" &&
-                        user_type !== null &&
-                        user_type !== undefined &&
-                        (user_type == Users.organizer || user_type == Users.admin) ? (
+                      {user_type === Users.organizer || user_type === Users.admin ? (
                         <li>
                           <Link href="/qrRead" className="text-red-500">
                             <span
