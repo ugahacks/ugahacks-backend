@@ -75,3 +75,16 @@ body {
     opacity: 0;
   }
 }
+
+.animate-delayed-reveal {
+  opacity: 0;
+  pointer-events: none;
+  animation: delayedReveal 0.3s ease-out 5s forwards;
+}
+
+@keyframes delayedReveal {
+  to {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
