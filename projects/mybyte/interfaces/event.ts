@@ -1,6 +1,5 @@
 import {
   collection,
-  deleteDoc,
   doc,
   DocumentData,
   getDoc,
@@ -16,12 +15,14 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  timestamp: Date;
+  timestamp?: Date;
+  date?: string;
+  sortOrder?: number;
   points: number;
   active: boolean;
 }
 
-export const eventsRef = collection(db, "CADATHON-events");
+export const eventsRef = collection(db, "CAD-events");
 
 export const getEvents = async (active: boolean = true): Promise<Event[]> => {
   let q: Query<DocumentData>;
@@ -33,12 +34,17 @@ export const getEvents = async (active: boolean = true): Promise<Event[]> => {
 
   const snapshot = await getDocs(q);
 
-  return snapshot.docs.map((doc) => {
-    const e = doc.data() as Event;
-    e.id = doc.id;
-    return e;
-  });
+  return snapshot.docs
+    .map((doc) => ({ ...doc.data(), id: doc.id } as Event))
+    .sort((a, b) =>
+      (a.date ?? "").localeCompare(b.date ?? "") ||
+      (a.sortOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortOrder ?? Number.MAX_SAFE_INTEGER) ||
+      a.title.localeCompare(b.title),
+    );
 };
+
+export const getEventLabel = (event: Pick<Event, "title" | "date">) =>
+  event.date ? `${event.date.slice(5).replace("-", "/")} — ${event.title}` : event.title;
 
 export const addAttendance = async (eventId: string, userId: string) => {
   const docRef = doc(eventsRef, eventId);
@@ -81,7 +87,7 @@ export const getPoints = async (userId: string) => {
   let points = 0;
   for (const event of events) {
     const q = query(
-      collection(db, "CADATHON-events", event.id, "attendance"),
+      collection(eventsRef, event.id, "attendance"),
       where("uid", "==", userId),
     );
     const snapshot = await getDocs(q);

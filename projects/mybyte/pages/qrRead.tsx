@@ -6,6 +6,7 @@ import {
   addAttendance,
   Event,
   getEvents,
+  getEventLabel,
   getPoints,
 } from "../interfaces/event";
 
@@ -44,6 +45,7 @@ const QrRead: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const [eventLoadError, setEventLoadError] = useState(false);
   const [scanStatus, setScanStatus] = useState<ScanVisualStatus>("idle");
   const [scanLog, setScanLog] = useState<ScanLogItem[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -61,10 +63,19 @@ const QrRead: React.FC = () => {
   const lastScanRef = useRef<{ uid: string; time: number } | null>(null);
 
   useEffect(() => {
-    getEvents().then((eventsResponse) => {
-      setEvents(eventsResponse);
-      setIsLoading(false);
-    });
+    let cancelled = false;
+    getEvents()
+      .then((eventsResponse) => {
+        if (!cancelled) setEvents(eventsResponse);
+      })
+      .catch((error) => {
+        console.error("Unable to load scanner events", error);
+        if (!cancelled) setEventLoadError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => { cancelled = true; };
   }, []);
 
   const unlockAudioAutomatically = () => {
@@ -126,6 +137,23 @@ const QrRead: React.FC = () => {
     return <div>Loading...</div>;
   }
 
+  if (eventLoadError || events.length === 0) {
+    return (
+      <OrganizerRoute>
+        <div className="p-6 text-center">
+          <p role={eventLoadError ? "alert" : "status"}>
+            {eventLoadError
+              ? "Unable to load events. Please try again."
+              : "No active events are available for scanning yet."}
+          </p>
+          <button className="mt-4 underline" onClick={() => window.location.reload()}>
+            Reload events
+          </button>
+        </div>
+      </OrganizerRoute>
+    );
+  }
+
   const playSoundForStatus = (status: ScanVisualStatus) => {
     const play = (audio: HTMLAudioElement | null) => {
       if (!audio) return;
@@ -162,7 +190,7 @@ const QrRead: React.FC = () => {
       const event = events.find((e) => e.id === eventId);
       if (!event) throw "Event not found";
 
-      eventTitle = event?.title ?? `Event ${eventId}`;
+      eventTitle = getEventLabel(event);
       eventPoints = event?.points ?? 0;
 
       const name = await getNameOfUser(uid);
@@ -346,7 +374,7 @@ const QrRead: React.FC = () => {
                 </option>
                 {events.map((event) => (
                   <option key={event.id} value={event.id}>
-                    {event.title}
+                    {getEventLabel(event)}
                   </option>
                 ))}
               </select>

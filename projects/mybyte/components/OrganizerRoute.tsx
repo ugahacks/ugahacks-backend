@@ -3,22 +3,24 @@ import React, { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Users } from "../enums/userType";
 
-const ProtectedRoute = ({ children, className = "h-screen min-h-full overflow-auto" }: { children: React.ReactNode, className?: string }) => {
+const OrganizerRoute = ({ children, className = "h-screen min-h-full overflow-auto" }: { children: React.ReactNode, className?: string }) => {
     const router = useRouter();
-    const { user, userInfo, user_type } = useAuth();
+    const { user, user_type } = useAuth();
+    const canScan = user_type === Users.organizer || user_type === Users.admin;
+
     useEffect(() => {
         if (user.uid == null) {
-            router.push("/login");
+            router.replace("/login");
+        } else if (!canScan) {
+            router.replace("/dashboard");
         }
-        if (user_type === undefined || user_type === null || (user_type !== Users.organizer && user_type !== Users.admin)) {
-            router.push("/dashboard");
-        }
-    }, [router, user, user_type]);
+    }, [router, user.uid, canScan]);
+
     return (
         <div className={className}>
-            {user ? children : null}
+            {user.uid != null && canScan ? children : null}
         </div>
     );
 };
 
-export default ProtectedRoute;
+export default OrganizerRoute;
