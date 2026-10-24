@@ -1,4 +1,5 @@
 import {
+  browserPopupRedirectResolver,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   onAuthStateChanged,
@@ -35,6 +36,7 @@ import {
 } from "firebase/storage";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../config/firebase";
+import LoadingShell from "../components/LoadingShell";
 import { Events } from "../enums/events";
 
 import { FirebaseError } from "firebase/app";
@@ -627,7 +629,11 @@ export const AuthContextProvider = ({
    */
   const logInWithGoogle = async () => {
     try {
-      const res = await signInWithPopup(auth, googleProvider);
+      const res = await signInWithPopup(
+        auth,
+        googleProvider,
+        browserPopupRedirectResolver
+      );
       const google_user = res.user;
       // const q = query(collection(db, "users"), where("uid", "==", user.uid));
       // const docs = await getDocs(q);
@@ -1281,7 +1287,7 @@ export const AuthContextProvider = ({
         triggerESportsRegistrationEmail,
       }}
     >
-      {loading ? null : children}
+      {loading ? <LoadingShell /> : children}
     </AuthContext.Provider>
   );
 };
