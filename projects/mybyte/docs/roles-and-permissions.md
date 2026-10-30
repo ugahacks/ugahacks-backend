@@ -183,6 +183,13 @@ The user will receive elevated permissions on their next login or page refresh.
 - ✅ Full system access
 - ✅ Can perform any action
 
+### Blacklist
+
+Blacklisting isn't tied to a MyByte role. Entries are added with
+`scripts/blacklist-user.cjs`, which needs Firestore write access through Google
+Cloud (Admin SDK); the app itself can only check the blacklist, never change it.
+See [Blacklist](./blacklist.md).
+
 ## Security Considerations
 
 1. **Client-Side Protection**: Route protection is enforced in React components

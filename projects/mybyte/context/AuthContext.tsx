@@ -1,6 +1,7 @@
 import {
   browserPopupRedirectResolver,
   createUserWithEmailAndPassword,
+  deleteUser,
   GoogleAuthProvider,
   onAuthStateChanged,
   sendEmailVerification,
@@ -8,6 +9,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  User,
 } from "firebase/auth";
 import {
   addDoc,
@@ -46,6 +48,11 @@ import { eSportsForm } from "../interfaces/eSportsForm";
 import { getPoints } from "../interfaces/event";
 import { PresenterRegisterForm } from "../interfaces/presenterRegisterForm";
 import { RegisterForm } from "../interfaces/registerForm";
+import {
+  assertNotBlacklisted,
+  BlacklistIdentifiers,
+  isBlacklistedUserError,
+} from "../util/blacklist";
 
 export interface UserType {
   email: string | null;
@@ -223,6 +230,11 @@ export const AuthContextProvider = ({
     if (!user?.uid) {
       throw new Error("User not authenticated");
     }
+
+    await assertNotBlacklisted(db, {
+      emails: [data.email, user.email],
+      phoneNumbers: [data.phoneNumber],
+    });
 
     if (data.eventType === "cadathon") {
       await setDoc(doc(cadathonRegisterRef, user.uid), {
@@ -573,6 +585,7 @@ export const AuthContextProvider = ({
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
       const user = res.user;
+      await removeIfBlacklisted(user, email);
       const name = first_name + " " + last_name;
 
       await setDoc(doc(userRef, user.uid), {
@@ -646,6 +659,7 @@ export const AuthContextProvider = ({
       );
 
       if (!docSnap.exists()) {
+        await removeIfBlacklisted(google_user, google_user.email);
         await setDoc(doc(userRef, google_user.uid), {
           uid: google_user.uid,
           firstName: first_name,
@@ -662,9 +676,33 @@ export const AuthContextProvider = ({
       }
       setUserInformation(google_user.uid);
     } catch (err: any) {
+      if (isBlacklistedUserError(err)) throw err;
       console.error(err);
     }
   };
+
+  /**
+   * Deletes a just-created auth account whose email is blacklisted, so the
+   * account is never re-created. Also removes it if the lookup itself fails.
+   * @param new_user the account returned by sign-up
+   * @param email the account's email
+   */
+  const removeIfBlacklisted = async (new_user: User, email: string | null) => {
+    try {
+      await assertNotBlacklisted(db, { emails: [email] });
+    } catch (error) {
+      await deleteUser(new_user).catch(() => signOut(auth));
+      throw error;
+    }
+  };
+
+  /**
+   * Checks identifiers against the blacklist before an organizer registers
+   * someone on their behalf (e.g. day-of registration).
+   * @throws Error("Unable to register blacklisted user")
+   */
+  const checkNotBlacklisted = (identifiers: BlacklistIdentifiers) =>
+    assertNotBlacklisted(db, identifiers);
 
   /**
    * checks in a user by userid
@@ -1285,6 +1323,7 @@ export const AuthContextProvider = ({
         getTShirtSizeOfUser,
         triggerRegistrationEmail,
         triggerESportsRegistrationEmail,
+        checkNotBlacklisted,
       }}
     >
       {loading ? <LoadingShell /> : children}

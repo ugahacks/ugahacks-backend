@@ -275,6 +275,26 @@ Each attendance document:
 }
 ```
 
+### 8. blacklist Collection
+
+**Path**: `/blacklist`
+
+**Purpose**: Emails and phone numbers that may not sign up or register
+
+**Document ID**: `email:<lowercased email>` or `phone:<E.164 number>`
+
+**Document Structure**:
+```typescript
+{
+  type: "email" | "phone",
+  added_time: Timestamp
+}
+```
+
+**Written by**: `scripts/blacklist-user.cjs` (Admin SDK only)
+
+See [Blacklist](./blacklist.md).
+
 ## Staging Collections
 
 For development/testing purposes, staging variants exist:

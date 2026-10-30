@@ -7,6 +7,7 @@ import Image from "next/image";
 
 import googleLogo from "../public/googleLogo.svg";
 import LoginError from "../components/loginError";
+import { isBlacklistedUserError } from "../util/blacklist";
 
 let show = false;
 let text = "";
@@ -61,6 +62,7 @@ const LoginPage = () => {
       await logInWithGoogle();
       router.push("/dashboard");
     } catch (error: any) {
+      if (isBlacklistedUserError(error)) alert(error.message);
       console.log(error.message);
     }
   };
