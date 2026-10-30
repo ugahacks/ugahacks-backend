@@ -179,6 +179,10 @@ This guide covers common issues with the MyByte system and their solutions. Issu
    - **Solution**: Check email for typos
    - Ensure proper format: `name@domain.com`
 
+4. **"Unable to register blacklisted user"**
+   - **Cause**: The email is on the blacklist
+   - **Solution**: See [Blacklist](./blacklist.md#a-hacker-says-theyre-getting-unable-to-register-blacklisted-user)
+
 ### Issue: Email Verification Not Received
 
 **Symptoms**:
@@ -250,6 +254,17 @@ This guide covers common issues with the MyByte system and their solutions. Issu
    - Ensure file size is reasonable (< 10MB recommended)
    - Try uploading again
    - Skip resume upload and submit without (if optional)
+
+5. **"Unable to register blacklisted user"**
+   - **Cause**: The email on the form, the account email, or the phone number
+     is on the blacklist. Any one of them is enough.
+   - **Solution**: See [Blacklist](./blacklist.md#a-hacker-says-theyre-getting-unable-to-register-blacklisted-user)
+
+6. **Every registration and sign-up is failing**
+   - **Cause**: The app can't read the `blacklist` collection, usually because
+     the Firestore rule wasn't deployed. The check fails closed.
+   - **Solution**: Deploy the rule in [Blacklist → Firestore rules](./blacklist.md#firestore-rules).
+     Browser console shows a `permission-denied` error on `blacklist/...`.
 
 ### Issue: Registration Confirmation Email Not Received
 

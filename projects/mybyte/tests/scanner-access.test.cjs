@@ -91,8 +91,10 @@ function authHarness(role) {
     "firebase/app": {},
     "next/router": {},
     "../config/firebase": { auth, db: {} },
+    "../components/LoadingShell": "loading",
     "../enums/events": {},
     "../interfaces/event": { getPoints: async () => 0 },
+    "../util/blacklist": { assertNotBlacklisted: async () => {} },
   });
   const render = () => { h.reset(); return AuthContextProvider({ children: "app" }); };
   render();
@@ -119,10 +121,10 @@ for (const role of [Users.organizer, Users.admin, Users.hacker, "MENTOR", null, 
 
 test("protected pages wait for the organizer profile to finish loading", async () => {
   const h = authHarness(Users.organizer);
-  assert.equal(h.render().props.children, null);
+  assert.notEqual(h.render().props.children, "app");
   h.deferRead();
   const login = h.login();
-  assert.equal(h.render().props.children, null);
+  assert.notEqual(h.render().props.children, "app");
   h.finishRead();
   await login;
   assert.equal(h.render().props.children, "app");
