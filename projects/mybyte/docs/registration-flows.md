@@ -9,6 +9,12 @@ MyByte implements three distinct registration flows:
 
 Each flow serves a different purpose and writes to different Firebase collections.
 
+## Blacklist Checks
+
+Account creation (email or Google) and event registration first check the
+`blacklist` collection. A blacklisted email or phone number stops the flow with
+`Unable to register blacklisted user`. See [Blacklist](./blacklist.md).
+
 ## Flow 1: MyByte Account Creation
 
 **File**: `/projects/mybyte/pages/signup.tsx`

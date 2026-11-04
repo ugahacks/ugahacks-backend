@@ -158,6 +158,10 @@ const points = await getPoints(uid);                // Points only
 
 While the application implements route guards and permission checks, these can be bypassed by malicious users. Firebase Security Rules provide server-side enforcement.
 
+> **Blacklist**: the `blacklist` collection needs a `get`-only rule for signed-in
+> users, and registration `create` rules should reject blacklisted identifiers.
+> See [Blacklist](./blacklist.md#firestore-rules).
+
 ### Recommended Security Rules
 
 **Firestore Security Rules** (example structure):

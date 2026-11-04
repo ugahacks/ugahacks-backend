@@ -7,6 +7,7 @@ import googleLogo from "../public/googleLogo.svg";
 import Link from "next/link";
 import Image from "next/image";
 import { ReactSelectObject } from "../interfaces/react-select";
+import { isBlacklistedUserError } from "../util/blacklist";
 
 interface SignupType {
   email: string;
@@ -45,6 +46,8 @@ const SignupPage = () => {
         } else if (err.code == "auth/weak-password") {
           // at least 6 characters long
         }
+      } else if (isBlacklistedUserError(err)) {
+        alert(err.message);
       }
       console.log(err.message);
     }
@@ -55,6 +58,7 @@ const SignupPage = () => {
       await logInWithGoogle();
       router.push("/dashboard");
     } catch (error: any) {
+      if (isBlacklistedUserError(error)) alert(error.message);
       console.log(error.message);
     }
   };

@@ -45,9 +45,15 @@ Welcome to the MyByte system documentation! This folder contains comprehensive g
    - Registration prerequisites and dependencies
    - Email confirmation process
 
+6. **[Blacklist](./blacklist.md)**
+   - Blocking sign-up and registration by email or phone number
+   - `blacklist` collection format and Firestore rules
+   - Adding entries with `scripts/blacklist-user.cjs`
+   - Checking day-of (walk-in) registrations
+
 ### Operational Documentation
 
-6. **[Troubleshooting Guide](./troubleshooting.md)**
+7. **[Troubleshooting Guide](./troubleshooting.md)**
    - Common QR scanning issues
    - Registration problems
    - Authentication errors
@@ -55,7 +61,7 @@ Welcome to the MyByte system documentation! This folder contains comprehensive g
    - Performance troubleshooting
    - Emergency procedures
 
-7. **[Security Posture](./security.md)**
+8. **[Security Posture](./security.md)**
    - Authentication mechanisms
    - Authorization and access control
    - Firebase security rules
@@ -87,6 +93,7 @@ Welcome to the MyByte system documentation! This folder contains comprehensive g
 2. **Manage Roles**: Assign user roles in `users` collection
 3. **Review Security**: Ensure Firebase security rules are properly configured
 4. **Monitor System**: Check Firebase Console for errors and usage
+5. **Ban a Participant**: Add them to the blacklist (see [Blacklist](./blacklist.md#i-need-to-ban-someone))
 
 ## Key Concepts
 
@@ -153,6 +160,8 @@ Welcome to the MyByte system documentation! This folder contains comprehensive g
 - **Auth Context**: `/projects/mybyte/context/AuthContext.tsx`
 - **Event Interface**: `/projects/mybyte/interfaces/event.ts`
 - **User Types**: `/projects/mybyte/enums/userType.ts`
+- **Blacklist Check**: `/projects/mybyte/util/blacklist.ts`
+- **Blacklist Admin Script**: `/projects/mybyte/scripts/blacklist-user.cjs`
 
 ### Configuration Files
 
@@ -186,6 +195,14 @@ Welcome to the MyByte system documentation! This folder contains comprehensive g
 5. Edit `user_type` field
 6. Set value to `"ORGANIZER"`
 7. User must refresh/re-login to see changes
+
+### Banning a Participant
+
+1. Find their UID in the `users` collection
+2. Run `scripts/blacklist-user.cjs --uid <UID>` to preview, then again with `--apply`
+3. Their emails and phone numbers can no longer sign up or register
+
+Full steps, including un-banning: [Blacklist](./blacklist.md#quick-guides)
 
 ### Adjusting Point Values
 

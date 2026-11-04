@@ -31,6 +31,7 @@ Comprehensive documentation for the MyByte system is available in the [`projects
 - **[Points System](./projects/mybyte/docs/points-system.md)** - How points are calculated dynamically and the point economy
 - **[Firebase Collections](./projects/mybyte/docs/firebase-collections.md)** - Database schema, collection structure, and data flows
 - **[Registration Flows](./projects/mybyte/docs/registration-flows.md)** - Account creation, event registration, and data flow
+- **[Blacklist](./projects/mybyte/docs/blacklist.md)** - Banning participants by email or phone number, and how sign-up, registration, and day-of registration enforce it
 - **[Troubleshooting Guide](./projects/mybyte/docs/troubleshooting.md)** - Common issues and solutions
 - **[Security Posture](./projects/mybyte/docs/security.md)** - Authentication, authorization, and security best practices
 
